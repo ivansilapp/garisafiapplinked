@@ -2,32 +2,25 @@ import {
     Button,
     Container,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    TextField,
 } from '@mui/material'
-import LoadingButton from '@mui/lab/LoadingButton'
 import { useRef, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { Link as RouterLink } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import CustomBreadcrumbs from '../../../components/custom-breadcrumbs'
 import Iconify from '../../../components/iconify'
 import { useSettingsContext } from '../../../components/settings'
 import InternalError from '../../../components/shared/500Error'
-import snackbar, { useSnackbar } from '../../../components/snackbar'
 import useBodyTypes from '../../../hooks/body-types/useBodyTypes'
 import { PATH_DASHBOARD } from '../../../routes/paths'
 import axios from '../../../utils/axios'
 import BodyTypesTable from '../_components/bodytypes/BodyTypesTable'
 import BodyTypeForm from '../_components/bodytypes/BodyTypeForm'
+import { useSnackbar } from '../../../components/snackbar'
 
 function BodyTypesPage() {
     const { bodyTypes, mutate }: any = useBodyTypes()
-    const bodyRef = useRef<HTMLInputElement>(null)
 
     // const navigate = useNavigate()
     const { themeStretch } = useSettingsContext()
@@ -36,7 +29,6 @@ function BodyTypesPage() {
 
     const [open, setOpen] = useState(false)
     const [updateLoader, setUpdateLoader] = useState(false)
-    const [createLoader, setCreateLoader] = useState(false)
     const [activeType, setActiveType] = useState<any>(null)
 
     const handleClose = () => {
@@ -99,7 +91,6 @@ function BodyTypesPage() {
                 heading="Vehicle body types"
                 links={[
                     { name: 'Dashboard', href: PATH_DASHBOARD.root },
-                    // { name: 'St', href: PATH_DASHBOARD.root },
                     {
                         name: 'Vehicle types',
                         href: PATH_DASHBOARD.systemData.bodyTypes,
