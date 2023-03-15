@@ -118,6 +118,14 @@ const navConfig: INav[] = [
                         title: 'vehicles',
                         path: PATH_DASHBOARD.systemData.vehicles,
                     },
+                    {
+                        title: 'pricelist',
+                        path: PATH_DASHBOARD.systemData.pricelist,
+                    },
+                    {
+                        title: 'clients',
+                        path: PATH_DASHBOARD.systemData.clients,
+                    },
                 ],
             },
             {

@@ -10,6 +10,10 @@ export const VehiclesPage = Loadable(
 export const BodyTypesPage = Loadable(
     lazy(() => import('./_pages/BodyTypesPage'))
 )
+export const PricelistPage = Loadable(
+    lazy(() => import('./_pages/PricelistPage'))
+)
+export const ClientsPage = Loadable(lazy(() => import('./_pages/ClientsPage')))
 
 export const systemDataRoutes = [
     {
@@ -33,6 +37,22 @@ export const systemDataRoutes = [
         element: (
             <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
                 <BodyTypesPage />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'system-data/pricelist',
+        element: (
+            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
+                <PricelistPage />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'system-data/clients',
+        element: (
+            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
+                <ClientsPage />
             </RoleBasedGuard>
         ),
     },

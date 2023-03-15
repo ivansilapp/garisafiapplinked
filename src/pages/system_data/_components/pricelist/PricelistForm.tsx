@@ -21,35 +21,33 @@ import FormProvider, {
 import { useSnackbar } from '../../../../components/snackbar'
 
 function VehicleForm({
-    vehicle,
+    price,
     onSubmit,
     loading,
     handleClose,
-    clients,
     bodyTypes,
+    services,
 }: any) {
     const { enqueueSnackbar } = useSnackbar()
 
-    const NewVehicleSchema = Yup.object().shape({
-        registration: Yup.string().required('Vehicle registration required'),
-        clientId: Yup.string(),
+    const NewPriceSchema = Yup.object().shape({
+        price: Yup.string().required('Vehicle registration required'),
+        serviceId: Yup.string().required('Service required'),
         bodyId: Yup.string().required('Body type required'),
-        model: Yup.string(),
     })
 
     const defaultValues = useMemo(
         () => ({
-            registration: vehicle?.registration || '',
-            clientId: vehicle?.clientId || '',
-            bodyId: vehicle?.bodyId || '',
-            model: vehicle?.model || '',
+            price: price?.price || '',
+            serviceId: price?.serviceId || '',
+            bodyId: price?.bodyId || '',
         }),
-        [vehicle]
+        [price]
     )
-    const isEdit = vehicle?.id && vehicle.id !== ''
+    const isEdit = price?.id && price.id !== ''
 
     const methods = useForm({
-        resolver: yupResolver(NewVehicleSchema),
+        resolver: yupResolver(NewPriceSchema),
         defaultValues,
     })
 
@@ -71,9 +69,7 @@ function VehicleForm({
                     xs: 'repeat(1, 1fr)',
                 }}
             >
-                <RHFTextField name="registration" label="Registration" />
-
-                <RHFTextField name="model" label="Model" />
+                <RHFTextField name="price" type="number" label="Cost" />
 
                 <RHFSelect native name="bodyId" label="Body type">
                     {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
@@ -85,12 +81,12 @@ function VehicleForm({
                     ))}
                 </RHFSelect>
 
-                <RHFSelect native name="clientId" label="Client">
+                <RHFSelect native name="serviceId" label="Service">
                     {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                     <option value="" defaultValue="" />
-                    {clients.map((client: any) => (
-                        <option key={client.id} value={client.id}>
-                            {client.name}
+                    {services.map((service: any) => (
+                        <option key={service.id} value={service.id}>
+                            {service.name}
                         </option>
                     ))}
                 </RHFSelect>

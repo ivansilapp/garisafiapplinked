@@ -25,14 +25,14 @@ import { PATH_DASHBOARD } from '../../../../routes/paths'
 
 // ----------------------------------------------------------------------
 
-export default function VehicleTableRow({
+export default function PricelistTableRow({
     row,
     selected,
     onEditRow,
     onDeleteRow,
     deleteLoader,
 }: any) {
-    const { id, bodyType, registration, model }: any = row
+    const { id, price, label }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
@@ -75,15 +75,13 @@ export default function VehicleTableRow({
                                 style={styles}
                                 to={PATH_DASHBOARD.users.details(id)}
                             >
-                                {registration}
+                                {label}
                             </Link>
                         </Typography>
                     </Stack>
                 </TableCell>
 
-                <TableCell align="left">{model}</TableCell>
-
-                <TableCell align="left">{bodyType?.name}</TableCell>
+                <TableCell align="left">{price}</TableCell>
 
                 <TableCell align="center">
                     <Button

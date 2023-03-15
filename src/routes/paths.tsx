@@ -90,6 +90,8 @@ export const PATH_DASHBOARD = {
         root: path(ROOTS_DASHBOARD, 'system-data'),
         bodyTypes: path(ROOTS_DASHBOARD, 'system-data/body-types'),
         vehicles: path(ROOTS_DASHBOARD, 'system-data/vehicles'),
+        pricelist: path(ROOTS_DASHBOARD, 'system-data/pricelist'),
+        clients: path(ROOTS_DASHBOARD, 'system-data/clients'),
     },
     settings: {
         root: path(ROOTS_DASHBOARD, 'settings'),

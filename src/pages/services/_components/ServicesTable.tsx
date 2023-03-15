@@ -10,23 +10,22 @@ import {
     TableEmptyRows,
     TableHeadCustom,
     TablePaginationCustom,
-} from '../../../../components/table'
-import Scrollbar from '../../../../components/scrollbar'
-import GeneralTableToolbar from '../../../../components/shared/GeneralTableToolbar'
-import VehicleTableRow from './VehicleTableRow'
-import axios from '../../../../utils/axios'
-import { useSnackbar } from '../../../../components/snackbar'
+} from '../../../components/table'
+import Scrollbar from '../../../components/scrollbar'
+import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
+import ServiceTableRow from './ServiceTableRow'
+import axios from '../../../utils/axios'
+import { useSnackbar } from '../../../components/snackbar'
 
 const TABLE_HEAD = [
-    { id: 'registration', label: 'Registration', align: 'left' },
-    { id: 'model', label: 'Model', align: 'left' },
-    { id: 'bodyType', label: 'Body type', align: 'left' },
+    { id: 'name', label: 'Service', align: 'left' },
+    { id: 'prices', label: 'Prices', align: 'left' },
     { id: 'update', label: 'Update', align: 'center' },
     { id: 'delete', label: 'delete', align: 'right' },
     { id: '' },
 ]
 
-function VehicleTable({ data, handleUpdate, mutate }: any) {
+function ServicesTable({ data, handleUpdate, mutate }: any) {
     const {
         dense,
         page,
@@ -113,10 +112,10 @@ function VehicleTable({ data, handleUpdate, mutate }: any) {
     const handleDeleteRow = async (id: any) => {
         try {
             setDeleteLoader(true)
-            const url = `/vehicle/${id}`
+            const url = `/service/${id}`
             const response = await axios.delete(url)
             if (!response.data) {
-                throw new Error('Error deleting vehicle')
+                throw new Error('Error deleting service')
             }
             const deleteRow = tableData.filter((row: any) => row.id !== id)
             mutate()
@@ -128,7 +127,7 @@ function VehicleTable({ data, handleUpdate, mutate }: any) {
                     setPage(page - 1)
                 }
             }
-            enqueueSnackbar('Vehicle deleted', { variant: 'success' })
+            enqueueSnackbar('Service deleted', { variant: 'success' })
         } catch (err: any) {
             // console.log(err)
             enqueueSnackbar(err.message, { variant: 'error' })
@@ -174,7 +173,7 @@ function VehicleTable({ data, handleUpdate, mutate }: any) {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row: any) => (
-                                    <VehicleTableRow
+                                    <ServiceTableRow
                                         key={row.id}
                                         row={row}
                                         selected={selected.includes(row.id)}
@@ -256,4 +255,4 @@ function applyFilter({
     return inputData
 }
 
-export default VehicleTable
+export default ServicesTable

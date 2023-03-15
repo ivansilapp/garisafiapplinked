@@ -13,26 +13,26 @@ import {
     Typography,
 } from '@mui/material'
 // components
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useTheme } from '@mui/system'
 import LoadingButton from '@mui/lab/LoadingButton'
-import Label from '../../../../components/label'
-import Iconify from '../../../../components/iconify'
-import MenuPopover from '../../../../components/menu-popover'
-import ConfirmDialog from '../../../../components/confirm-dialog'
-import { PATH_DASHBOARD } from '../../../../routes/paths'
+import Label from '../../../components/label'
+import Iconify from '../../../components/iconify'
+import MenuPopover from '../../../components/menu-popover'
+import ConfirmDialog from '../../../components/confirm-dialog'
+import { PATH_DASHBOARD } from '../../../routes/paths'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
 
-export default function VehicleTableRow({
+export default function ServiceTableRow({
     row,
     selected,
     onEditRow,
     onDeleteRow,
     deleteLoader,
 }: any) {
-    const { id, bodyType, registration, model }: any = row
+    const { id, name }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
@@ -75,15 +75,17 @@ export default function VehicleTableRow({
                                 style={styles}
                                 to={PATH_DASHBOARD.users.details(id)}
                             >
-                                {registration}
+                                {name}
                             </Link>
                         </Typography>
                     </Stack>
                 </TableCell>
 
-                <TableCell align="left">{model}</TableCell>
-
-                <TableCell align="left">{bodyType?.name}</TableCell>
+                <TableCell align="left">
+                    <Link style={styles} to={`/services/${id}`}>
+                        Prices
+                    </Link>
+                </TableCell>
 
                 <TableCell align="center">
                     <Button

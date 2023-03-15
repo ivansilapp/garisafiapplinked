@@ -8,7 +8,7 @@ export default function useProductList() {
     return {
         loading: !error && !data,
         error,
-        product: data ? data.product : [],
+        products: data ? data.products : [],
         mutate,
     }
 }
