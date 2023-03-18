@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import sum from 'lodash/sum'
 import { useCallback, useEffect } from 'react'
 // form
@@ -17,21 +18,15 @@ import { fCurrency } from '../../../utils/formatNumber'
 // components
 import Iconify from '../../../components/iconify'
 import { RHFSelect, RHFTextField } from '../../../components/hook-form'
+import { apiUrl } from '../../../config-global'
+import axios from '../../../utils/axios'
+import { useSnackbar } from '../../../components/snackbar'
 
 // ----------------------------------------------------------------------
 
-const SERVICE_OPTIONS = [
-    { id: 1, name: 'full stack development', price: 90.99 },
-    { id: 2, name: 'backend development', price: 80.99 },
-    { id: 3, name: 'ui design', price: 70.99 },
-    { id: 4, name: 'ui/ux design', price: 60.99 },
-    { id: 5, name: 'front end development', price: 40.99 },
-]
-
-// ----------------------------------------------------------------------
-
-export default function TaskForm() {
-    const { control, setValue, watch, resetField } = useFormContext()
+export default function TaskForm({ services, vehicle, pricelist }: any) {
+    const { control, setValue, watch, resetField, getValues } = useFormContext()
+    const { enqueueSnackbar } = useSnackbar()
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -44,11 +39,37 @@ export default function TaskForm() {
         (item: any) => item.quantity * item.price
     )
 
-    const totalPrice = sum(totalOnRow) - values.discount + values.taxes
+    const totalPrice = sum(totalOnRow) - values.discount
 
     useEffect(() => {
-        setValue('totalPrice', totalPrice)
+        setValue('cost', totalPrice)
     }, [setValue, totalPrice])
+
+    useEffect(() => {
+        if (vehicle) {
+            const { items } = getValues()
+            setValue('vehicleId', vehicle.id)
+            const bodyId = vehicle.bodyType.id
+            const newItems = items.map((item: any) => {
+                const { service } = item
+                const serviceItem = services.find(
+                    (s: any) => s.name === service
+                )
+                const priceData = pricelist.find(
+                    (p: any) =>
+                        p.serviceId === serviceItem?.id && p.bodyId === bodyId
+                )
+                if (priceData && serviceItem) {
+                    item.price = priceData.price
+                } else {
+                    item.price = 0
+                }
+                return item
+            })
+            setValue('items', newItems)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [vehicle])
 
     const handleAdd = () => {
         append({
@@ -75,20 +96,39 @@ export default function TaskForm() {
     )
 
     const handleSelectService = useCallback(
-        (index: any, option: any) => {
-            setValue(
-                `items[${index}].price`,
-                SERVICE_OPTIONS.find((service) => service.name === option)
-                    ?.price
-            )
-            setValue(
-                `items[${index}].total`,
-                values.items.map((item: any) => item.quantity * item.price)[
-                    index
-                ]
-            )
+        async (index: any, service: any) => {
+            let price = 0
+            if (vehicle !== null) {
+                const { data } = await axios.get(
+                    `${apiUrl}/pricelist/details/${service.id}/${vehicle.bodyType.id}`
+                )
+                if (data.price) {
+                    price = data.price.price
+                    setValue(`items[${index}].price`, price)
+                    setValue(`items[${index}].serviceId`, service?.id)
+                    setValue(`items[${index}].priceId`, data.price?.id)
+                    setValue(
+                        `items[${index}].total`,
+                        values.items.map(
+                            (item: any) => item.quantity * item.price
+                        )[index]
+                    )
+                    enqueueSnackbar('Service price updated', {
+                        variant: 'success',
+                    })
+                } else {
+                    // error snackbar
+                    enqueueSnackbar('Service price not found', {
+                        variant: 'error',
+                    })
+                }
+            } else {
+                // error snackbar
+                enqueueSnackbar('Please select a vehicle', { variant: 'error' })
+            }
         },
-        [setValue, values.items]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [setValue, values.items, vehicle]
     )
 
     const handleChangeQuantity = useCallback(
@@ -118,7 +158,7 @@ export default function TaskForm() {
     )
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ mt: 3 }}>
             <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3 }}>
                 Details:
             </Typography>
@@ -134,26 +174,19 @@ export default function TaskForm() {
                             spacing={2}
                             sx={{ width: 1 }}
                         >
-                            <RHFTextField
+                            {/* <RHFTextField
                                 size="small"
                                 name={`items[${index}].title`}
                                 label="Title"
                                 InputLabelProps={{ shrink: true }}
-                            />
-
-                            <RHFTextField
-                                size="small"
-                                name={`items[${index}].description`}
-                                label="Description"
-                                InputLabelProps={{ shrink: true }}
-                            />
+                            /> */}
 
                             <RHFSelect
                                 name={`items[${index}].service`}
                                 size="small"
                                 label="Service"
                                 InputLabelProps={{ shrink: true }}
-                                sx={{ maxWidth: { md: 160 } }}
+                                sx={{ maxWidth: { md: 360 } }}
                             >
                                 <MenuItem
                                     value=""
@@ -168,15 +201,12 @@ export default function TaskForm() {
 
                                 <Divider />
 
-                                {SERVICE_OPTIONS.map((service) => (
+                                {services.map((service: any) => (
                                     <MenuItem
                                         key={service.id}
                                         value={service.name}
                                         onClick={() =>
-                                            handleSelectService(
-                                                index,
-                                                service.name
-                                            )
+                                            handleSelectService(index, service)
                                         }
                                     >
                                         {service.name}
@@ -194,10 +224,10 @@ export default function TaskForm() {
                                     handleChangeQuantity(event, index)
                                 }
                                 InputLabelProps={{ shrink: true }}
-                                sx={{ maxWidth: { md: 96 } }}
+                                sx={{ display: 'none', maxWidth: { md: 96 } }}
                             />
 
-                            <RHFTextField
+                            {/* <RHFTextField
                                 size="small"
                                 type="number"
                                 name={`items[${index}].price`}
@@ -209,12 +239,12 @@ export default function TaskForm() {
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            $
+                                            Ksh
                                         </InputAdornment>
                                     ),
                                 }}
                                 sx={{ maxWidth: { md: 96 } }}
-                            />
+                            /> */}
 
                             <RHFTextField
                                 disabled
@@ -226,7 +256,7 @@ export default function TaskForm() {
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            $
+                                            Ksh
                                         </InputAdornment>
                                     ),
                                 }}
@@ -278,7 +308,7 @@ export default function TaskForm() {
                         sx={{ maxWidth: { md: 200 } }}
                     />
 
-                    <RHFTextField
+                    {/* <RHFTextField
                         size="small"
                         label="Taxes"
                         name="taxes"
@@ -286,7 +316,7 @@ export default function TaskForm() {
                             setValue('taxes', Number(event.target.value))
                         }
                         sx={{ maxWidth: { md: 200 } }}
-                    />
+                    /> */}
                 </Stack>
             </Stack>
 

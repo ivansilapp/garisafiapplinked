@@ -21,43 +21,40 @@ import { apiUrl } from '../../config-global'
 import axios from '../../utils/axios'
 import TaskForm from './_components/TaskForm'
 import FormProvider from '../../components/hook-form'
+import useServiceList from '../../hooks/service/useServiceList'
+import usePrices from '../../hooks/prices/usePrices'
+import AttendantAutocomplete from '../../hooks/attendant/AttendantAutocomplete'
 
 const currentInvoice: any = {}
 
 export default function NewTaskPage() {
     const { themeStretch } = useSettingsContext()
     const { enqueueSnackbar } = useSnackbar()
+    const { services } = useServiceList()
+    const { prices } = usePrices()
 
     const [open, setOpen] = useState(false)
     const [vehicleLoader, setVehicleLoader] = useState(false)
     const [vehicles, setVehicles] = useState<any>([])
-    const [submitLoader, setSubmitLoader] = useState(false)
+    const [attendant, setAttendant] = useState<any>(null)
+    // const [submitLoader, setSubmitLoader] = useState(false)
     const [vehicle, setVehicle] = useState<any>(null)
 
-    const [loadingSave, setLoadingSave] = useState(false)
+    // const [loadingSave, setLoadingSave] = useState(false)
 
     const [loadingSend, setLoadingSend] = useState(false)
 
-    const NewUserSchema = Yup.object().shape({
-        createDate: Yup.string().nullable().required('Create date is required'),
-        dueDate: Yup.string().nullable().required('Due date is required'),
-        invoiceTo: Yup.mixed().nullable().required('Invoice to is required'),
+    const NewTaskSchema = Yup.object().shape({
+        vehicleId: Yup.string(),
     })
 
     const defaultValues = useMemo(
         () => ({
-            invoiceNumber: currentInvoice?.invoiceNumber || '17099',
-            createDate: currentInvoice?.createDate || new Date(),
-            dueDate: currentInvoice?.dueDate || null,
-            taxes: currentInvoice?.taxes || 0,
-            status: currentInvoice?.status || 'draft',
+            status: currentInvoice?.status || 'pending',
             discount: currentInvoice?.discount || 0,
-            invoiceFrom: currentInvoice?.invoiceFrom || '',
-            invoiceTo: currentInvoice?.invoiceTo || null,
+            vehicleId: currentInvoice?.vehicleId || '',
             items: currentInvoice?.items || [
                 {
-                    title: '',
-                    description: '',
                     service: '',
                     quantity: 1,
                     price: 0,
@@ -70,7 +67,7 @@ export default function NewTaskPage() {
     )
 
     const methods: any = useForm({
-        resolver: yupResolver(NewUserSchema),
+        resolver: yupResolver(NewTaskSchema),
         defaultValues,
     })
 
@@ -91,7 +88,6 @@ export default function NewTaskPage() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isEdit, currentInvoice])
-
     const fetchVehicles = async (e: any) => {
         try {
             const query = e.target.value
@@ -114,8 +110,45 @@ export default function NewTaskPage() {
         console.log(vehicle, 'vehicle')
     }
 
-    const handleCreateAndSend = async (data: any) => {
-        console.log('data', data)
+    const submitTask = async (payload: any) => {
+        try {
+            if (!attendant) {
+                enqueueSnackbar('Please select an attendant', {
+                    variant: 'error',
+                })
+                return
+            }
+            if (!vehicle) {
+                enqueueSnackbar('Please select a vehicle', {
+                    variant: 'error',
+                })
+                return
+            }
+
+            if (payload.items.length <= 0) {
+                enqueueSnackbar('Please add at least one service', {
+                    variant: 'error',
+                })
+                return
+            }
+
+            // if (payload) {
+            //     console.log(payload, 'payload')
+            //     return
+            // }
+
+            const url = `${apiUrl}/task`
+            const { data } = await axios.post(url, {
+                ...payload,
+                vehicleId: vehicle.id,
+                attendantId: attendant.id,
+            })
+            console.log(data, 'data')
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error creating task'
+            console.log(msg, 'msg')
+            enqueueSnackbar(msg, { variant: 'error' })
+        }
     }
 
     return (
@@ -175,7 +208,10 @@ export default function NewTaskPage() {
                                 getOptionLabel={(option) => option.registration}
                                 options={vehicles}
                                 loading={vehicleLoader}
-                                onChange={(e, value) => setVehicle(value)}
+                                onChange={(e, value) => {
+                                    setVehicle(value)
+                                    // console.log(value, 'value')
+                                }}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -201,6 +237,9 @@ export default function NewTaskPage() {
                                     />
                                 )}
                             />
+                            <AttendantAutocomplete
+                                setAttendant={setAttendant}
+                            />
                         </Box>
 
                         {/* <Stack
@@ -212,9 +251,11 @@ export default function NewTaskPage() {
                             <Button variant="outlined">Add service</Button>
                         </Stack> */}
                         <FormProvider methods={methods}>
-                            <Card>
-                                <TaskForm />
-                            </Card>
+                            <TaskForm
+                                services={services}
+                                vehicle={vehicle}
+                                pricelist={prices}
+                            />
 
                             <Stack
                                 justifyContent="flex-end"
@@ -222,7 +263,7 @@ export default function NewTaskPage() {
                                 spacing={2}
                                 sx={{ mt: 3 }}
                             >
-                                <LoadingButton
+                                {/* <LoadingButton
                                     color="inherit"
                                     size="large"
                                     variant="contained"
@@ -230,13 +271,13 @@ export default function NewTaskPage() {
                                     onClick={handleSubmit(handleCreateAndSend)}
                                 >
                                     Save as Draft
-                                </LoadingButton>
+                                </LoadingButton> */}
 
                                 <LoadingButton
                                     size="large"
                                     variant="contained"
                                     loading={loadingSend && isSubmitting}
-                                    onClick={handleSubmit(handleCreateAndSend)}
+                                    onClick={handleSubmit(submitTask)}
                                 >
                                     {isEdit ? 'Update' : 'Create'} & Send
                                 </LoadingButton>
@@ -244,7 +285,7 @@ export default function NewTaskPage() {
                         </FormProvider>
                     </Card>
 
-                    <Stack display="flex" alignItems="flex-end" sx={{ mt: 3 }}>
+                    {/* <Stack display="flex" alignItems="flex-end" sx={{ mt: 3 }}>
                         <LoadingButton
                             onClick={createTask}
                             loading={submitLoader}
@@ -252,7 +293,7 @@ export default function NewTaskPage() {
                         >
                             Create task
                         </LoadingButton>
-                    </Stack>
+                    </Stack> */}
                 </Suspense>
             </ErrorBoundary>
         </Container>

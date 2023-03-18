@@ -11,9 +11,16 @@ export function fNumber(number: any) {
 }
 
 export function fCurrency(number: any) {
-    const format = number ? numeral(number).format('$0,0.00') : ''
+    const f = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'KES',
+        minimumFractionDigits: 2,
+    })
 
-    return result(format, '.00')
+    return f.format(number)
+    // const format = number ? numeral(number).format('Ksh0,0.00') : ''
+
+    // return result(format, '.00')
 }
 
 export function fPercent(number: any) {
