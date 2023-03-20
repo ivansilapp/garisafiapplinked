@@ -43,7 +43,7 @@ export default function AttendantAutocomplete({ setAttendant }: any) {
     return (
         <Autocomplete
             id="attendant-autocomplete"
-            sx={{ width: 300 }}
+            // sx={{ width: 300 }}
             open={open}
             onOpen={() => {
                 setOpen(true)

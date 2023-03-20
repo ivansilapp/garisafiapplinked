@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import sum from 'lodash/sum'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 // form
 import { useFormContext, useFieldArray } from 'react-hook-form'
 // @mui
@@ -27,6 +27,7 @@ import { useSnackbar } from '../../../components/snackbar'
 export default function TaskForm({ services, vehicle, pricelist }: any) {
     const { control, setValue, watch, resetField, getValues } = useFormContext()
     const { enqueueSnackbar } = useSnackbar()
+    const [activeIds, setActiveIds] = useState<any>([])
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -35,9 +36,7 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
 
     const values = watch()
 
-    const totalOnRow = values.items.map(
-        (item: any) => item.quantity * item.price
-    )
+    const totalOnRow = values.items.map((item: any) => 1 * item.price)
 
     const totalPrice = sum(totalOnRow) - values.discount
 
@@ -91,13 +90,28 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
             resetField(`items[${index}].quantity`)
             resetField(`items[${index}].price`)
             resetField(`items[${index}].total`)
+            resetField(`items[${index}].serviceId`)
+
+            const vs = getValues()
+            const { serviceId } = vs.items[index]
+            const newActiveIds = activeIds.filter((id: any) => id !== serviceId)
+            setActiveIds(newActiveIds)
+            console.log(vs, 'values')
         },
-        [resetField]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [resetField, activeIds]
     )
 
     const handleSelectService = useCallback(
         async (index: any, service: any) => {
             let price = 0
+            // if (activeIds.includes(service.id)) {
+            //     enqueueSnackbar('Service already added', {
+            //         variant: 'error',
+            //     })
+            //     return
+            // }
+            setActiveIds([...activeIds, service.id])
             if (vehicle !== null) {
                 const { data } = await axios.get(
                     `${apiUrl}/pricelist/details/${service.id}/${vehicle.bodyType.id}`
@@ -134,19 +148,6 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
     const handleChangeQuantity = useCallback(
         (event: any, index: any) => {
             setValue(`items[${index}].quantity`, Number(event.target.value))
-            setValue(
-                `items[${index}].total`,
-                values.items.map((item: any) => item.quantity * item.price)[
-                    index
-                ]
-            )
-        },
-        [setValue, values.items]
-    )
-
-    const handleChangePrice = useCallback(
-        (event: any, index: any) => {
-            setValue(`items[${index}].price`, Number(event.target.value))
             setValue(
                 `items[${index}].total`,
                 values.items.map((item: any) => item.quantity * item.price)[
@@ -203,6 +204,9 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
 
                                 {services.map((service: any) => (
                                     <MenuItem
+                                        disabled={activeIds.includes(
+                                            service.id
+                                        )}
                                         key={service.id}
                                         value={service.name}
                                         onClick={() =>

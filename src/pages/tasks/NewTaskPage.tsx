@@ -11,6 +11,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { LoadingButton } from '@mui/lab'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useNavigate } from 'react-router-dom'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import Iconify from '../../components/iconify'
 import { useSettingsContext } from '../../components/settings'
@@ -28,6 +29,7 @@ import AttendantAutocomplete from '../../hooks/attendant/AttendantAutocomplete'
 const currentInvoice: any = {}
 
 export default function NewTaskPage() {
+    const navigate = useNavigate()
     const { themeStretch } = useSettingsContext()
     const { enqueueSnackbar } = useSnackbar()
     const { services } = useServiceList()
@@ -138,12 +140,18 @@ export default function NewTaskPage() {
             // }
 
             const url = `${apiUrl}/task`
-            const { data } = await axios.post(url, {
+            const response = await axios.post(url, {
                 ...payload,
                 vehicleId: vehicle.id,
                 attendantId: attendant.id,
             })
-            console.log(data, 'data')
+            const { data } = response
+            if (response.statusText !== 'OK') {
+                throw new Error(data.message)
+            }
+            navigate(PATH_DASHBOARD.tasks.details(data?.task?.id), {
+                replace: true,
+            })
         } catch (err: any) {
             const msg = err.error || err.message || 'Error creating task'
             console.log(msg, 'msg')
@@ -279,7 +287,7 @@ export default function NewTaskPage() {
                                     loading={loadingSend && isSubmitting}
                                     onClick={handleSubmit(submitTask)}
                                 >
-                                    {isEdit ? 'Update' : 'Create'} & Send
+                                    {isEdit ? 'Update' : 'Create'}
                                 </LoadingButton>
                             </Stack>
                         </FormProvider>

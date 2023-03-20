@@ -40,7 +40,7 @@ export const PATH_DASHBOARD = {
         root: path(ROOTS_DASHBOARD, 'tasks'),
         new: path(ROOTS_DASHBOARD, 'tasks/new'),
         details: (id: string | number) =>
-            path(ROOTS_DASHBOARD, `tasks/details/${id}`),
+            path(ROOTS_DASHBOARD, `tasks/detail/${id}`),
         pending: path(ROOTS_DASHBOARD, 'tasks/pending'),
         completed: path(ROOTS_DASHBOARD, 'tasks/completed'),
         canceled: path(ROOTS_DASHBOARD, 'tasks'),
