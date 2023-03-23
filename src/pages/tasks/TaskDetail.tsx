@@ -40,6 +40,7 @@ import { PATH_DASHBOARD } from '../../routes/paths'
 import axios from '../../utils/axios'
 import { fCurrency } from '../../utils/formatNumber'
 import { fDateTime } from '../../utils/formatTime'
+import TaskPaymentCard from './_components/TaskPayment'
 import VehicleDetailCard from './_components/VehicleDetail'
 
 function TaskDetail() {
@@ -278,9 +279,12 @@ function TaskDetail() {
                                     <Button
                                         color="info"
                                         variant="contained"
+                                        disabled={task.fullyPaid}
                                         onClick={() => setPaymentModal(true)}
                                     >
-                                        Add payment
+                                        {task.fullyPaid
+                                            ? 'Fully Paid'
+                                            : 'Add Payment'}
                                     </Button>
                                 ) : null}
                             </Box>
@@ -320,6 +324,8 @@ function TaskDetail() {
                                 </Box>
                             </CardContent>
                         </Card>
+
+                        <TaskPaymentCard payments={task.payments} task={task} />
 
                         <Card>
                             {/* <CardHeader title="Attendant" /> */}

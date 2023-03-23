@@ -44,7 +44,7 @@ export default function NewTaskPage() {
 
     // const [loadingSave, setLoadingSave] = useState(false)
 
-    const [loadingSend, setLoadingSend] = useState(false)
+    // const [loadingSend, setLoadingSend] = useState(false)
 
     const NewTaskSchema = Yup.object().shape({
         vehicleId: Yup.string(),
@@ -140,18 +140,29 @@ export default function NewTaskPage() {
             // }
 
             const url = `${apiUrl}/task`
-            const response = await axios.post(url, {
+            let options = {
                 ...payload,
                 vehicleId: vehicle.id,
-                attendantId: attendant.id,
-            })
-            const { data } = response
-            if (response.statusText !== 'OK') {
-                throw new Error(data.message)
             }
-            navigate(PATH_DASHBOARD.tasks.details(data?.task?.id), {
-                replace: true,
-            })
+
+            if (attendant) {
+                options = {
+                    ...options,
+                    attendantId: attendant.id,
+                }
+            }
+
+            const response = await axios.post(url, options)
+            const { data } = response
+            if (response.status !== 200) {
+                throw new Error(data.error)
+            }
+            // console.log(data, 'data', response.status)
+            if (data.task && data.task.id !== 0) {
+                navigate(PATH_DASHBOARD.tasks.details(data?.task?.id), {
+                    replace: true,
+                })
+            }
         } catch (err: any) {
             const msg = err.error || err.message || 'Error creating task'
             console.log(msg, 'msg')
@@ -201,7 +212,6 @@ export default function NewTaskPage() {
                         >
                             <Autocomplete
                                 id="vehicle-autocomplete"
-                                sx={{ width: 300 }}
                                 open={open}
                                 onOpen={() => {
                                     setOpen(true)
@@ -284,7 +294,7 @@ export default function NewTaskPage() {
                                 <LoadingButton
                                     size="large"
                                     variant="contained"
-                                    loading={loadingSend && isSubmitting}
+                                    loading={isSubmitting}
                                     onClick={handleSubmit(submitTask)}
                                 >
                                     {isEdit ? 'Update' : 'Create'}

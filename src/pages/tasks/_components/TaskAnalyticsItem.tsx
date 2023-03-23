@@ -67,7 +67,7 @@ export default function TaskAnalyticsItem({
                         component="span"
                         sx={{ color: 'text.secondary', typography: 'body2' }}
                     >
-                        invoices
+                        Vehicles
                     </Box>
                 </Typography>
 

@@ -1,10 +1,31 @@
 import { Card, Divider, Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { useEffect, useState } from 'react'
 import Scrollbar from '../../../components/scrollbar'
+import { computeTaskTotals } from '../../../utils/common'
 import TaskAnalyticsItem from './TaskAnalyticsItem'
 
-export default function AnalyticsBar() {
+export default function AnalyticsBar({ info }: any) {
     const theme = useTheme()
+
+    const [totalTasks, setTotalTasks] = useState(0)
+    const [totalVehicles, setTotalVehicles] = useState(0)
+
+    // console.log(info)
+
+    useEffect(() => {
+        const totalComplete: number = computeTaskTotals(info?.complete ?? [])
+        const totalOngoing: number = computeTaskTotals(info?.ongoing ?? [])
+        const totalPending: number = computeTaskTotals(info?.pending ?? [])
+
+        setTotalTasks(totalComplete + totalOngoing + totalPending)
+        const totalV =
+            (info?.complete?.length ?? 0) +
+            (info?.ongoing?.length ?? 0) +
+            (info?.pending?.length ?? 0)
+        setTotalVehicles(totalV)
+    }, [info])
+
     return (
         <Card sx={{ mb: 5 }}>
             <Scrollbar>
@@ -21,45 +42,39 @@ export default function AnalyticsBar() {
                 >
                     <TaskAnalyticsItem
                         title="Total"
-                        total={300}
+                        total={totalVehicles}
                         percent={100}
-                        price={300}
+                        price={totalTasks}
                         icon="ic:round-receipt"
                         color={theme.palette.info.main}
                     />
 
                     <TaskAnalyticsItem
-                        title="Paid"
-                        total={12}
+                        title="Completed"
+                        total={info?.complete?.length ?? 0}
                         percent={10}
-                        price={300}
+                        price={computeTaskTotals(info?.complete)}
                         icon="eva:checkmark-circle-2-fill"
                         color={theme.palette.success.main}
                     />
 
                     <TaskAnalyticsItem
-                        title="Unpaid"
-                        total={3000}
-                        percent={40}
-                        price={300}
+                        title="Ongoing"
+                        total={info.ongoing.length + info.pending.length}
+                        percent={100}
+                        price={computeTaskTotals([
+                            ...(info?.ongoing ?? []),
+                            ...(info?.pending ?? []),
+                        ])}
                         icon="eva:clock-fill"
                         color={theme.palette.warning.main}
                     />
 
-                    {/* <TaskAnalyticsItem
-                        title="Overdue"
-                        total={1000}
-                        percent={3}
-                        price={250}
-                        icon="eva:bell-fill"
-                        color={theme.palette.error.main}
-                    /> */}
-
                     <TaskAnalyticsItem
-                        title="Draft"
-                        total={4}
-                        percent={2}
-                        price={600}
+                        title="Queued"
+                        total={info?.waitlist?.length ?? 0}
+                        percent={100}
+                        price={0}
                         icon="eva:file-fill"
                         color={theme.palette.text.secondary}
                     />
