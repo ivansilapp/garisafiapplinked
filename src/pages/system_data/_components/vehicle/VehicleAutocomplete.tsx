@@ -11,12 +11,18 @@ import { useSnackbar } from '../../../../components/snackbar'
 import { apiUrl } from '../../../../config-global'
 import axios from '../../../../utils/axios'
 
-export default function VehicleAutocomplete({ setVehicle }: any) {
+export default function VehicleAutocomplete({
+    setVehicle,
+    activeVehicle,
+    setAddVehicleModal,
+}: any) {
     const url = `${apiUrl}/vehicle/search/`
 
     const [open, setOpen] = useState(false)
     const [fetchLoader, setFetchLoader] = useState(false)
-    const [items, setItems] = useState([])
+    const [items, setItems] = useState([
+        ...(activeVehicle ? [activeVehicle] : []),
+    ])
 
     const { enqueueSnackbar } = useSnackbar()
 
@@ -69,7 +75,13 @@ export default function VehicleAutocomplete({ setVehicle }: any) {
             noOptionsText={
                 <Box display="grid" gap={2} alignItems="center">
                     <p> No records found </p>
-                    <Button> Add vehicle </Button>
+                    <Button
+                        onClick={() => {
+                            setAddVehicleModal(true)
+                        }}
+                    >
+                        Add vehicle
+                    </Button>
                 </Box>
             }
             renderInput={(params) => (

@@ -92,6 +92,7 @@ export const PATH_DASHBOARD = {
         vehicles: path(ROOTS_DASHBOARD, 'system-data/vehicles'),
         pricelist: path(ROOTS_DASHBOARD, 'system-data/pricelist'),
         clients: path(ROOTS_DASHBOARD, 'system-data/clients'),
+        accounts: path(ROOTS_DASHBOARD, 'system-data/accounts'),
     },
     settings: {
         root: path(ROOTS_DASHBOARD, 'settings'),

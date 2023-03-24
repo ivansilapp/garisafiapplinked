@@ -123,6 +123,10 @@ const navConfig: INav[] = [
                         path: PATH_DASHBOARD.systemData.pricelist,
                     },
                     {
+                        title: 'accounts',
+                        path: PATH_DASHBOARD.systemData.accounts,
+                    },
+                    {
                         title: 'clients',
                         path: PATH_DASHBOARD.systemData.clients,
                     },

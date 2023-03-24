@@ -41,12 +41,27 @@ export default function AnalyticsBar({ info }: any) {
                     sx={{ py: 2 }}
                 >
                     <TaskAnalyticsItem
-                        title="Total"
-                        total={totalVehicles}
+                        title="Queued"
+                        total={info?.waitlist?.length ?? 0}
                         percent={100}
-                        price={totalTasks}
-                        icon="ic:round-receipt"
-                        color={theme.palette.info.main}
+                        price={0}
+                        icon="eva:file-fill"
+                        color={theme.palette.text.secondary}
+                    />
+
+                    <TaskAnalyticsItem
+                        title="Ongoing"
+                        total={
+                            (info?.ongoing?.length ?? 0) +
+                            (info?.pending?.length ?? 0)
+                        }
+                        percent={100}
+                        price={computeTaskTotals([
+                            ...(info?.ongoing ?? []),
+                            ...(info?.pending ?? []),
+                        ])}
+                        icon="eva:clock-fill"
+                        color={theme.palette.warning.main}
                     />
 
                     <TaskAnalyticsItem
@@ -59,24 +74,12 @@ export default function AnalyticsBar({ info }: any) {
                     />
 
                     <TaskAnalyticsItem
-                        title="Ongoing"
-                        total={info.ongoing.length + info.pending.length}
+                        title="Total"
+                        total={totalVehicles}
                         percent={100}
-                        price={computeTaskTotals([
-                            ...(info?.ongoing ?? []),
-                            ...(info?.pending ?? []),
-                        ])}
-                        icon="eva:clock-fill"
-                        color={theme.palette.warning.main}
-                    />
-
-                    <TaskAnalyticsItem
-                        title="Queued"
-                        total={info?.waitlist?.length ?? 0}
-                        percent={100}
-                        price={0}
-                        icon="eva:file-fill"
-                        color={theme.palette.text.secondary}
+                        price={totalTasks}
+                        icon="ic:round-receipt"
+                        color={theme.palette.info.main}
                     />
                 </Stack>
             </Scrollbar>

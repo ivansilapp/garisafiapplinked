@@ -16,12 +16,11 @@ import FormProvider, {
     RHFSelect,
     RHFSwitch,
     RHFTextField,
-    RHFUploadAvatar,
 } from '../../../../components/hook-form'
 import { useSnackbar } from '../../../../components/snackbar'
 
-function VehicleForm({
-    vehicle,
+function AccountForm({
+    account,
     onSubmit,
     loading,
     handleClose,
@@ -30,26 +29,24 @@ function VehicleForm({
 }: any) {
     const { enqueueSnackbar } = useSnackbar()
 
-    const NewVehicleSchema = Yup.object().shape({
-        registration: Yup.string().required('Vehicle registration required'),
-        clientId: Yup.string(),
-        bodyId: Yup.string().required('Body type required'),
-        model: Yup.string(),
+    const NewAccountSchema = Yup.object().shape({
+        name: Yup.string().required('Account name required'),
+        balance: Yup.number(),
+        status: Yup.string().required('status required'),
     })
 
     const defaultValues = useMemo(
         () => ({
-            registration: vehicle?.registration || '',
-            clientId: vehicle?.clientId || '',
-            bodyId: vehicle?.bodyId || '',
-            model: vehicle?.model || '',
+            name: account?.name || '',
+            balance: account?.balance || 0,
+            status: account?.status || '',
         }),
-        [vehicle]
+        [account]
     )
-    const isEdit = vehicle?.id && vehicle.id !== ''
+    const isEdit = account?.id && account.id !== ''
 
     const methods = useForm({
-        resolver: yupResolver(NewVehicleSchema),
+        resolver: yupResolver(NewAccountSchema),
         defaultValues,
     })
 
@@ -71,26 +68,16 @@ function VehicleForm({
                     xs: 'repeat(1, 1fr)',
                 }}
             >
-                <RHFTextField name="registration" label="Registration" />
+                <RHFTextField name="name" label="Account name" />
 
-                <RHFTextField name="model" label="Model" />
+                <RHFTextField name="balance" label="Balance" />
 
-                <RHFSelect native name="bodyId" label="Body type">
+                <RHFSelect native name="status" label="Account status">
                     {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                     <option value="" defaultValue="" />
-                    {bodyTypes.map((type: any) => (
-                        <option key={type.id} value={type.id}>
-                            {type.name}
-                        </option>
-                    ))}
-                </RHFSelect>
-
-                <RHFSelect native name="clientId" label="Client">
-                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                    <option value="" defaultValue="" />
-                    {clients.map((client: any) => (
-                        <option key={client.id} value={client.id}>
-                            {client.name}
+                    {['active', 'inactive'].map((status: string) => (
+                        <option key={status} value={status}>
+                            {status}
                         </option>
                     ))}
                 </RHFSelect>
@@ -125,4 +112,4 @@ function VehicleForm({
     )
 }
 
-export default VehicleForm
+export default AccountForm
