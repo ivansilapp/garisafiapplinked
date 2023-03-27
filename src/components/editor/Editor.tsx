@@ -19,7 +19,7 @@ import EditorToolbar, { formats } from './EditorToolbar'
 // };
 
 export default function Editor({
-    id = 'minimal-quill',
+    id = 'garisafi-quill',
     error,
     value,
     onChange,
