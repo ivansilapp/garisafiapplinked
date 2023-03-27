@@ -4,6 +4,9 @@ import Loadable from '../../components/loaderble'
 import { ADMIN_ROLE, MANAGER_ROLE } from '../../utils/roles'
 
 export const AttendantsPage = Loadable(lazy(() => import('./AttendantsPage')))
+export const AttendantsDetail = Loadable(
+    lazy(() => import('./AttendantDetail'))
+)
 
 export const attendantsRoutes = [
     {
@@ -11,6 +14,14 @@ export const attendantsRoutes = [
         element: (
             <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
                 <AttendantsPage />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'attendants/details/:id',
+        element: (
+            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
+                <AttendantsDetail />
             </RoleBasedGuard>
         ),
     },

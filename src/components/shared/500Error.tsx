@@ -13,9 +13,9 @@ import { SeverErrorIllustration } from '../../assets/illustrations'
 export default function InternalError({ error }: { error: string }) {
     return (
         <>
-            <Helmet>
+            {/* <Helmet>
                 <title> 500 Internal Server Error | Minimal UI</title>
-            </Helmet>
+            </Helmet> */}
 
             <MotionContainer
                 style={{

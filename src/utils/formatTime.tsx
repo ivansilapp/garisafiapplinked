@@ -9,7 +9,7 @@ export function fDate(date: any, newFormat: any) {
 }
 
 export function fDateTime(date: any, newFormat: any) {
-    const fm = newFormat || 'p - dd MMM yyyy'
+    const fm = newFormat || 'p - dd MMM'
 
     return date ? format(new Date(date), fm) : ''
 }

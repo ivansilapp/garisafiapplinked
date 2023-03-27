@@ -96,6 +96,14 @@ export default function TaskTableRow({
                     </Stack>
                 </TableCell>
 
+                <TableCell align="left">{vehicle.registration}</TableCell>
+
+                <TableCell align="center">
+                    <Typography variant="subtitle2" noWrap>
+                        {row?.pigeonhole}
+                    </Typography>
+                </TableCell>
+
                 <TableCell align="left">
                     <Link style={styles} to={`/attendants/${id}`}>
                         {attendant.name}
@@ -103,7 +111,6 @@ export default function TaskTableRow({
                 </TableCell>
 
                 <TableCell align="left">{status}</TableCell>
-                <TableCell align="left">{vehicle.registration}</TableCell>
 
                 <TableCell align="left">{fCurrency(cost)}</TableCell>
 

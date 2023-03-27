@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable react/jsx-props-no-spreading */
 import * as Yup from 'yup'
 import { Box, Button, Card, Container, Stack } from '@mui/material'
@@ -11,7 +12,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { LoadingButton } from '@mui/lab'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import Iconify from '../../components/iconify'
 import { useSettingsContext } from '../../components/settings'
@@ -41,6 +42,10 @@ export default function NewTaskPage() {
     const [attendant, setAttendant] = useState<any>(null)
     // const [submitLoader, setSubmitLoader] = useState(false)
     const [vehicle, setVehicle] = useState<any>(null)
+
+    const [searchParams] = useSearchParams()
+
+    const vehicleIdParam = searchParams.get('vehicle_id')
 
     // const [loadingSave, setLoadingSave] = useState(false)
 
@@ -90,6 +95,14 @@ export default function NewTaskPage() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isEdit, currentInvoice])
+
+    useEffect(() => {
+        if (vehicleIdParam) {
+            getVehicle()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [vehicleIdParam])
+
     const fetchVehicles = async (e: any) => {
         try {
             const query = e.target.value
@@ -108,8 +121,14 @@ export default function NewTaskPage() {
         }
     }
 
-    const createTask = () => {
-        console.log(vehicle, 'vehicle')
+    async function getVehicle() {
+        const res = await axios(`${apiUrl}/vehicle/${vehicleIdParam}`)
+        if (res.status === 200) {
+            const data = await res.data
+            const v = data?.vehicle
+            setVehicles([v])
+            setVehicle(v ?? null)
+        }
     }
 
     const submitTask = async (payload: any) => {
@@ -134,20 +153,17 @@ export default function NewTaskPage() {
                 return
             }
 
-            // if (payload) {
-            //     console.log(payload, 'payload')
-            //     return
-            // }
-
             const url = `${apiUrl}/task`
             let options = {
                 ...payload,
                 vehicleId: vehicle.id,
+                carKeys: true,
             }
 
             if (attendant) {
                 options = {
                     ...options,
+                    deleteWaitlist: !!vehicleIdParam,
                     attendantId: attendant.id,
                 }
             }
@@ -165,7 +181,7 @@ export default function NewTaskPage() {
             }
         } catch (err: any) {
             const msg = err.error || err.message || 'Error creating task'
-            console.log(msg, 'msg')
+            // console.log(msg, 'msg')
             enqueueSnackbar(msg, { variant: 'error' })
         }
     }
@@ -223,18 +239,22 @@ export default function NewTaskPage() {
                                     option: any,
                                     value: any
                                 ) => option.registration === value.registration}
-                                getOptionLabel={(option) => option.registration}
+                                getOptionLabel={(option) => {
+                                    return option?.registration ?? ''
+                                }}
                                 options={vehicles}
                                 loading={vehicleLoader}
                                 onChange={(e, value) => {
                                     setVehicle(value)
-                                    // console.log(value, 'value')
                                 }}
+                                value={vehicle ?? null}
+                                inputValue={vehicle?.registration ?? ''}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
                                         label="Search vehicle"
                                         onChange={fetchVehicles}
+                                        // value={vehicle?.registration ?? ''}
                                         InputProps={{
                                             ...params.InputProps,
                                             endAdornment: (

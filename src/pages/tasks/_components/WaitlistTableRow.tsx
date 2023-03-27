@@ -84,7 +84,7 @@ export default function WaitlistTableRow({
                     <Button
                         endIcon={<Iconify icon="eva:arrow-forward-outline" />}
                         component={Link}
-                        to={PATH_DASHBOARD.tasks.new}
+                        to={PATH_DASHBOARD.tasks.newWithId(vehicleId)}
                     >
                         Create task
                     </Button>

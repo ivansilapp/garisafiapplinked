@@ -73,7 +73,7 @@ export default function AttendantTableRow({
                         <Typography variant="subtitle2" noWrap>
                             <Link
                                 style={styles}
-                                to={PATH_DASHBOARD.users.details(id)}
+                                to={PATH_DASHBOARD.attendants.details(id)}
                             >
                                 {name}
                             </Link>
@@ -104,76 +104,7 @@ export default function AttendantTableRow({
                         Delete
                     </LoadingButton>
                 </TableCell>
-
-                {/* <TableCell align="left">{email}</TableCell>
-
-                <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
-                    {role}
-                </TableCell>
-
-                <TableCell align="center">
-                    <Iconify
-                        icon={
-                            isVerified
-                                ? 'eva:checkmark-circle-fill'
-                                : 'eva:clock-outline'
-                        }
-                        sx={{
-                            width: 20,
-                            height: 20,
-                            color: 'success.main',
-                            ...(!isVerified && { color: 'warning.main' }),
-                        }}
-                    />
-                </TableCell>
-
-                <TableCell align="left">
-                    <Label
-                        variant="soft"
-                        color={(status === 'banned' && 'error') || 'success'}
-                        sx={{ textTransform: 'capitalize' }}
-                    >
-                        {status}
-                    </Label>
-                </TableCell> */}
-
-                {/* <TableCell align="right">
-                    <IconButton
-                        color={openPopover ? 'inherit' : 'default'}
-                        onClick={handleOpenPopover}
-                    >
-                        <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
-                </TableCell> */}
             </TableRow>
-
-            {/* <MenuPopover
-                open={openPopover}
-                onClose={handleClosePopover}
-                arrow="right-top"
-                sx={{ width: 140 }}
-            >
-                <MenuItem
-                    onClick={() => {
-                        handleOpenConfirm()
-                        handleClosePopover()
-                    }}
-                    sx={{ color: 'error.main' }}
-                >
-                    <Iconify icon="eva:trash-2-outline" />
-                    Delete
-                </MenuItem>
-
-                <MenuItem
-                    onClick={() => {
-                        onEditRow()
-                        handleClosePopover()
-                    }}
-                >
-                    <Iconify icon="eva:edit-fill" />
-                    Edit
-                </MenuItem>
-            </MenuPopover> */}
 
             <ConfirmDialog
                 open={openConfirm}

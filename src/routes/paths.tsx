@@ -39,6 +39,8 @@ export const PATH_DASHBOARD = {
     tasks: {
         root: path(ROOTS_DASHBOARD, 'tasks'),
         new: path(ROOTS_DASHBOARD, 'tasks/new'),
+        newWithId: (id: string | number) =>
+            path(ROOTS_DASHBOARD, `tasks/new?vehicle_id=${id}`),
         details: (id: string | number) =>
             path(ROOTS_DASHBOARD, `tasks/detail/${id}`),
         pending: path(ROOTS_DASHBOARD, 'tasks/pending'),

@@ -19,12 +19,13 @@ import { useSnackbar } from '../../../components/snackbar'
 
 const TABLE_HEAD = [
     { id: 'CreatedAt', label: 'Created at', align: 'left' },
+    { id: 'vehicle', label: 'Vehicle', align: 'left' },
+    { id: 'pigeohole', label: 'Pigeonhole', align: 'left' },
     { id: 'attendant', label: 'Attendant', align: 'left' },
     { id: 'status', label: 'Status', align: 'left' },
-    { id: 'vehicle', label: 'Vehicle', align: 'left' },
     { id: 'cost', label: 'Cost', align: 'left' },
     // { id: 'fullyPaid', label: 'Fully paid', align: 'center' },
-    { id: 'paidAmount', label: 'Paid amount', align: 'center' },
+    // { id: 'paidAmount', label: 'Paid amount', align: 'center' },
     { id: 'cancel', label: 'Cancel', align: 'right' },
     { id: '' },
 ]

@@ -96,7 +96,7 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
             const { serviceId } = vs.items[index]
             const newActiveIds = activeIds.filter((id: any) => id !== serviceId)
             setActiveIds(newActiveIds)
-            console.log(vs, 'values')
+            // console.log(vs, 'values')
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [resetField, activeIds]
