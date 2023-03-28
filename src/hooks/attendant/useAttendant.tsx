@@ -9,6 +9,8 @@ export default function useAttendant({ id }: { id: string }) {
         loading: !error && !data,
         error,
         attendant: data ? data.attendant : [],
+        commissions: data ? data.commissions : [],
+        tasks: data ? data.tasks : [],
         mutate,
     }
 }

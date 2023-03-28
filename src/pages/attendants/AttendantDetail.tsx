@@ -1,22 +1,49 @@
-import { Button, Container, Grid } from '@mui/material'
+import { Button, Container, Grid, Typography } from '@mui/material'
 import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
+import { useParams, useSearchParams } from 'react-router-dom'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import Iconify from '../../components/iconify'
 import { useSettingsContext } from '../../components/settings'
 import InternalError from '../../components/shared/500Error'
+import useAttendant from '../../hooks/attendant/useAttendant'
 import { PATH_DASHBOARD } from '../../routes/paths'
+import {
+    computeCommisionTotals,
+    computeTaskTotals,
+    computeUpaidTasks,
+} from '../../utils/common'
+import TasksTable from '../tasks/_components/TasksTable'
 import AttendantBalance from './_components/AttendantBalance'
 import AttendantsEarnings from './_components/AttendantEarnings'
 
-export const ecommerceSalesOverview = [...Array(3)].map((_, index) => ({
-    label: ['Total Profit', 'Total Income', 'Total Expenses'][index],
-    amount: 3 * 100,
-    value: 40,
-}))
+// export const ecommerceSalesOverview = [...Array(3)].map((_, index) => ({
+//     label: ['Total Revenue', 'Total Earnings'][index],
+//     amount: 3 * 100,
+//     value: 40,
+// }))
 
 function AttendantDetail() {
     const { themeStretch } = useSettingsContext()
+
+    const [searchParams] = useSearchParams()
+    const { id } = useParams<{ id: string }>()
+    const { attendant, commissions, tasks }: any = useAttendant({
+        id: id ?? '',
+    })
+
+    const attendantPerformance = [
+        {
+            label: 'Total revenue',
+            amount: computeTaskTotals(tasks ?? []),
+            value: 40,
+        },
+        {
+            label: 'Total Earnings',
+            amount: computeCommisionTotals(commissions ?? []),
+            value: 40,
+        },
+    ]
 
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -48,22 +75,43 @@ function AttendantDetail() {
                     <InternalError error="Error loading attendant details" />
                 }
             >
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={6} lg={8}>
-                        <AttendantsEarnings
-                            title="Sales Overview"
-                            data={ecommerceSalesOverview}
-                        />
-                    </Grid>
+                <Suspense fallback={<p> Loading...</p>}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                            <Typography variant="h4" gutterBottom>
+                                {attendant?.name}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <AttendantBalance
+                                title="Current Balance"
+                                currentBalance={computeCommisionTotals(
+                                    commissions
+                                )}
+                                unpaidTasks={computeUpaidTasks(tasks)}
+                            />
+                        </Grid>
 
-                    <Grid item xs={12} md={6} lg={4}>
-                        <AttendantBalance
-                            title="Current Balance"
-                            currentBalance={187650}
-                            sentAmount={25500}
-                        />
+                        <Grid item xs={12} md={6} lg={8}>
+                            <AttendantsEarnings
+                                title="Attendant performance"
+                                data={attendantPerformance}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <TasksTable
+                                data={tasks.map((task: any) => ({
+                                    ...task,
+                                    attendant,
+                                }))}
+                                handleUpdate={() => {}}
+                                mutate={() => {}}
+                                readOnly={1}
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
+                </Suspense>
             </ErrorBoundary>
         </Container>
     )

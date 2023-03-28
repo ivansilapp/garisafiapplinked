@@ -22,8 +22,7 @@ export default function Register() {
 
                 <Stack direction="row" spacing={0.5}>
                     <Typography variant="body2">
-                        {' '}
-                        Already have an account?{' '}
+                        Already have an account?
                     </Typography>
 
                     <Link

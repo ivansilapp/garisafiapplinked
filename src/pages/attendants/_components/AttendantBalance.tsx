@@ -9,12 +9,12 @@ import { fCurrency } from '../../../utils/formatNumber'
 
 export default function AttendantBalance({
     title,
-    sentAmount,
     currentBalance,
+    unpaidTasks,
     sx,
     ...other
 }: any) {
-    const totalAmount = currentBalance - sentAmount
+    const totalAmount = currentBalance + unpaidTasks
 
     return (
         <Card sx={{ p: 3, ...sx }} {...other}>
@@ -23,14 +23,16 @@ export default function AttendantBalance({
             </Typography>
 
             <Stack spacing={2}>
-                <Typography variant="h3">{fCurrency(totalAmount)}</Typography>
+                <Typography variant="h3">
+                    {fCurrency(currentBalance)}
+                </Typography>
 
                 <Stack direction="row" justifyContent="space-between">
                     <Typography
                         variant="body2"
                         sx={{ color: 'text.secondary' }}
                     >
-                        Your Current Balance
+                        Your Current commision
                     </Typography>
                     <Typography variant="body2">
                         {fCurrency(currentBalance)}
@@ -42,10 +44,10 @@ export default function AttendantBalance({
                         variant="body2"
                         sx={{ color: 'text.secondary' }}
                     >
-                        Sent Amount
+                        Unpaid tasks
                     </Typography>
                     <Typography variant="body2">
-                        - {fCurrency(sentAmount)}
+                        {fCurrency(unpaidTasks)}
                     </Typography>
                 </Stack>
 
@@ -62,12 +64,12 @@ export default function AttendantBalance({
                 </Stack>
 
                 <Stack direction="row" spacing={1.5}>
-                    <Button fullWidth variant="contained" color="warning">
+                    {/* <Button fullWidth variant="contained" color="warning">
                         Transfer
-                    </Button>
+                    </Button> */}
 
                     <Button fullWidth variant="contained">
-                        Receive
+                        Pay attendant
                     </Button>
                 </Stack>
             </Stack>

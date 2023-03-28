@@ -31,6 +31,7 @@ export default function TaskTableRow({
     row,
     selected,
     onEditRow,
+    readOnly,
     onDeleteRow,
     deleteLoader,
 }: any) {
@@ -51,9 +52,10 @@ export default function TaskTableRow({
 
     const theme = useTheme()
 
-    const paidAmount = payments.reduce((acc: any, payment: any) => {
-        return acc + payment.amount
-    }, 0)
+    const paidAmount =
+        payments?.reduce((acc: any, payment: any) => {
+            return acc + payment.amount
+        }, 0) ?? 0
 
     const handleOpenConfirm = () => {
         setOpenConfirm(true)
@@ -96,7 +98,16 @@ export default function TaskTableRow({
                     </Stack>
                 </TableCell>
 
-                <TableCell align="left">{vehicle.registration}</TableCell>
+                <TableCell align="left">
+                    <Link
+                        style={styles}
+                        to={PATH_DASHBOARD.systemData.vehilceDetails(
+                            vehicle?.id
+                        )}
+                    >
+                        {vehicle.registration}
+                    </Link>
+                </TableCell>
 
                 <TableCell align="center">
                     <Typography variant="subtitle2" noWrap>
@@ -105,16 +116,16 @@ export default function TaskTableRow({
                 </TableCell>
 
                 <TableCell align="left">
-                    <Link style={styles} to={`/attendants/${id}`}>
+                    <Link style={styles} to={`/attendants/${attendant?.id}`}>
                         {attendant.name}
                     </Link>
                 </TableCell>
 
                 <TableCell align="left">{status}</TableCell>
 
-                <TableCell align="left">{fCurrency(cost)}</TableCell>
+                <TableCell align="right">{fCurrency(cost)}</TableCell>
 
-                <TableCell align="left">{fCurrency(paidAmount)}</TableCell>
+                {/* <TableCell align="left">{fCurrency(paidAmount)}</TableCell> */}
                 {/* <TableCell align="left">
                     {fullyPaid ? 'Fully paid' : 'Not fully paid'}
                 </TableCell> */}
@@ -129,16 +140,18 @@ export default function TaskTableRow({
                     </Button>
                 </TableCell> */}
 
-                <TableCell align="right">
-                    <Button
-                        variant="outlined"
-                        color="warning"
-                        startIcon={<Iconify icon="eva:close-outline" />}
-                        onClick={() => {}}
-                    >
-                        Cancel
-                    </Button>
-                </TableCell>
+                {!readOnly ? (
+                    <TableCell align="right">
+                        <Button
+                            variant="outlined"
+                            color="warning"
+                            startIcon={<Iconify icon="eva:close-outline" />}
+                            onClick={() => {}}
+                        >
+                            Cancel
+                        </Button>
+                    </TableCell>
+                ) : null}
             </TableRow>
             <ConfirmDialog
                 open={openConfirm}

@@ -23,14 +23,14 @@ const TABLE_HEAD = [
     { id: 'pigeohole', label: 'Pigeonhole', align: 'left' },
     { id: 'attendant', label: 'Attendant', align: 'left' },
     { id: 'status', label: 'Status', align: 'left' },
-    { id: 'cost', label: 'Cost', align: 'left' },
+    { id: 'cost', label: 'Cost', align: 'right' },
     // { id: 'fullyPaid', label: 'Fully paid', align: 'center' },
     // { id: 'paidAmount', label: 'Paid amount', align: 'center' },
     { id: 'cancel', label: 'Cancel', align: 'right' },
     { id: '' },
 ]
 
-function TasksTable({ data, handleUpdate, mutate }: any) {
+function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
     const {
         dense,
         page,
@@ -159,7 +159,12 @@ function TasksTable({ data, handleUpdate, mutate }: any) {
                         <TableHeadCustom
                             order={order}
                             orderBy={orderBy}
-                            headLabel={TABLE_HEAD}
+                            headLabel={TABLE_HEAD.filter((item) => {
+                                if (readOnly) {
+                                    return item.id !== 'cancel'
+                                }
+                                return item
+                            })}
                             rowCount={tableData.length}
                             numSelected={selected.length}
                             onSort={onSort}
@@ -181,6 +186,7 @@ function TasksTable({ data, handleUpdate, mutate }: any) {
                                     <ServiceTableRow
                                         key={row.id}
                                         row={row}
+                                        readOnly={readOnly}
                                         selected={selected.includes(row.id)}
                                         onSelectRow={() => onSelectRow(row.id)}
                                         onDeleteRow={() =>
