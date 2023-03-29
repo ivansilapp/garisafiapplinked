@@ -13,7 +13,8 @@ import Header from './header'
 import NavMini from './nav/NavMini'
 import NavVertical from './nav/NavVertical'
 import NavHorizontal from './nav/NavHorizontal'
-import Page500 from '../../pages/Page500'
+// import Page500 from '../../pages/Page500'
+import InternalError from '../../components/shared/500Error'
 
 // ----------------------------------------------------------------------
 
@@ -87,7 +88,9 @@ export default function DashboardLayout() {
                 {renderNavVertical}
 
                 <Main>
-                    <ErrorBoundary fallback={<Page500 />}>
+                    <ErrorBoundary
+                        fallback={<InternalError error="Error loading page" />}
+                    >
                         <Outlet />
                     </ErrorBoundary>
                 </Main>

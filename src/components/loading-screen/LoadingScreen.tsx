@@ -41,14 +41,13 @@ export default function LoadingScreen() {
 
     const { themeLayout } = useSettingsContext()
 
-    const isDashboard =
-        isInitialized && pathname.includes('/dashboard') && isDesktop
+    const isDashboard = isInitialized && isDesktop // pathname.includes('/dashboard') &&
 
     const size =
         (themeLayout === 'mini' && NAV.W_DASHBOARD_MINI) ||
         (themeLayout === 'vertical' && NAV.W_DASHBOARD) ||
         128
-    const other = {}
+    // const other = {}
     return (
         <>
             <ProgressBar />

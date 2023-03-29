@@ -69,6 +69,7 @@ function TaskDetail() {
     const [completeLoader, setCompleteLoader] = useState(false)
     const [paymentLoader, setPaymentLoader] = useState(false)
     const [addServiceLoader, setAddServiceLoader] = useState(false)
+    const [closingLoader, setClosingLoader] = useState(false)
 
     const [account, setAccount] = useState<any>('')
     const [amount, setAmount] = useState<any>('')
@@ -287,6 +288,29 @@ function TaskDetail() {
         }
     }
 
+    const closeTask = async () => {
+        try {
+            setClosingLoader(false)
+            const response = await axios.get(`${apiUrl}/task/close/${task.id}`)
+            if (response.status === 200) {
+                task.closed = true
+                mutate()
+                enqueueSnackbar('Task closed successfully', {
+                    variant: 'success',
+                })
+            } else {
+                enqueueSnackbar('Error closing task', {
+                    variant: 'error',
+                })
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error closing task'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setClosingLoader(false)
+        }
+    }
+
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
             <CustomBreadcrumbs
@@ -322,6 +346,17 @@ function TaskDetail() {
                     <Box rowGap={3} columnGap={2} display="grid">
                         <Stack alignItems="flex-end " sx={{ mt: 3 }}>
                             <Box display="flex" columnGap={2} rowGap={2}>
+                                {task.status === 'complete' ? (
+                                    <LoadingButton
+                                        loading={closingLoader}
+                                        onClick={closeTask}
+                                        variant="contained"
+                                        disabled={task.closed}
+                                    >
+                                        Close task
+                                    </LoadingButton>
+                                ) : null}
+
                                 <Button
                                     variant="contained"
                                     color="warning"
@@ -379,7 +414,7 @@ function TaskDetail() {
                                             display="grid"
                                         >
                                             <Grid spacing={2} container>
-                                                <Grid item xs={12} sm={6}>
+                                                <Grid item xs={12} sm={4}>
                                                     <Typography variant="h5">
                                                         {fDateTime(
                                                             new Date(
@@ -389,7 +424,7 @@ function TaskDetail() {
                                                         )}
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={12} sm={6}>
+                                                <Grid item xs={12} sm={4}>
                                                     <Typography variant="h5">
                                                         <b>Total: </b>{' '}
                                                         {fCurrency(
@@ -397,22 +432,38 @@ function TaskDetail() {
                                                         )}
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={12} sm={6}>
+                                                <Grid item xs={12} sm={4}>
+                                                    <Typography variant="h5">
+                                                        <b>Pigeonhole: </b>{' '}
+                                                        {task?.pigeonhole ?? ''}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={12} sm={4}>
                                                     <Typography variant="h5">
                                                         <b>
                                                             Attendant:{' '}
                                                             {
                                                                 task?.attendant
                                                                     ?.name
-                                                            }{' '}
+                                                            }
                                                         </b>
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={12} sm={6}>
+                                                <Grid item xs={12} sm={4}>
                                                     <Typography variant="h5">
                                                         <b>
                                                             Status:{' '}
                                                             {task?.status}{' '}
+                                                        </b>
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={12} sm={4}>
+                                                    <Typography variant="h5">
+                                                        <b>
+                                                            Car Keys:{' '}
+                                                            {task?.carKeys
+                                                                ? 'Yes'
+                                                                : 'No'}
                                                         </b>
                                                     </Typography>
                                                 </Grid>

@@ -1,4 +1,4 @@
-import { Container } from '@mui/material'
+import { Container, Grid } from '@mui/material'
 import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useParams } from 'react-router-dom'
@@ -7,11 +7,21 @@ import { useSettingsContext } from '../../../components/settings'
 import InternalError from '../../../components/shared/500Error'
 import useVehicle from '../../../hooks/vehicle/useVehicle'
 import { PATH_DASHBOARD } from '../../../routes/paths'
+import TasksTable from '../../tasks/_components/TasksTable'
+import PointsWidget from '../_components/vehicle/PointsWidget'
+import VehicleDetailCard from '../_components/vehicle/VehicleDetailCard'
 
 export default function VehicleDetailPage() {
     const { id } = useParams<{ id: string }>()
     const { themeStretch } = useSettingsContext()
     const { vehicle } = useVehicle({ id: id ?? '' })
+
+    console.log('vehicle', vehicle)
+
+    const computePercentage = (value: number, total: number) => {
+        const percentage = (value / total) * 100
+        return Math.round(percentage)
+    }
 
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -35,7 +45,36 @@ export default function VehicleDetailPage() {
                 }
             >
                 <Suspense fallback={<p> Loading...</p>}>
-                    <h1>{vehicle?.registration}</h1>
+                    <Grid container spacing={4}>
+                        <Grid item xs={12} md={7}>
+                            <VehicleDetailCard vehicle={vehicle} />
+                        </Grid>
+                        <Grid item xs={12} md={5}>
+                            {/* <h1>{vehicle?.registration}</h1> */}
+
+                            <PointsWidget
+                                title="Points"
+                                total={vehicle?.points?.points ?? 0}
+                                icon="eva:email-fill"
+                                color="info"
+                                chart={{
+                                    series: computePercentage(
+                                        vehicle?.points?.points ?? 0,
+                                        9
+                                    ),
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} md={12}>
+                            <TasksTable
+                                data={vehicle?.tasks}
+                                mutate={() => {}}
+                                handleUpdate={() => {}}
+                                readOnly
+                            />
+                        </Grid>
+                    </Grid>
                 </Suspense>
             </ErrorBoundary>
         </Container>
