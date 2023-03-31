@@ -6,6 +6,7 @@ import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import Iconify from '../../components/iconify'
 import { useSettingsContext } from '../../components/settings'
 import InternalError from '../../components/shared/500Error'
+import useAccountList from '../../hooks/account/useAccountList'
 import useAttendant from '../../hooks/attendant/useAttendant'
 import { PATH_DASHBOARD } from '../../routes/paths'
 import {
@@ -28,9 +29,10 @@ function AttendantDetail() {
 
     const [searchParams] = useSearchParams()
     const { id } = useParams<{ id: string }>()
-    const { attendant, commissions, tasks }: any = useAttendant({
+    const { attendant, commissions, tasks, mutate }: any = useAttendant({
         id: id ?? '',
     })
+    const { accounts } = useAccountList()
 
     const attendantPerformance = [
         {
@@ -84,11 +86,14 @@ function AttendantDetail() {
                         </Grid>
                         <Grid item xs={12} md={6} lg={4}>
                             <AttendantBalance
+                                accounts={accounts}
                                 title="Current Balance"
                                 currentBalance={computeCommisionTotals(
                                     commissions
                                 )}
                                 unpaidTasks={computeUpaidTasks(tasks)}
+                                id={Number(id)}
+                                mutate={mutate}
                             />
                         </Grid>
 

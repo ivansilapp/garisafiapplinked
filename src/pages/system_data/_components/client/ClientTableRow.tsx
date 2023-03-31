@@ -97,6 +97,7 @@ export default function ClientTableRow({
                 <TableCell align="right">
                     <LoadingButton
                         variant="outlined"
+                        color="error"
                         startIcon={<Iconify icon="eva:trash-2-outline" />}
                         onClick={handleOpenConfirm}
                     >

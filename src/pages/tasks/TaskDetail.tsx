@@ -737,7 +737,7 @@ function TaskDetail() {
                         </DialogContent>
                     </Dialog>
 
-                    {/* Complete Modal */}
+                    {/* Complete payment */}
                     <Dialog
                         fullWidth
                         maxWidth="sm"

@@ -10,25 +10,26 @@ import {
     TableEmptyRows,
     TableHeadCustom,
     TablePaginationCustom,
-} from '../../../../components/table'
-import Scrollbar from '../../../../components/scrollbar'
-import GeneralTableToolbar from '../../../../components/shared/GeneralTableToolbar'
-import AccountsTableRow from './AccountsTableRow'
-import axios from '../../../../utils/axios'
-import { useSnackbar } from '../../../../components/snackbar'
+} from '../../../components/table'
+import Scrollbar from '../../../components/scrollbar'
+import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
+import PaymentTableRow from './PaymentTableRow'
+import axios from '../../../utils/axios'
+import { useSnackbar } from '../../../components/snackbar'
 
 const TABLE_HEAD = [
-    { id: 'name', label: 'Account name', align: 'left' },
-    { id: 'status', label: 'Status', align: 'left' },
-    { id: 'balance', label: 'Balance', align: 'left' },
-    { id: 'edit', label: 'Update', align: 'left' },
-    { id: 'delete', label: 'delete', align: 'left' },
-    { id: 'withdraw', label: 'Withdraw', align: 'left' },
-    { id: 'deposit', label: 'deposit', align: 'left' },
+    { id: 'CreatedAt', label: 'Created at', align: 'left' },
+    { id: 'incoming', label: 'Transaction type', align: 'left' },
+    { id: 'amount', label: 'Amount', align: 'left' },
+    { id: 'account', label: 'Account', align: 'left' },
+    { id: 'reference', label: 'Reference', align: 'center' },
+    // { id: 'type', label: 'Description', align: 'center' },
+    { id: 'user', label: 'user', align: 'left' },
+    { id: 'preview', label: 'preview', align: 'left' },
     { id: '' },
 ]
 
-function AccountsTable({ data, handleUpdate, mutate }: any) {
+function PaymentsTable({ data, handleUpdate, mutate }: any) {
     const {
         dense,
         page,
@@ -112,42 +113,6 @@ function AccountsTable({ data, handleUpdate, mutate }: any) {
         setFilterStatus('all')
     }
 
-    const handleDeleteRow = async (id: any) => {
-        try {
-            setDeleteLoader(true)
-            const url = `/account/${id}`
-            const response = await axios.delete(url)
-            if (!response.data) {
-                throw new Error('Error deleting account')
-            }
-            const deleteRow = tableData.filter((row: any) => row.id !== id)
-            mutate()
-            setSelected([])
-            setTableData(deleteRow)
-
-            if (page > 0) {
-                if (dataInPage.length < 2) {
-                    setPage(page - 1)
-                }
-            }
-            enqueueSnackbar('Account deleted', { variant: 'success' })
-        } catch (err: any) {
-            // console.log(err)
-            enqueueSnackbar(err.message, { variant: 'error' })
-        } finally {
-            setDeleteLoader(false)
-        }
-    }
-
-    // const handleDeposit = async ({ payload }: { payload: any }) => {
-    //     try {
-    //         cconsole.log('deposit', payload)
-    //     } catch (err: any) {
-    //         const msg = err.error || err.message || 'Something went wrong'
-    //         enqueueSnackbar(msg, { variant: 'error' })
-    //     }
-    // }
-
     return (
         <Card>
             <GeneralTableToolbar
@@ -185,19 +150,7 @@ function AccountsTable({ data, handleUpdate, mutate }: any) {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row: any) => (
-                                    <AccountsTableRow
-                                        key={row.id}
-                                        row={row}
-                                        accounts={data}
-                                        selected={selected.includes(row.id)}
-                                        onSelectRow={() => onSelectRow(row.id)}
-                                        onDeleteRow={() =>
-                                            handleDeleteRow(row.id)
-                                        }
-                                        deleteLoader={deleteLoader}
-                                        onEditRow={() => handleUpdate(row)}
-                                        mutate={mutate}
-                                    />
+                                    <PaymentTableRow key={row.id} row={row} />
                                 ))}
 
                             <TableEmptyRows
@@ -269,4 +222,4 @@ function applyFilter({
     return inputData
 }
 
-export default AccountsTable
+export default PaymentsTable

@@ -21,6 +21,10 @@ import Iconify from '../../../../components/iconify'
 import MenuPopover from '../../../../components/menu-popover'
 import ConfirmDialog from '../../../../components/confirm-dialog'
 import { PATH_DASHBOARD } from '../../../../routes/paths'
+import AccountChangeModal from './AccountChangeModal'
+import axios from '../../../../utils/axios'
+import { apiUrl } from '../../../../config-global'
+import { useSnackbar } from '../../../../components/snackbar'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
@@ -31,14 +35,21 @@ export default function AccountTableRow({
     onEditRow,
     onDeleteRow,
     deleteLoader,
+    accounts,
+    mutate,
 }: any) {
     const { id, name, balance, status }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
-    const [openPopover, setOpenPopover] = useState(null)
+    const [depositLoader, setDepositLoader] = useState(false)
+
+    const [depositModal, setDepositModal] = useState(false)
+    const [withdrawModal, setWithdrawModal] = useState(false)
 
     const theme = useTheme()
+
+    const { enqueueSnackbar } = useSnackbar()
 
     const handleOpenConfirm = () => {
         setOpenConfirm(true)
@@ -48,12 +59,51 @@ export default function AccountTableRow({
         setOpenConfirm(false)
     }
 
-    const handleOpenPopover = (event: any) => {
-        setOpenPopover(event.currentTarget)
-    }
+    const handleDeposit = async (payload: any) => {
+        try {
+            setDepositLoader(true)
+            const response = await axios.put(
+                `${apiUrl}/account/deposit`,
+                payload
+            )
 
-    const handleClosePopover = () => {
-        setOpenPopover(null)
+            if (response.status === 200) {
+                mutate()
+                enqueueSnackbar('Deposit successful', { variant: 'success' })
+                setDepositModal(false)
+            } else {
+                const { data } = response
+                throw new Error(data.error ?? 'Something went wrong')
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Something went wrong'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setDepositLoader(false)
+        }
+    }
+    const handleWithdraw = async (payload: any) => {
+        try {
+            setDepositLoader(true)
+            const response = await axios.put(
+                `${apiUrl}/account/withdraw`,
+                payload
+            )
+
+            if (response.status === 200) {
+                mutate()
+                enqueueSnackbar('Deposit successful', { variant: 'success' })
+                setWithdrawModal(false)
+            } else {
+                const { data } = response
+                throw new Error(data.error ?? 'Something went wrong')
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Something went wrong'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setDepositLoader(false)
+        }
     }
 
     const styles: any = {
@@ -83,7 +133,6 @@ export default function AccountTableRow({
 
                 <TableCell align="center">
                     <Button
-                        variant="outlined"
                         startIcon={<Iconify icon="eva:edit-fill" />}
                         onClick={onEditRow}
                     >
@@ -93,14 +142,53 @@ export default function AccountTableRow({
 
                 <TableCell align="right">
                     <LoadingButton
-                        variant="outlined"
+                        color="error"
                         startIcon={<Iconify icon="eva:trash-2-outline" />}
                         onClick={handleOpenConfirm}
                     >
                         Delete
                     </LoadingButton>
                 </TableCell>
+
+                <TableCell align="left">
+                    <Button
+                        onClick={() => setWithdrawModal(true)}
+                        variant="outlined"
+                        color="warning"
+                    >
+                        Widthdraw
+                    </Button>
+                </TableCell>
+
+                <TableCell align="left">
+                    <Button
+                        onClick={() => setDepositModal(true)}
+                        variant="outlined"
+                        color="success"
+                    >
+                        Deposit
+                    </Button>
+                </TableCell>
             </TableRow>
+
+            <AccountChangeModal
+                handleClose={() => setDepositModal(false)}
+                open={depositModal}
+                title={`Deposit to ${name}`}
+                accounts={accounts}
+                action={handleDeposit}
+                accountId={id}
+                loader={depositLoader}
+            />
+            <AccountChangeModal
+                handleClose={() => setWithdrawModal(false)}
+                open={withdrawModal}
+                title={`Withdraw to ${name}`}
+                accounts={accounts}
+                action={handleWithdraw}
+                accountId={id}
+                loader={depositLoader}
+            />
 
             <ConfirmDialog
                 open={openConfirm}

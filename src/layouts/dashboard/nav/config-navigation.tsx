@@ -37,6 +37,7 @@ const ICONS = {
     ecommerce: icon('ic_ecommerce'),
     analytics: icon('ic_analytics'),
     dashboard: icon('ic_dashboard'),
+    money: icon('ic_money'),
 }
 
 interface NavItem {
@@ -83,9 +84,14 @@ const navConfig: INav[] = [
                 icon: ICONS.file,
             },
             {
+                title: 'payments',
+                path: PATH_DASHBOARD.payments.root,
+                icon: ICONS.banking,
+            },
+            {
                 title: 'reports',
                 path: PATH_DASHBOARD.reports.root,
-                icon: ICONS.banking,
+                icon: ICONS.analytics,
             },
         ],
     },

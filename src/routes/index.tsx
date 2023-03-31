@@ -35,6 +35,7 @@ import { reportsRoutes } from '../pages/reports/reportRoutes'
 import { tasksRoutes } from '../pages/tasks/tasksRoutes'
 import { settingsRoutes } from '../pages/settings/settingsRoutes'
 import { systemDataRoutes } from '../pages/system_data/systemDataRoutes'
+import { paymentRoutes } from '../pages/payments/paymentRoutes'
 
 // ----------------------------------------------------------------------
 
@@ -107,6 +108,7 @@ export default function Router() {
                 ...reportsRoutes,
                 ...settingsRoutes,
                 ...systemDataRoutes,
+                ...paymentRoutes,
             ],
         },
         {

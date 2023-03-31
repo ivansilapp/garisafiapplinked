@@ -98,6 +98,7 @@ export default function VehicleTableRow({
                 <TableCell align="right">
                     <LoadingButton
                         variant="outlined"
+                        color="error"
                         startIcon={<Iconify icon="eva:trash-2-outline" />}
                         onClick={handleOpenConfirm}
                     >

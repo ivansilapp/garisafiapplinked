@@ -83,7 +83,6 @@ export default function BodyTypeTableRow({
 
                 <TableCell align="center">
                     <Button
-                        variant="outlined"
                         startIcon={<Iconify icon="eva:edit-fill" />}
                         onClick={onEditRow}
                     >
@@ -93,7 +92,7 @@ export default function BodyTypeTableRow({
 
                 <TableCell align="right">
                     <LoadingButton
-                        variant="outlined"
+                        color="error"
                         startIcon={<Iconify icon="eva:trash-2-outline" />}
                         onClick={handleOpenConfirm}
                     >
