@@ -576,6 +576,12 @@ function TaskDetail() {
                                                     }
                                                     color="info"
                                                     variant="outlined"
+                                                    disabled={
+                                                        task.status ===
+                                                            'cancelled' ||
+                                                        task.status ===
+                                                            'complete'
+                                                    }
                                                 >
                                                     Add service
                                                 </Button>

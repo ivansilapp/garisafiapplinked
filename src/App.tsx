@@ -33,8 +33,8 @@ import { HelmetProvider } from 'react-helmet-async'
 // import { Provider as ReduxProvider } from 'react-redux'
 // import { PersistGate } from 'redux-persist/lib/integration/react'
 // @mui
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-// import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 // redux
 // import { store, persistor } from './redux/store'
 // routes
@@ -64,24 +64,26 @@ function App() {
     return (
         <AuthProvider>
             <HelmetProvider>
-                <SettingsProvider>
-                    <BrowserRouter>
-                        <ScrollToTop />
-                        <MotionLazyContainer>
-                            <ThemeProvider>
-                                <ThemeSettings>
-                                    <SWRConfig value={{ fetcher }}>
-                                        <SnackbarProvider>
-                                            <StyledChart />
-                                            <Router />
-                                        </SnackbarProvider>
-                                    </SWRConfig>
-                                    {/* <ThemeLocalization></ThemeLocalization> */}
-                                </ThemeSettings>
-                            </ThemeProvider>
-                        </MotionLazyContainer>
-                    </BrowserRouter>
-                </SettingsProvider>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <SettingsProvider>
+                        <BrowserRouter>
+                            <ScrollToTop />
+                            <MotionLazyContainer>
+                                <ThemeProvider>
+                                    <ThemeSettings>
+                                        <SWRConfig value={{ fetcher }}>
+                                            <SnackbarProvider>
+                                                <StyledChart />
+                                                <Router />
+                                            </SnackbarProvider>
+                                        </SWRConfig>
+                                        {/* <ThemeLocalization></ThemeLocalization> */}
+                                    </ThemeSettings>
+                                </ThemeProvider>
+                            </MotionLazyContainer>
+                        </BrowserRouter>
+                    </SettingsProvider>
+                </LocalizationProvider>
             </HelmetProvider>
         </AuthProvider>
     )

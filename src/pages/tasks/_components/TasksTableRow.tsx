@@ -116,7 +116,10 @@ export default function TaskTableRow({
                 </TableCell>
 
                 <TableCell align="left">
-                    <Link style={styles} to={`/attendants/${attendant?.id}`}>
+                    <Link
+                        style={styles}
+                        to={PATH_DASHBOARD.attendants.details(attendant?.id)}
+                    >
                         {attendant.name}
                     </Link>
                 </TableCell>

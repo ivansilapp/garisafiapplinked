@@ -16,9 +16,9 @@ import {
 import { Link } from 'react-router-dom'
 import { useTheme } from '@mui/system'
 import LoadingButton from '@mui/lab/LoadingButton'
-import Label from '../../../../components/label'
+// import Label from '../../../../components/label'
 import Iconify from '../../../../components/iconify'
-import MenuPopover from '../../../../components/menu-popover'
+// import MenuPopover from '../../../../components/menu-popover'
 import ConfirmDialog from '../../../../components/confirm-dialog'
 import { PATH_DASHBOARD } from '../../../../routes/paths'
 // import LoadingButton from '@mui/lab/LoadingButton'
@@ -36,8 +36,6 @@ export default function PricelistTableRow({
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
-    const [openPopover, setOpenPopover] = useState(null)
-
     const theme = useTheme()
 
     const handleOpenConfirm = () => {
@@ -48,14 +46,6 @@ export default function PricelistTableRow({
         setOpenConfirm(false)
     }
 
-    const handleOpenPopover = (event: any) => {
-        setOpenPopover(event.currentTarget)
-    }
-
-    const handleClosePopover = () => {
-        setOpenPopover(null)
-    }
-
     const styles: any = {
         color: theme.palette.mode === 'dark' ? 'white' : 'black',
         textDecoration: 'none',
@@ -64,10 +54,6 @@ export default function PricelistTableRow({
     return (
         <>
             <TableRow hover selected={selected}>
-                {/* <TableCell padding="checkbox">
-                    <Checkbox checked={selected} onClick={onSelectRow} />
-                </TableCell> */}
-
                 <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Typography variant="subtitle2" noWrap>
@@ -103,76 +89,7 @@ export default function PricelistTableRow({
                         Delete
                     </LoadingButton>
                 </TableCell>
-
-                {/* <TableCell align="left">{email}</TableCell>
-
-                <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
-                    {role}
-                </TableCell>
-
-                <TableCell align="center">
-                    <Iconify
-                        icon={
-                            isVerified
-                                ? 'eva:checkmark-circle-fill'
-                                : 'eva:clock-outline'
-                        }
-                        sx={{
-                            width: 20,
-                            height: 20,
-                            color: 'success.main',
-                            ...(!isVerified && { color: 'warning.main' }),
-                        }}
-                    />
-                </TableCell>
-
-                <TableCell align="left">
-                    <Label
-                        variant="soft"
-                        color={(status === 'banned' && 'error') || 'success'}
-                        sx={{ textTransform: 'capitalize' }}
-                    >
-                        {status}
-                    </Label>
-                </TableCell> */}
-
-                {/* <TableCell align="right">
-                    <IconButton
-                        color={openPopover ? 'inherit' : 'default'}
-                        onClick={handleOpenPopover}
-                    >
-                        <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
-                </TableCell> */}
             </TableRow>
-
-            {/* <MenuPopover
-                open={openPopover}
-                onClose={handleClosePopover}
-                arrow="right-top"
-                sx={{ width: 140 }}
-            >
-                <MenuItem
-                    onClick={() => {
-                        handleOpenConfirm()
-                        handleClosePopover()
-                    }}
-                    sx={{ color: 'error.main' }}
-                >
-                    <Iconify icon="eva:trash-2-outline" />
-                    Delete
-                </MenuItem>
-
-                <MenuItem
-                    onClick={() => {
-                        onEditRow()
-                        handleClosePopover()
-                    }}
-                >
-                    <Iconify icon="eva:edit-fill" />
-                    Edit
-                </MenuItem>
-            </MenuPopover> */}
 
             <ConfirmDialog
                 open={openConfirm}

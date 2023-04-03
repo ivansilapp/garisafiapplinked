@@ -31,6 +31,7 @@ export default function AttendantBalance({
     currentBalance,
     unpaidTasks,
     accounts,
+    tips,
     id,
     mutate,
     sx,
@@ -43,7 +44,13 @@ export default function AttendantBalance({
     const [paymentLoader, setPaymentLoader] = useState(false)
     const [reference, setReference] = useState('')
 
+    const [comissionPayment, setComissionPayment] = useState(false)
+
     const { enqueueSnackbar } = useSnackbar()
+
+    const tipsTotal = tips.reduce((acc: any, cur: any) => {
+        return acc + cur.amount
+    }, 0)
 
     const handleMakePayment = async () => {
         try {
@@ -66,10 +73,10 @@ export default function AttendantBalance({
             }
 
             //  make payment request
-            const response = await axios.post(
-                `${apiUrl}/commission/pay`,
-                payload
-            )
+            const url = comissionPayment
+                ? 'commission/pay'
+                : 'commission/pay-tips'
+            const response = await axios.post(`${apiUrl}/${url}`, payload)
 
             if (response.status === 200) {
                 mutate()
@@ -96,7 +103,7 @@ export default function AttendantBalance({
 
             <Stack spacing={2}>
                 <Typography variant="h3">
-                    {fCurrency(currentBalance)}
+                    {fCurrency(currentBalance + tipsTotal)}
                 </Typography>
 
                 <Stack direction="row" justifyContent="space-between">
@@ -104,7 +111,7 @@ export default function AttendantBalance({
                         variant="body2"
                         sx={{ color: 'text.secondary' }}
                     >
-                        Your Current commision
+                        Current commision
                     </Typography>
                     <Typography variant="body2">
                         {fCurrency(currentBalance)}
@@ -116,10 +123,22 @@ export default function AttendantBalance({
                         variant="body2"
                         sx={{ color: 'text.secondary' }}
                     >
-                        Revenue by attendant
+                        Total tips
                     </Typography>
                     <Typography variant="subtitle1">
-                        {fCurrency(unpaidTasks)}
+                        {fCurrency(tipsTotal)}
+                    </Typography>
+                </Stack>
+
+                <Stack direction="row" justifyContent="space-between">
+                    <Typography
+                        variant="body2"
+                        sx={{ color: 'text.secondary' }}
+                    >
+                        Attendant commission
+                    </Typography>
+                    <Typography variant="subtitle1">
+                        {fCurrency(tipsTotal + currentBalance)}
                     </Typography>
                 </Stack>
 
@@ -129,11 +148,26 @@ export default function AttendantBalance({
                     </Button> */}
 
                     <Button
+                        color="info"
                         fullWidth
                         variant="contained"
-                        onClick={() => setPaymentModal(true)}
+                        onClick={() => {
+                            setComissionPayment(false)
+                            setPaymentModal(true)
+                        }}
                     >
-                        Pay attendant
+                        Pay tips
+                    </Button>
+
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        onClick={() => {
+                            setComissionPayment(true)
+                            setPaymentModal(true)
+                        }}
+                    >
+                        Pay commission
                     </Button>
                 </Stack>
             </Stack>
@@ -146,7 +180,9 @@ export default function AttendantBalance({
                     setAmount('')
                 }}
             >
-                <DialogTitle>Make payment</DialogTitle>
+                <DialogTitle>
+                    {comissionPayment ? 'Pay commision' : 'Pay tips'}
+                </DialogTitle>
                 <DialogContent>
                     <Box sx={{ p: 2 }} gap={2} display="grid">
                         <FormControl fullWidth>
