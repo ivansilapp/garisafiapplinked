@@ -1,7 +1,17 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable react/jsx-props-no-spreading */
 import * as Yup from 'yup'
-import { Box, Button, Card, Container, Stack } from '@mui/material'
+import {
+    Box,
+    Button,
+    Card,
+    Container,
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    Stack,
+} from '@mui/material'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 
@@ -39,7 +49,7 @@ export default function NewTaskPage() {
     const [open, setOpen] = useState(false)
     const [vehicleLoader, setVehicleLoader] = useState(false)
     const [vehicles, setVehicles] = useState<any>([])
-    const [attendant, setAttendant] = useState<any>(null)
+    const [attendants, setAttendants] = useState<any>([])
     // const [submitLoader, setSubmitLoader] = useState(false)
     const [vehicle, setVehicle] = useState<any>(null)
 
@@ -133,7 +143,7 @@ export default function NewTaskPage() {
 
     const submitTask = async (payload: any) => {
         try {
-            if (!attendant) {
+            if (attendants.length <= 0) {
                 enqueueSnackbar('Please select an attendant', {
                     variant: 'error',
                 })
@@ -160,11 +170,11 @@ export default function NewTaskPage() {
                 carKeys: true,
             }
 
-            if (attendant) {
+            if (attendants.length > 0) {
                 options = {
                     ...options,
                     deleteWaitlist: !!vehicleIdParam,
-                    attendantId: attendant.id,
+                    attendants: attendants.map((a: any) => a.id),
                 }
             }
 
@@ -184,6 +194,21 @@ export default function NewTaskPage() {
             // console.log(msg, 'msg')
             enqueueSnackbar(msg, { variant: 'error' })
         }
+    }
+
+    const addAttendant = (value: any) => {
+        if (!value) {
+            return
+        }
+
+        const attendantIds = attendants.map((a: any) => a.id)
+        if (attendantIds.includes(value.id)) {
+            enqueueSnackbar('Attendant already added', { variant: 'warning' })
+            return
+        }
+
+        setAttendants((prev: any) => [...prev, value])
+        enqueueSnackbar('Attendant added', { variant: 'success' })
     }
 
     return (
@@ -276,9 +301,57 @@ export default function NewTaskPage() {
                                 )}
                             />
                             <AttendantAutocomplete
-                                setAttendant={setAttendant}
+                                setAttendant={addAttendant}
+                                reset
                             />
                         </Box>
+
+                        <Stack
+                            sx={{ width: '100%', py: 3 }}
+                            alignContent="flex-end"
+                            justifyContent="end"
+                            alignItems={{ xs: 'flex-end', md: 'flex-end' }}
+                        >
+                            <List dense>
+                                {attendants.map((attendant: any) => {
+                                    if (!attendant) return null
+                                    return (
+                                        <ListItem
+                                            key={attendant.id}
+                                            secondaryAction={
+                                                <IconButton
+                                                    edge="end"
+                                                    color="warning"
+                                                    aria-label="delete"
+                                                    onClick={() => {
+                                                        setAttendants(
+                                                            attendants.filter(
+                                                                (a: any) =>
+                                                                    a.id !==
+                                                                    attendant.id
+                                                            )
+                                                        )
+                                                        enqueueSnackbar(
+                                                            'Attendant removed',
+                                                            {
+                                                                variant:
+                                                                    'warning',
+                                                            }
+                                                        )
+                                                    }}
+                                                >
+                                                    <Iconify icon="eva:trash-fill" />
+                                                </IconButton>
+                                            }
+                                        >
+                                            <ListItemText
+                                                primary={attendant.name}
+                                            />
+                                        </ListItem>
+                                    )
+                                })}
+                            </List>
+                        </Stack>
 
                         {/* <Stack
                             sx={{ mt: 3 }}

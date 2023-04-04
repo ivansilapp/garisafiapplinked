@@ -21,8 +21,9 @@ const TABLE_HEAD = [
     { id: 'name', label: 'Product name', align: 'left' },
     { id: 'price', label: 'price', align: 'left' },
     { id: 'inStock', label: 'Availability', align: 'left' },
-    { id: 'update', label: 'Update', align: 'center' },
-    { id: 'delete', label: 'delete', align: 'right' },
+    { id: 'update', label: 'Update', align: 'left' },
+    { id: 'delete', label: 'delete', align: 'left' },
+    { id: 'sell', label: 'sell', align: 'left' },
     { id: '' },
 ]
 

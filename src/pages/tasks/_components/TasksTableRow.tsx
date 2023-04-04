@@ -120,7 +120,7 @@ export default function TaskTableRow({
                         style={styles}
                         to={PATH_DASHBOARD.attendants.details(attendant?.id)}
                     >
-                        {attendant.name}
+                        {attendant?.name}
                     </Link>
                 </TableCell>
 

@@ -86,7 +86,7 @@ export default function ProductTableRow({
                     {inStock ? 'In Stock' : 'Out of stock'}
                 </TableCell>
 
-                <TableCell align="center">
+                <TableCell align="left">
                     <Button
                         variant="outlined"
                         startIcon={<Iconify icon="eva:edit-fill" />}
@@ -96,14 +96,26 @@ export default function ProductTableRow({
                     </Button>
                 </TableCell>
 
-                <TableCell align="right">
+                <TableCell align="left">
                     <LoadingButton
+                        color="error"
                         variant="outlined"
                         startIcon={<Iconify icon="eva:trash-2-outline" />}
                         onClick={handleOpenConfirm}
                     >
                         Delete
                     </LoadingButton>
+                </TableCell>
+
+                <TableCell align="left">
+                    <Button
+                        color="info"
+                        variant="outlined"
+                        startIcon={<Iconify icon="eva:shopping-bag-fill" />}
+                        onClick={() => {}}
+                    >
+                        Sell
+                    </Button>
                 </TableCell>
 
                 {/* <TableCell align="left">{email}</TableCell>

@@ -63,6 +63,7 @@ function TaskDetail() {
     const [completeModal, setCompleteModal] = useState(false)
     const [paymentModal, setPaymentModal] = useState(false)
     const [addServiceModal, setAddServiceModal] = useState(false)
+    const [addAttendantModal, setAddAttendantModal] = useState(false)
 
     const [cancelLoader, setCancelLoader] = useState(false)
     const [reassignLoader, setReassignLoader] = useState(false)
@@ -83,6 +84,11 @@ function TaskDetail() {
 
     const [removeServiceId, setRemoveServiceId] = useState<any>(null)
 
+    const [confirmRemoveAttendantModal, setConfirmRemoveAttendantModal] =
+        useState(false)
+
+    const [removeAttendantId, setRemoveAttendantId] = useState<any>(null)
+
     const { enqueueSnackbar } = useSnackbar()
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
@@ -91,6 +97,7 @@ function TaskDetail() {
     const { services } = useServiceList()
     const { prices } = usePrices()
 
+    console.log(task, 'task')
     const handleReassign = async () => {
         try {
             if (!attendant) {
@@ -121,6 +128,45 @@ function TaskDetail() {
         } catch (err: any) {
             const msg = err.error || err.message || 'Error reassigning task'
             console.log(msg)
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setReassignLoader(false)
+        }
+    }
+    const handleAddAttendant = async () => {
+        try {
+            if (!attendant) {
+                enqueueSnackbar('Please select an attendant', {
+                    variant: 'error',
+                })
+                return
+            }
+            const attendantIds = task.attendants.map(
+                (taskAttendant: any) => taskAttendant.attendant.id
+            )
+            if (attendantIds.includes(attendant.id)) {
+                enqueueSnackbar('Attendant already assigned to this task', {
+                    variant: 'error',
+                })
+                return
+            }
+            setReassignLoader(true)
+            const response = await axios.put(`/task/attendant/add`, {
+                attendantId: attendant.id,
+                taskId: task.id,
+            })
+
+            // const { data } = response
+            if (response.status === 200) {
+                mutate()
+                enqueueSnackbar('Attendant added successfully', {
+                    variant: 'success',
+                })
+                setAddAttendantModal(false)
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error reassigning task'
+            // console.log(msg)
             enqueueSnackbar(msg, { variant: 'error' })
         } finally {
             setReassignLoader(false)
@@ -287,6 +333,35 @@ function TaskDetail() {
             setServiceDeleteLoader(false)
         }
     }
+    const handleRemoveAttendant = async () => {
+        try {
+            const attendantId = removeAttendantId
+            if (attendantId === 0) {
+                enqueueSnackbar('Failed to remove attendant', {})
+                return
+            }
+            setServiceDeleteLoader(true)
+            const response = await axios.put(
+                `${apiUrl}/task/attendant/remove`,
+                {
+                    attendantId: Number(attendantId),
+                    taskId: Number(id),
+                }
+            )
+            if (response.status === 200) {
+                mutate()
+                enqueueSnackbar('Attendant removed successfully', {
+                    variant: 'success',
+                })
+                setConfirmRemoveAttendantModal(false)
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error removing attendant'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setServiceDeleteLoader(false)
+        }
+    }
 
     const closeTask = async () => {
         try {
@@ -368,7 +443,7 @@ function TaskDetail() {
                                 >
                                     Cancel
                                 </Button>
-                                <Button
+                                {/* <Button
                                     variant="contained"
                                     color="secondary"
                                     onClick={() => setReassignModal(true)}
@@ -378,7 +453,7 @@ function TaskDetail() {
                                     }
                                 >
                                     Re Assign
-                                </Button>
+                                </Button> */}
                                 <Button
                                     variant="outlined"
                                     onClick={() => setCompleteModal(true)}
@@ -473,58 +548,6 @@ function TaskDetail() {
                                 </Card>
                             </Grid>
 
-                            {/* <Grid item xs={12} sm={6}>
-                                <Card>
-                                    <CardContent>
-                                        <Box
-                                            rowGap={3}
-                                            columnGap={2}
-                                            display="grid"
-                                        >
-                                            <Grid spacing={2} container>
-                                                <Grid item xs={12} sm={6}>
-                                                    <Typography variant="h5">
-                                                        {fDateTime(
-                                                            new Date(
-                                                                task.CreatedAt
-                                                            ),
-                                                            null
-                                                        )}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={12} sm={6}>
-                                                    <Typography variant="h5">
-                                                        <b>Total: </b>{' '}
-                                                        {fCurrency(
-                                                            task?.cost ?? 0
-                                                        )}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={12} sm={6}>
-                                                    <Typography variant="h5">
-                                                        <b>
-                                                            Attendant:{' '}
-                                                            {
-                                                                task?.attendant
-                                                                    ?.name
-                                                            }{' '}
-                                                        </b>
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={12} sm={6}>
-                                                    <Typography variant="h5">
-                                                        <b>
-                                                            Status:{' '}
-                                                            {task?.status}{' '}
-                                                        </b>
-                                                    </Typography>
-                                                </Grid>
-                                            </Grid>
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-                            </Grid> */}
-
                             <Grid item xs={12} sm={6}>
                                 <TaskPaymentCard
                                     payments={task.payments}
@@ -618,6 +641,79 @@ function TaskDetail() {
                                                     </ListItem>
                                                 )
                                             })}
+                                        </List>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Card>
+                                    <CardContent>
+                                        <Box
+                                            display="flex"
+                                            justifyContent="space-between"
+                                        >
+                                            <Typography variant="h4">
+                                                Attendants
+                                            </Typography>
+
+                                            <Box>
+                                                <Button
+                                                    onClick={() =>
+                                                        setAddAttendantModal(
+                                                            true
+                                                        )
+                                                    }
+                                                    color="primary"
+                                                    variant="outlined"
+                                                    disabled={
+                                                        task.status ===
+                                                            'cancelled' ||
+                                                        task.status ===
+                                                            'complete'
+                                                    }
+                                                >
+                                                    Add attendant
+                                                </Button>
+                                            </Box>
+                                        </Box>
+                                        <List>
+                                            {task?.attendants?.map(
+                                                (taskAttendant: any) => {
+                                                    return (
+                                                        <ListItem
+                                                            key={
+                                                                taskAttendant.id
+                                                            }
+                                                            secondaryAction={
+                                                                <IconButton
+                                                                    edge="end"
+                                                                    aria-label="delete"
+                                                                    onClick={() => {
+                                                                        setRemoveAttendantId(
+                                                                            taskAttendant
+                                                                                .attendant
+                                                                                .id
+                                                                        )
+                                                                        setConfirmRemoveAttendantModal(
+                                                                            true
+                                                                        )
+                                                                    }}
+                                                                >
+                                                                    <Iconify icon="eva:trash-fill" />{' '}
+                                                                </IconButton>
+                                                            }
+                                                        >
+                                                            <ListItemText
+                                                                primary={
+                                                                    taskAttendant
+                                                                        .attendant
+                                                                        .name
+                                                                }
+                                                            />
+                                                        </ListItem>
+                                                    )
+                                                }
+                                            )}
                                         </List>
                                     </CardContent>
                                 </Card>
@@ -912,6 +1008,54 @@ function TaskDetail() {
                             </Box>
                         </DialogContent>
                     </Dialog>
+
+                    {/* Add attendant  modal */}
+                    <Dialog
+                        fullWidth
+                        maxWidth="sm"
+                        open={addAttendantModal}
+                        onClose={() => {
+                            setAddAttendantModal(false)
+                        }}
+                    >
+                        <DialogTitle>Add attendant</DialogTitle>
+                        <DialogContent>
+                            <Box sx={{ p: 2 }} gap={2} display="grid">
+                                <AttendantAutocomplete
+                                    setAttendant={setAttendant}
+                                    reset
+                                />
+
+                                <Stack
+                                    display="flex"
+                                    alignItems="flex-end"
+                                    gap={2}
+                                    sx={{ my: 3 }}
+                                >
+                                    <Box display="flex" gap={2}>
+                                        <Button
+                                            color="warning"
+                                            variant="contained"
+                                            onClick={() =>
+                                                setAddAttendantModal(false)
+                                            }
+                                        >
+                                            Cancel
+                                        </Button>
+
+                                        <LoadingButton
+                                            loading={reassignLoader}
+                                            variant="contained"
+                                            onClick={handleAddAttendant}
+                                        >
+                                            Add attendant
+                                        </LoadingButton>
+                                    </Box>
+                                </Stack>
+                            </Box>
+                        </DialogContent>
+                    </Dialog>
+
                     <ConfirmDialog
                         open={confirmRemoveServiceModal}
                         onClose={() => {
@@ -925,6 +1069,25 @@ function TaskDetail() {
                                 variant="contained"
                                 color="error"
                                 onClick={handleRemoveService}
+                                loading={serviceDeleteLoader}
+                            >
+                                Remove
+                            </LoadingButton>
+                        }
+                    />
+                    <ConfirmDialog
+                        open={confirmRemoveAttendantModal}
+                        onClose={() => {
+                            setConfirmRemoveAttendantModal(false)
+                            setRemoveAttendantId(0)
+                        }}
+                        title="Remove attendant"
+                        content="Are you sure want to remove attendant?"
+                        action={
+                            <LoadingButton
+                                variant="contained"
+                                color="error"
+                                onClick={handleRemoveAttendant}
                                 loading={serviceDeleteLoader}
                             >
                                 Remove

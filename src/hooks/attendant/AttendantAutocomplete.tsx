@@ -6,7 +6,7 @@ import { useSnackbar } from '../../components/snackbar'
 import { apiUrl } from '../../config-global'
 import axios from '../../utils/axios'
 
-export default function AttendantAutocomplete({ setAttendant }: any) {
+export default function AttendantAutocomplete({ setAttendant, reset }: any) {
     const url = `${apiUrl}/attendant/search/`
 
     const [open, setOpen] = useState(false)
@@ -16,7 +16,10 @@ export default function AttendantAutocomplete({ setAttendant }: any) {
     const { enqueueSnackbar } = useSnackbar()
 
     const handleChange = (val: any) => {
-        setAttendant(val)
+        setAttendant(structuredClone(val))
+        if (reset) {
+            setAttendants([])
+        }
     }
 
     const fetchAttendants = async (e: any) => {
@@ -43,6 +46,7 @@ export default function AttendantAutocomplete({ setAttendant }: any) {
     return (
         <Autocomplete
             id="attendant-autocomplete"
+            clearOnEscape
             // sx={{ width: 300 }}
             open={open}
             onOpen={() => {
