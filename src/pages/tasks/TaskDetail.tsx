@@ -49,6 +49,7 @@ import { PATH_DASHBOARD } from '../../routes/paths'
 import axios from '../../utils/axios'
 import { fCurrency } from '../../utils/formatNumber'
 import { fDateTime } from '../../utils/formatTime'
+import ProductSaleModal from './_components/ProductSaleModal'
 import TaskPaymentCard from './_components/TaskPayment'
 import VehicleDetailCard from './_components/VehicleDetail'
 
@@ -64,6 +65,7 @@ function TaskDetail() {
     const [paymentModal, setPaymentModal] = useState(false)
     const [addServiceModal, setAddServiceModal] = useState(false)
     const [addAttendantModal, setAddAttendantModal] = useState(false)
+    const [saleModal, setSaleModal] = useState(false)
 
     const [cancelLoader, setCancelLoader] = useState(false)
     const [reassignLoader, setReassignLoader] = useState(false)
@@ -71,20 +73,27 @@ function TaskDetail() {
     const [paymentLoader, setPaymentLoader] = useState(false)
     const [addServiceLoader, setAddServiceLoader] = useState(false)
     const [closingLoader, setClosingLoader] = useState(false)
+    const [saleLoader, setSaleLoader] = useState(false)
 
+    const [product, setProduct] = useState<any>(null)
+    const [quantity, setQuantity] = useState<any>(1)
     const [account, setAccount] = useState<any>('')
     const [amount, setAmount] = useState<any>('')
     const [reference, setReference] = useState<any>('')
     const [activeIds, setActiveIds] = useState<any>([])
     const [activeSevice, setActiveService] = useState<any>('')
     const [serviceDeleteLoader, setServiceDeleteLoader] = useState(false)
+    const [productDeleteLoader, setProductDeleteLoader] = useState(false)
 
     const [confirmRemoveServiceModal, setConfirmRemoveServiceModal] =
         useState(false)
 
     const [removeServiceId, setRemoveServiceId] = useState<any>(null)
+    const [removeProductId, setRemoveProductId] = useState<any>(null)
 
     const [confirmRemoveAttendantModal, setConfirmRemoveAttendantModal] =
+        useState(false)
+    const [confirmRemoveProductModal, setConfirmRemoveProductModal] =
         useState(false)
 
     const [removeAttendantId, setRemoveAttendantId] = useState<any>(null)
@@ -97,7 +106,6 @@ function TaskDetail() {
     const { services } = useServiceList()
     const { prices } = usePrices()
 
-    console.log(task, 'task')
     const handleReassign = async () => {
         try {
             if (!attendant) {
@@ -386,6 +394,122 @@ function TaskDetail() {
         }
     }
 
+    const handleSale = async () => {
+        /*
+            Amount       uint                 `json:"amount"`
+            Description  string               `json:"description" `
+            TaskId       uint                 `json:"taskId"`
+            SaleProducts []saleProductPayload `json:"saleProducts" binding:"required"`
+            VehicleId    uint                 `json:"vehicleId"`
+        */
+        // check if quantity is a valid number
+
+        if (isNaN(quantity) || Number(quantity) === 0) {
+            enqueueSnackbar('Please enter a valid quantity', {
+                variant: 'error',
+            })
+            return
+        }
+        try {
+            setSaleLoader(true)
+            if (task.sales.length > 0) {
+                // add product to sale
+                const saleId = task.sales[0].id
+
+                const payload = {
+                    saleId,
+                    quantity: Number(quantity) ?? 0,
+                    productId: product.id,
+                }
+                const url = `${apiUrl}/sales/add-product`
+                const response = await axios.put(url, payload)
+
+                if (response.status === 200) {
+                    mutate()
+                    enqueueSnackbar('Product added to sale successfully', {
+                        variant: 'success',
+                    })
+                    setSaleModal(false)
+                } else {
+                    const { data } = response
+                    throw new Error(data.error)
+                }
+            } else {
+                // create sale
+                const url = `${apiUrl}/sales`
+                const payload = {
+                    taskId: task.id,
+
+                    vehicleId: task.vehicle.id,
+                    saleProducts: [
+                        {
+                            productId: product.id,
+                            quantity: Number(quantity) ?? 0,
+                            amount: product.price * Number(quantity) ?? 0,
+                        },
+                    ],
+                }
+
+                const response = await axios.post(url, payload)
+                if (response.status === 200) {
+                    mutate()
+                    enqueueSnackbar('Product added to sale successfully', {
+                        variant: 'success',
+                    })
+                    setSaleModal(false)
+                } else {
+                    const { data } = response
+                    throw new Error(data.error)
+                }
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error creating sale'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setSaleLoader(false)
+        }
+    }
+
+    const handleRemoveSaleProduct = async () => {
+        try {
+            setProductDeleteLoader(true)
+            const url = `${apiUrl}/sales/remove-product`
+            const sale = task?.sales[0]
+
+            if (!sale) {
+                throw new Error('Invalid sale detail')
+            }
+
+            if (removeProductId === 0) {
+                throw new Error('Invalid product detail')
+            }
+
+            const response = await axios.put(url, {
+                saleId: sale.id,
+                productId: removeProductId,
+            })
+
+            if (response.status === 200) {
+                mutate()
+                enqueueSnackbar('Product removed from sale', {
+                    variant: 'success',
+                })
+                setConfirmRemoveProductModal(false)
+            } else {
+                const { data } = response
+                throw new Error(data.error ?? 'Error removing product')
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error removing product'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setProductDeleteLoader(false)
+        }
+    }
+
+    const salesCost = task?.sales[0] ? task.sales[0].amount : 0
+    const serviceCost = task?.cost ?? 0
+
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
             <CustomBreadcrumbs
@@ -442,6 +566,17 @@ function TaskDetail() {
                                     }
                                 >
                                     Cancel
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => setSaleModal(true)}
+                                    disabled={
+                                        task.status === 'cancelled' ||
+                                        task.status === 'complete'
+                                    }
+                                >
+                                    Add product
                                 </Button>
                                 {/* <Button
                                     variant="contained"
@@ -501,29 +636,11 @@ function TaskDetail() {
                                                 </Grid>
                                                 <Grid item xs={12} sm={4}>
                                                     <Typography variant="h5">
-                                                        <b>Total: </b>{' '}
-                                                        {fCurrency(
-                                                            task?.cost ?? 0
-                                                        )}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={12} sm={4}>
-                                                    <Typography variant="h5">
                                                         <b>Pigeonhole: </b>{' '}
                                                         {task?.pigeonhole ?? ''}
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={12} sm={4}>
-                                                    <Typography variant="h5">
-                                                        <b>
-                                                            Attendant:{' '}
-                                                            {
-                                                                task?.attendant
-                                                                    ?.name
-                                                            }
-                                                        </b>
-                                                    </Typography>
-                                                </Grid>
+
                                                 <Grid item xs={12} sm={4}>
                                                     <Typography variant="h5">
                                                         <b>
@@ -531,6 +648,43 @@ function TaskDetail() {
                                                             {task?.status}{' '}
                                                         </b>
                                                     </Typography>
+                                                </Grid>
+
+                                                <Grid item xs={12} sm={4}>
+                                                    <Box>
+                                                        <Typography variant="subtitle2">
+                                                            <b>
+                                                                Service cost:{' '}
+                                                            </b>{' '}
+                                                            {fCurrency(
+                                                                serviceCost
+                                                            )}
+                                                        </Typography>
+
+                                                        <Typography variant="subtitle2">
+                                                            <b>
+                                                                Sales total:{' '}
+                                                                {fCurrency(
+                                                                    salesCost
+                                                                )}
+                                                            </b>
+                                                        </Typography>
+
+                                                        <Typography
+                                                            color="primary"
+                                                            variant="h6"
+                                                        >
+                                                            <b> Total: </b>
+                                                            {fCurrency(
+                                                                serviceCost +
+                                                                    salesCost
+                                                            )}
+                                                        </Typography>
+                                                    </Box>
+                                                </Grid>
+
+                                                <Grid item xs={12} sm={4}>
+                                                    <Typography variant="h5" />
                                                 </Grid>
                                                 <Grid item xs={12} sm={4}>
                                                     <Typography variant="h5">
@@ -617,6 +771,13 @@ function TaskDetail() {
                                                         key={job.id}
                                                         secondaryAction={
                                                             <IconButton
+                                                                disabled={
+                                                                    task.status ===
+                                                                        'cancelled' ||
+                                                                    task.status ===
+                                                                        'complete'
+                                                                }
+                                                                color="warning"
                                                                 edge="end"
                                                                 aria-label="delete"
                                                                 onClick={() => {
@@ -686,7 +847,14 @@ function TaskDetail() {
                                                             }
                                                             secondaryAction={
                                                                 <IconButton
+                                                                    disabled={
+                                                                        task.status ===
+                                                                            'cancelled' ||
+                                                                        task.status ===
+                                                                            'complete'
+                                                                    }
                                                                     edge="end"
+                                                                    color="warning"
                                                                     aria-label="delete"
                                                                     onClick={() => {
                                                                         setRemoveAttendantId(
@@ -718,8 +886,79 @@ function TaskDetail() {
                                     </CardContent>
                                 </Card>
                             </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <Card>
+                                    <CardContent>
+                                        <Box>
+                                            <Typography variant="h4">
+                                                Sale items
+                                            </Typography>
+                                        </Box>
+
+                                        <List>
+                                            {task.sales.length > 0 &&
+                                                task?.sales[0]?.products?.map(
+                                                    (item: any) => {
+                                                        return (
+                                                            <ListItem
+                                                                key={item.id}
+                                                                secondaryAction={
+                                                                    <IconButton
+                                                                        disabled={
+                                                                            task.status ===
+                                                                                'cancelled' ||
+                                                                            task.status ===
+                                                                                'complete'
+                                                                        }
+                                                                        edge="end"
+                                                                        color="warning"
+                                                                        aria-label="delete"
+                                                                        onClick={() => {
+                                                                            setRemoveProductId(
+                                                                                item
+                                                                                    ?.product
+                                                                                    ?.id
+                                                                            )
+                                                                            setConfirmRemoveProductModal(
+                                                                                true
+                                                                            )
+                                                                        }}
+                                                                    >
+                                                                        <Iconify icon="eva:trash-fill" />{' '}
+                                                                    </IconButton>
+                                                                }
+                                                            >
+                                                                <ListItemText
+                                                                    primary={
+                                                                        item
+                                                                            ?.product
+                                                                            ?.name
+                                                                    }
+                                                                    secondary={`Quantity: ${
+                                                                        item.quantity
+                                                                    } @ ${fCurrency(
+                                                                        item.price
+                                                                    )}`}
+                                                                />
+                                                            </ListItem>
+                                                        )
+                                                    }
+                                                )}
+                                        </List>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
                         </Grid>
                     </Box>
+                    {/* prouduct sale modal */}
+                    <ProductSaleModal
+                        open={saleModal}
+                        handleClose={() => setSaleModal(false)}
+                        loading={saleLoader}
+                        handleSubmit={handleSale}
+                        setProduct={setProduct}
+                    />
                     {/* Reassign modal */}
                     <Dialog
                         fullWidth
@@ -1089,6 +1328,25 @@ function TaskDetail() {
                                 color="error"
                                 onClick={handleRemoveAttendant}
                                 loading={serviceDeleteLoader}
+                            >
+                                Remove
+                            </LoadingButton>
+                        }
+                    />
+                    <ConfirmDialog
+                        open={confirmRemoveProductModal}
+                        onClose={() => {
+                            setConfirmRemoveProductModal(false)
+                            setRemoveProductId(0)
+                        }}
+                        title="Remove Product"
+                        content="Are you sure want to remove this sale item?"
+                        action={
+                            <LoadingButton
+                                variant="contained"
+                                color="error"
+                                onClick={handleRemoveSaleProduct}
+                                loading={productDeleteLoader}
                             >
                                 Remove
                             </LoadingButton>

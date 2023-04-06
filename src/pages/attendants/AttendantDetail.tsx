@@ -33,6 +33,7 @@ import AttendantsEarnings from './_components/AttendantEarnings'
 import { useSnackbar } from '../../components/snackbar'
 import { apiUrl } from '../../config-global'
 import axios from '../../utils/axios'
+import PaymentsTable from '../payments/_components/PaymentTable'
 
 // export const ecommerceSalesOverview = [...Array(3)].map((_, index) => ({
 //     label: ['Total Revenue', 'Total Earnings'][index],
@@ -243,7 +244,10 @@ function AttendantDetail() {
                             />
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item xs={12} mt={3}>
+                            <Typography px={2} variant="h4" gutterBottom>
+                                Attendant tasks
+                            </Typography>
                             <TasksTable
                                 data={tasks.map((task: any) => ({
                                     ...task,
@@ -252,6 +256,17 @@ function AttendantDetail() {
                                 handleUpdate={() => {}}
                                 mutate={() => {}}
                                 readOnly={1}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} sx={{ mt: 4 }}>
+                            <Typography px={2} variant="h4" gutterBottom>
+                                Attendant payments
+                            </Typography>
+                            <PaymentsTable
+                                data={attendant?.payments ?? []}
+                                handleUpdate={() => {}}
+                                mutate={() => {}}
                             />
                         </Grid>
                     </Grid>

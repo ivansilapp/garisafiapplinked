@@ -13,6 +13,9 @@ export default function useDailyAnalytics() {
         ongoing: data ? data.ongoing : 0,
         canceled: data ? data.canceled : 0,
         waitlist: data ? data.waitlist : 0,
+        tasks: data ? data.tasks : [],
+        expenses: data ? data.expenses : [],
+        sales: data ? data.sales : [],
         mutate,
     }
 }

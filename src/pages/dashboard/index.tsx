@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Container, Grid } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { Suspense } from 'react'
@@ -9,12 +10,21 @@ import useDailyAnalytics from '../../hooks/dashboard/useDailyAnalytics'
 import AccountBalances from './_components/AccountBalances'
 import TaskByCarType from './_components/TaskByCarType'
 import TaskCountCard from './_components/TaskCountCard'
+import ValueGraphWidget from './_components/ValueGraphWidget'
 
 function Dashboard() {
     const theme = useTheme()
 
-    const { accounts, complete, canceled, waitlist, ongoing } =
-        useDailyAnalytics()
+    const {
+        accounts,
+        complete,
+        canceled,
+        waitlist,
+        ongoing,
+        tasks,
+        expenses,
+        sales,
+    } = useDailyAnalytics()
     const { bodyTypes } = useBodyTypes()
 
     const { themeStretch } = useSettingsContext()
@@ -22,6 +32,8 @@ function Dashboard() {
         label: account.name ?? '',
         value: account.balance ?? 0,
     }))
+
+    console.log('sales ', sales)
 
     const carTypeTasks = complete?.reduce((acc: any, task: any) => {
         const { bodyId }: any = task.vehicle
@@ -59,6 +71,14 @@ function Dashboard() {
     const computePercent = (value: number) => {
         if (!value || value === 0 || totalTasks === 0) return 0
         return Math.round((value / totalTasks) * 100)
+    }
+    const dateSort = (a: any, b: any) => {
+        return (
+            // @ts-expect-error
+            new Date(a.created_at) -
+            // @ts-expect-error
+            new Date(b.created_at)
+        )
     }
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -102,6 +122,52 @@ function Dashboard() {
                                     ],
                                 }}
                             />
+                        </Grid>
+
+                        <Grid xs={12} item container spacing={3}>
+                            <Grid xs={12} md={4} item>
+                                <ValueGraphWidget
+                                    title="Cars Washed"
+                                    percent={2.6}
+                                    total={complete?.length ?? 0}
+                                    chart={{
+                                        colors: [theme.palette.primary.main],
+                                        series: tasks
+                                            .sort(dateSort)
+                                            .map((task: any) => task.total),
+                                    }}
+                                />
+                            </Grid>
+                            <Grid xs={12} md={4} item>
+                                <ValueGraphWidget
+                                    title="Expenses"
+                                    currency
+                                    percent={2.6}
+                                    total={expenses.expense_total ?? 0}
+                                    chart={{
+                                        colors: [theme.palette.info.main],
+                                        series: expenses.grouped_data
+                                            ?.sort(dateSort)
+                                            .map(
+                                                (expense: any) => expense.total
+                                            ),
+                                    }}
+                                />
+                            </Grid>
+                            <Grid xs={12} md={4} item>
+                                <ValueGraphWidget
+                                    title="Products sales"
+                                    currency
+                                    percent={2.6}
+                                    total={sales?.total ?? 0}
+                                    chart={{
+                                        colors: [theme.palette.warning.main],
+                                        series: sales?.data
+                                            ?.sort(dateSort)
+                                            .map((sale: any) => sale.cost),
+                                    }}
+                                />
+                            </Grid>
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <AccountBalances
