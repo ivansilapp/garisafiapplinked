@@ -266,7 +266,6 @@ export default function NewTaskPage() {
                                     value: any
                                 ) => option.registration === value.registration}
                                 getOptionLabel={(option) => {
-                                    console.log(option?.registration, 'option')
                                     return option?.registration ?? ''
                                 }}
                                 options={vehicles}

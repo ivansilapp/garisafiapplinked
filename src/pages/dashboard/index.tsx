@@ -34,7 +34,7 @@ function Dashboard() {
             value: account?.balance ?? 0,
         })) ?? []
 
-    console.log('sales ', sales)
+    // console.log('sales ', sales)
 
     const carTypeTasks = complete?.reduce((acc: any, task: any) => {
         const { bodyId }: any = task.vehicle
@@ -81,6 +81,9 @@ function Dashboard() {
             new Date(b.created_at)
         )
     }
+    const todaysTasks = tasks ? tasks.sort(dateSort)[tasks.length - 1] : null
+
+    console.log('todaysTasks', todaysTasks)
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <ErrorBoundary
@@ -132,9 +135,10 @@ function Dashboard() {
                         <Grid xs={12} item container spacing={3}>
                             <Grid xs={12} md={4} item>
                                 <ValueGraphWidget
-                                    title="Cars Washed"
+                                    title="Service revenue"
                                     percent={2.6}
-                                    total={complete?.length ?? 0}
+                                    currency
+                                    total={todaysTasks?.cost ?? 0}
                                     chart={{
                                         colors: [theme.palette.primary.main],
                                         series:
@@ -142,6 +146,23 @@ function Dashboard() {
                                                 ?.sort(dateSort)
                                                 ?.map(
                                                     (task: any) => task.total
+                                                ) ?? [],
+                                    }}
+                                />
+                            </Grid>
+                            <Grid xs={12} md={4} item>
+                                <ValueGraphWidget
+                                    title="Sales revenue"
+                                    currency
+                                    percent={2.6}
+                                    total={sales?.total ?? 0}
+                                    chart={{
+                                        colors: [theme.palette.warning.main],
+                                        series:
+                                            sales?.data
+                                                ?.sort(dateSort)
+                                                ?.map(
+                                                    (sale: any) => sale.cost
                                                 ) ?? [],
                                     }}
                                 />
@@ -160,23 +181,6 @@ function Dashboard() {
                                                 ?.map(
                                                     (expense: any) =>
                                                         expense.total
-                                                ) ?? [],
-                                    }}
-                                />
-                            </Grid>
-                            <Grid xs={12} md={4} item>
-                                <ValueGraphWidget
-                                    title="Products sales"
-                                    currency
-                                    percent={2.6}
-                                    total={sales?.total ?? 0}
-                                    chart={{
-                                        colors: [theme.palette.warning.main],
-                                        series:
-                                            sales?.data
-                                                ?.sort(dateSort)
-                                                ?.map(
-                                                    (sale: any) => sale.cost
                                                 ) ?? [],
                                     }}
                                 />
