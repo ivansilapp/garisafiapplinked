@@ -110,7 +110,12 @@ const NavItem = forwardRef(
             )
         }
 
-        return <RoleBasedGuard roles={roles}> {renderItem()} </RoleBasedGuard>
+        return (
+            <RoleBasedGuard hasContent roles={roles}>
+                {' '}
+                {renderItem()}{' '}
+            </RoleBasedGuard>
+        )
     }
 )
 

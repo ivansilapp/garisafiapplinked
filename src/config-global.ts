@@ -5,7 +5,7 @@ import { PATH_DASHBOARD } from './routes/paths'
 // ----------------------------------------------------------------------
 
 export const HOST_API_KEY =
-    import.meta.env.VITE_APP_HOST_API_KEY || 'http://localhost:9000'
+    import.meta.env.VITE_APP_HOST_API_KEY || 'https://garisafi.fly.dev' //  'http://localhost:9000'
 export const apiUrl = HOST_API_KEY
 
 // export const FIREBASE_API = {

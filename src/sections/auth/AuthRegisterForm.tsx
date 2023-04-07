@@ -59,7 +59,7 @@ export default function AuthRegisterForm() {
             }
         } catch (error: any) {
             console.error(error)
-            reset()
+            // reset()
             setError('afterSubmit', {
                 ...error,
                 message: error.message || error,
