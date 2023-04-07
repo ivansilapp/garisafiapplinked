@@ -28,10 +28,11 @@ function Dashboard() {
     const { bodyTypes } = useBodyTypes()
 
     const { themeStretch } = useSettingsContext()
-    const series = accounts?.map((account: any) => ({
-        label: account.name ?? '',
-        value: account.balance ?? 0,
-    }))
+    const series =
+        accounts?.map((account: any) => ({
+            label: account?.name ?? '',
+            value: account?.balance ?? 0,
+        })) ?? []
 
     console.log('sales ', sales)
 
@@ -132,9 +133,12 @@ function Dashboard() {
                                     total={complete?.length ?? 0}
                                     chart={{
                                         colors: [theme.palette.primary.main],
-                                        series: tasks
-                                            .sort(dateSort)
-                                            .map((task: any) => task.total),
+                                        series:
+                                            tasks
+                                                ?.sort(dateSort)
+                                                ?.map(
+                                                    (task: any) => task.total
+                                                ) ?? [],
                                     }}
                                 />
                             </Grid>
@@ -146,11 +150,13 @@ function Dashboard() {
                                     total={expenses.expense_total ?? 0}
                                     chart={{
                                         colors: [theme.palette.info.main],
-                                        series: expenses.grouped_data
-                                            ?.sort(dateSort)
-                                            .map(
-                                                (expense: any) => expense.total
-                                            ),
+                                        series:
+                                            expenses?.grouped_data
+                                                ?.sort(dateSort)
+                                                ?.map(
+                                                    (expense: any) =>
+                                                        expense.total
+                                                ) ?? [],
                                     }}
                                 />
                             </Grid>
@@ -162,9 +168,12 @@ function Dashboard() {
                                     total={sales?.total ?? 0}
                                     chart={{
                                         colors: [theme.palette.warning.main],
-                                        series: sales?.data
-                                            ?.sort(dateSort)
-                                            .map((sale: any) => sale.cost),
+                                        series:
+                                            sales?.data
+                                                ?.sort(dateSort)
+                                                ?.map(
+                                                    (sale: any) => sale.cost
+                                                ) ?? [],
                                     }}
                                 />
                             </Grid>

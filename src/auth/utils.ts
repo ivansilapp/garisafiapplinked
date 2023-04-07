@@ -10,7 +10,13 @@ import localStorageAvailable from '../utils/localStorageAvailable'
 // ----------------------------------------------------------------------
 
 export function jwtDecode(token: string) {
+    if (token === null) {
+        return null
+    }
     const base64Url = token.split('.')[1]
+    if (base64Url === undefined) {
+        return null
+    }
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
     const jsonPayload = decodeURIComponent(
         window
