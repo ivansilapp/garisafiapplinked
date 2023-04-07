@@ -102,11 +102,13 @@ function Dashboard() {
                                             label: 'Queued tasks',
                                             percent: computePercent(waitlist),
                                             total: waitlist,
+                                            url: 'queued',
                                         },
                                         {
                                             label: 'Ongoing tasks',
                                             percent: computePercent(ongoing),
                                             total: ongoing,
+                                            url: 'ongoing',
                                         },
                                         {
                                             label: 'Completed tasks',
@@ -114,11 +116,13 @@ function Dashboard() {
                                             percent: computePercent(
                                                 complete.length ?? 0
                                             ),
+                                            url: 'completed',
                                         },
                                         {
                                             label: 'Canceled tasks',
                                             percent: computePercent(canceled),
                                             total: canceled,
+                                            url: 'canceled',
                                         },
                                     ],
                                 }}

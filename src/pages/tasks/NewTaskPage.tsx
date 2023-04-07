@@ -119,6 +119,7 @@ export default function NewTaskPage() {
             if (query.length <= 0) {
                 return
             }
+            // setVehicle({ registration: '' })
             setVehicleLoader(true)
             const res = await axios(`${apiUrl}/vehicle/search/${query}`)
             const data = await res.data
@@ -265,6 +266,7 @@ export default function NewTaskPage() {
                                     value: any
                                 ) => option.registration === value.registration}
                                 getOptionLabel={(option) => {
+                                    console.log(option?.registration, 'option')
                                     return option?.registration ?? ''
                                 }}
                                 options={vehicles}
@@ -272,14 +274,14 @@ export default function NewTaskPage() {
                                 onChange={(e, value) => {
                                     setVehicle(value)
                                 }}
-                                value={vehicle ?? null}
-                                inputValue={vehicle?.registration ?? ''}
+                                value={vehicle || null}
+                                // inputValue={vehicle?.registration ?? ''}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
                                         label="Search vehicle"
                                         onChange={fetchVehicles}
-                                        // value={vehicle?.registration ?? ''}
+                                        value={vehicle?.registration ?? ''}
                                         InputProps={{
                                             ...params.InputProps,
                                             endAdornment: (

@@ -4,11 +4,13 @@ import PropTypes from 'prop-types'
 import { useTheme } from '@mui/material/styles'
 import { Card, Typography, Stack, Divider } from '@mui/material'
 // hooks
+import { Link } from 'react-router-dom'
 import useResponsive from '../../../hooks/useResponsive'
 // utils
 import { fNumber } from '../../../utils/formatNumber'
 // components
 import Chart, { useChart } from '../../../components/chart'
+import { PATH_DASHBOARD } from '../../../routes/paths'
 
 // ----------------------------------------------------------------------
 
@@ -104,7 +106,18 @@ export default function TaskCountCard({ chart, ...other }: any) {
                             </Typography>
 
                             <Typography variant="body2" sx={{ opacity: 0.72 }}>
-                                {item.label}
+                                <Link
+                                    to={PATH_DASHBOARD.tasks.status(item.url)}
+                                    style={{
+                                        color:
+                                            theme.palette.mode === 'dark'
+                                                ? 'white'
+                                                : 'black',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    {item.label}
+                                </Link>
                             </Typography>
                         </div>
                     </Stack>

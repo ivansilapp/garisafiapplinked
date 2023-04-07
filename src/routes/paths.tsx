@@ -46,6 +46,8 @@ export const PATH_DASHBOARD = {
         pending: path(ROOTS_DASHBOARD, 'tasks/pending'),
         completed: path(ROOTS_DASHBOARD, 'tasks/completed'),
         canceled: path(ROOTS_DASHBOARD, 'tasks'),
+        status: (status: string) =>
+            path(ROOTS_DASHBOARD, `tasks/status/${status}`),
     },
     services: {
         root: path(ROOTS_DASHBOARD, 'services'),

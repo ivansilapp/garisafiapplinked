@@ -73,7 +73,9 @@ export default function VehicleTableRow({
                         <Typography variant="subtitle2" noWrap>
                             <Link
                                 style={styles}
-                                to={PATH_DASHBOARD.users.details(id)}
+                                to={PATH_DASHBOARD.systemData.vehilceDetails(
+                                    id
+                                )}
                             >
                                 {registration}
                             </Link>

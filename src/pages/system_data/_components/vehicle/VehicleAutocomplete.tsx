@@ -37,7 +37,7 @@ export default function VehicleAutocomplete({
             if (value?.trim() === '') return
             setFetchLoader(true)
             const { data } = await axios.get(`${url}${value}`)
-            console.log(data)
+            // console.log(data)
             if (data.vehicles) {
                 setItems(data.vehicles)
             } else {
