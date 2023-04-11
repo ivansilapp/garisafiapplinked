@@ -1,9 +1,13 @@
 import {
     Button,
+    Card,
+    CardContent,
     Container,
     Dialog,
     DialogContent,
     DialogTitle,
+    Grid,
+    Typography,
 } from '@mui/material'
 import { useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -17,6 +21,7 @@ import { PATH_DASHBOARD } from '../../routes/paths'
 import axios from '../../utils/axios'
 import AttendantForm from './_components/AttendantForm'
 import AttendantsTable from './_components/AttendantsTable'
+import { fCurrency } from '../../utils/formatNumber'
 
 function AttendantsPage() {
     const { themeStretch } = useSettingsContext()
@@ -75,6 +80,20 @@ function AttendantsPage() {
         }
     }
 
+    const totalCommision = attendants.reduce((acc: any, curr: any) => {
+        const currCommission = curr.commissions.reduce((a: any, c: any) => {
+            return a + c.amount
+        }, 0)
+        return acc + currCommission
+    }, 0)
+    const totalTips = attendants.reduce((acc: any, curr: any) => {
+        const currTips =
+            curr?.tips.reduce((a: any, c: any) => {
+                return a + c.amount
+            }, 0) ?? 0
+        return acc + currTips
+    }, 0)
+
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
             <ErrorBoundary
@@ -101,6 +120,33 @@ function AttendantsPage() {
                         </Button>
                     }
                 />
+
+                <Grid container spacing={3}>
+                    <Grid item xs={12} sm={4} xl={3}>
+                        <Card sx={{ my: 4 }}>
+                            <CardContent>
+                                <Typography variant="h6" color="info">
+                                    Commission not paid
+                                </Typography>
+                                <Typography variant="h4" color="info">
+                                    {fCurrency(totalCommision)}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} sm={4} xl={3}>
+                        <Card sx={{ my: 4 }}>
+                            <CardContent>
+                                <Typography variant="h6" color="info">
+                                    Tips not submitted
+                                </Typography>
+                                <Typography variant="h4" color="info">
+                                    {fCurrency(totalTips)}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
 
                 <AttendantsTable
                     data={attendants}

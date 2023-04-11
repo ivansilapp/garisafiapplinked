@@ -21,6 +21,10 @@ import Iconify from '../../../components/iconify'
 import MenuPopover from '../../../components/menu-popover'
 import ConfirmDialog from '../../../components/confirm-dialog'
 import { PATH_DASHBOARD } from '../../../routes/paths'
+import ProductSaleModal from '../../tasks/_components/ProductSaleModal'
+import { apiUrl } from '../../../config-global'
+import { useSnackbar } from '../../../components/snackbar'
+import axios from '../../../utils/axios'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
@@ -35,8 +39,57 @@ export default function ProductTableRow({
     const { id, name, price, inStock }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
+    const [saleModal, setSaleModal] = useState(false)
+    const [saleLoader, setSaleLoader] = useState(false)
+    // const [product, setProduct] = useState<any>(null)
+    const [vehicle, setVehicle] = useState<any>(null)
+    const [quantity, setQuantity] = useState<any>('1')
+    const [addVehicleModal, setAddVehicleModal] = useState(false)
 
-    const [openPopover, setOpenPopover] = useState(null)
+    const { enqueueSnackbar } = useSnackbar()
+
+    const handleSale = async () => {
+        try {
+            if (!vehicle) {
+                throw new Error('Please select a vehicle')
+            }
+
+            // check if quantity is valid valid number greater than 0
+            if (!quantity || Number(quantity) <= 0) {
+                throw new Error('Please enter a valid quantity')
+            }
+            // create sale
+            setSaleLoader(true)
+            const url = `${apiUrl}/sales`
+            const payload = {
+                vehicleId: vehicle.id,
+                saleProducts: [
+                    {
+                        productId: id,
+                        quantity: Number(quantity) ?? 0,
+                        amount: price * Number(quantity) ?? 0,
+                    },
+                ],
+            }
+
+            const response = await axios.post(url, payload)
+            if (response.status === 200) {
+                // mutate()
+                enqueueSnackbar('Sale recorded successfully', {
+                    variant: 'success',
+                })
+                setSaleModal(false)
+            } else {
+                const { data } = response
+                throw new Error(data.error)
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Something went wrong'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setSaleLoader(false)
+        }
+    }
 
     const theme = useTheme()
 
@@ -46,14 +99,6 @@ export default function ProductTableRow({
 
     const handleCloseConfirm = () => {
         setOpenConfirm(false)
-    }
-
-    const handleOpenPopover = (event: any) => {
-        setOpenPopover(event.currentTarget)
-    }
-
-    const handleClosePopover = () => {
-        setOpenPopover(null)
     }
 
     const styles: any = {
@@ -112,82 +157,24 @@ export default function ProductTableRow({
                         color="info"
                         variant="outlined"
                         startIcon={<Iconify icon="eva:shopping-bag-fill" />}
-                        onClick={() => {}}
+                        onClick={() => setSaleModal(true)}
                     >
                         Sell
                     </Button>
                 </TableCell>
-
-                {/* <TableCell align="left">{email}</TableCell>
-
-                <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
-                    {role}
-                </TableCell>
-
-                <TableCell align="center">
-                    <Iconify
-                        icon={
-                            isVerified
-                                ? 'eva:checkmark-circle-fill'
-                                : 'eva:clock-outline'
-                        }
-                        sx={{
-                            width: 20,
-                            height: 20,
-                            color: 'success.main',
-                            ...(!isVerified && { color: 'warning.main' }),
-                        }}
-                    />
-                </TableCell>
-
-                <TableCell align="left">
-                    <Label
-                        variant="soft"
-                        color={(status === 'banned' && 'error') || 'success'}
-                        sx={{ textTransform: 'capitalize' }}
-                    >
-                        {status}
-                    </Label>
-                </TableCell> */}
-
-                {/* <TableCell align="right">
-                    <IconButton
-                        color={openPopover ? 'inherit' : 'default'}
-                        onClick={handleOpenPopover}
-                    >
-                        <Iconify icon="eva:more-vertical-fill" />
-                    </IconButton>
-                </TableCell> */}
             </TableRow>
-
-            {/* <MenuPopover
-                open={openPopover}
-                onClose={handleClosePopover}
-                arrow="right-top"
-                sx={{ width: 140 }}
-            >
-                <MenuItem
-                    onClick={() => {
-                        handleOpenConfirm()
-                        handleClosePopover()
-                    }}
-                    sx={{ color: 'error.main' }}
-                >
-                    <Iconify icon="eva:trash-2-outline" />
-                    Delete
-                </MenuItem>
-
-                <MenuItem
-                    onClick={() => {
-                        onEditRow()
-                        handleClosePopover()
-                    }}
-                >
-                    <Iconify icon="eva:edit-fill" />
-                    Edit
-                </MenuItem>
-            </MenuPopover> */}
-
+            <ProductSaleModal
+                open={saleModal}
+                handleClose={() => setSaleModal(false)}
+                loading={saleLoader}
+                handleSubmit={handleSale}
+                setProduct={() => {}}
+                productName={name}
+                setVehicle={setVehicle}
+                setQuantity={setQuantity}
+                quantity={quantity}
+                setAddVehicleModal={setAddVehicleModal}
+            />
             <ConfirmDialog
                 open={openConfirm}
                 onClose={handleCloseConfirm}

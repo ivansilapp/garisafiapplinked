@@ -124,7 +124,18 @@ export default function TaskTableRow({
                     </Link>
                 </TableCell>
 
-                <TableCell align="left">{status}</TableCell>
+                <TableCell align="left">
+                    <Label
+                        color={
+                            (status === 'complete' && 'success') ||
+                            (status === 'cancelled' && 'error') ||
+                            (status === 'pending' && 'warning') ||
+                            (status === 'ongoing' && 'info')
+                        }
+                    >
+                        {status}
+                    </Label>
+                </TableCell>
 
                 <TableCell align="right">{fCurrency(cost)}</TableCell>
 

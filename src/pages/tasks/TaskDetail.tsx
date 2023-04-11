@@ -52,6 +52,7 @@ import { fDateTime } from '../../utils/formatTime'
 import ProductSaleModal from './_components/ProductSaleModal'
 import TaskPaymentCard from './_components/TaskPayment'
 import VehicleDetailCard from './_components/VehicleDetail'
+import Label from '../../components/label/Label'
 
 function TaskDetail() {
     const { themeStretch } = useSettingsContext()
@@ -395,15 +396,6 @@ function TaskDetail() {
     }
 
     const handleSale = async () => {
-        /*
-            Amount       uint                 `json:"amount"`
-            Description  string               `json:"description" `
-            TaskId       uint                 `json:"taskId"`
-            SaleProducts []saleProductPayload `json:"saleProducts" binding:"required"`
-            VehicleId    uint                 `json:"vehicleId"`
-        */
-        // check if quantity is a valid number
-
         if (isNaN(quantity) || Number(quantity) === 0) {
             enqueueSnackbar('Please enter a valid quantity', {
                 variant: 'error',
@@ -645,7 +637,24 @@ function TaskDetail() {
                                                     <Typography variant="h5">
                                                         <b>
                                                             Status:{' '}
-                                                            {task?.status}{' '}
+                                                            <Label
+                                                                color={
+                                                                    (task.status ===
+                                                                        'complete' &&
+                                                                        'success') ||
+                                                                    (task.status ===
+                                                                        'cancelled' &&
+                                                                        'error') ||
+                                                                    (task.status ===
+                                                                        'pending' &&
+                                                                        'warning') ||
+                                                                    (task.status ===
+                                                                        'ongoing' &&
+                                                                        'info')
+                                                                }
+                                                            >
+                                                                {task?.status}
+                                                            </Label>
                                                         </b>
                                                     </Typography>
                                                 </Grid>

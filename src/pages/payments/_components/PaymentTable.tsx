@@ -204,20 +204,22 @@ function applyFilter({
 
     if (filterName) {
         inputData = inputData.filter(
-            (user: any) =>
-                user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+            (payment: any) =>
+                payment.reference
+                    .toLowerCase()
+                    .indexOf(filterName.toLowerCase()) !== -1
         )
     }
 
-    if (filterStatus !== 'all') {
-        inputData = inputData.filter(
-            (user: any) => user.status === filterStatus
-        )
-    }
+    // if (filterStatus !== 'all') {
+    //     inputData = inputData.filter(
+    //         (payment: any) => user.status === filterStatus
+    //     )
+    // }
 
-    if (filterRole !== 'all') {
-        inputData = inputData.filter((user: any) => user.role === filterRole)
-    }
+    // if (filterRole !== 'all') {
+    //     inputData = inputData.filter((user: any) => user.role === filterRole)
+    // }
 
     return inputData
 }

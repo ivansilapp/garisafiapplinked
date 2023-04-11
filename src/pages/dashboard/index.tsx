@@ -82,8 +82,6 @@ function Dashboard() {
         )
     }
     const todaysTasks = tasks ? tasks.sort(dateSort)[tasks.length - 1] : null
-
-    console.log('todaysTasks', todaysTasks)
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <ErrorBoundary
@@ -139,6 +137,10 @@ function Dashboard() {
                                     percent={2.6}
                                     currency
                                     total={todaysTasks?.cost ?? 0}
+                                    items={{
+                                        title: 'Number of tasks',
+                                        value: todaysTasks?.total ?? 0,
+                                    }}
                                     chart={{
                                         colors: [theme.palette.primary.main],
                                         series:
@@ -155,7 +157,11 @@ function Dashboard() {
                                     title="Sales revenue"
                                     currency
                                     percent={2.6}
-                                    total={sales?.total ?? 0}
+                                    total={sales?.cost ?? 0}
+                                    items={{
+                                        title: 'Number of sales',
+                                        value: sales?.total ?? 0,
+                                    }}
                                     chart={{
                                         colors: [theme.palette.warning.main],
                                         series:

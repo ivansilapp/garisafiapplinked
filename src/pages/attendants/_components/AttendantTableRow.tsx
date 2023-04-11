@@ -21,6 +21,7 @@ import Iconify from '../../../components/iconify'
 import MenuPopover from '../../../components/menu-popover'
 import ConfirmDialog from '../../../components/confirm-dialog'
 import { PATH_DASHBOARD } from '../../../routes/paths'
+import { fCurrency } from '../../../utils/formatNumber'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
@@ -32,7 +33,7 @@ export default function AttendantTableRow({
     onDeleteRow,
     deleteLoader,
 }: any) {
-    const { id, name, phone, email, status }: any = row
+    const { id, name, phone, email, status, commissions, tips }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
@@ -48,18 +49,23 @@ export default function AttendantTableRow({
         setOpenConfirm(false)
     }
 
-    const handleOpenPopover = (event: any) => {
-        setOpenPopover(event.currentTarget)
-    }
-
-    const handleClosePopover = () => {
-        setOpenPopover(null)
-    }
-
     const styles: any = {
         color: theme.palette.mode === 'dark' ? 'white' : 'black',
         textDecoration: 'none',
     }
+
+    const calculateCommission = (comm: any) => {
+        return (
+            commissions?.reduce((acc: any, com: any) => {
+                return acc + com.amount
+            }, 0) ?? 0
+        )
+    }
+
+    const totalTips =
+        tips?.reduce((acc: any, tip: any) => {
+            return acc + tip.amount
+        }, 0) ?? 0
 
     return (
         <>
@@ -82,7 +88,10 @@ export default function AttendantTableRow({
                 </TableCell>
 
                 <TableCell align="left">{phone}</TableCell>
-                <TableCell align="left">{email}</TableCell>
+                <TableCell align="left">
+                    {fCurrency(calculateCommission(commissions))}
+                </TableCell>
+                <TableCell align="left">{fCurrency(totalTips)}</TableCell>
                 <TableCell align="left">{status}</TableCell>
 
                 <TableCell align="center">
@@ -90,6 +99,7 @@ export default function AttendantTableRow({
                         variant="outlined"
                         startIcon={<Iconify icon="eva:edit-fill" />}
                         onClick={onEditRow}
+                        color="info"
                     >
                         Edit
                     </Button>
@@ -100,6 +110,7 @@ export default function AttendantTableRow({
                         variant="outlined"
                         startIcon={<Iconify icon="eva:trash-2-outline" />}
                         onClick={handleOpenConfirm}
+                        color="error"
                     >
                         Delete
                     </LoadingButton>

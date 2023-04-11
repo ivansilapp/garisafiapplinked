@@ -4,7 +4,6 @@ import { apiUrl } from '../../config-global'
 export default function useDailyAnalytics() {
     const url = `${apiUrl}/reports/daily-analytics`
     const { error, data, mutate } = useSWR(url, { suspense: true })
-
     return {
         loading: !error && !data,
         error,

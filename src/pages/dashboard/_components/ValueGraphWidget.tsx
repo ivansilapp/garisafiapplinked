@@ -17,6 +17,7 @@ export default function ValueGraphWidget({
     total,
     chart,
     currency,
+    items,
     sx,
     ...other
 }: any) {
@@ -64,6 +65,10 @@ export default function ValueGraphWidget({
 
                 <Typography variant="h4" gutterBottom>
                     {currency ? fCurrency(total) : fNumber(total)}
+                </Typography>
+
+                <Typography>
+                    {items ? `${items.title} ${items.value}` : '_'}
                 </Typography>
 
                 {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}

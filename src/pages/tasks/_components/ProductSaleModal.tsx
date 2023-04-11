@@ -9,10 +9,17 @@ import {
     TextField,
 } from '@mui/material'
 import ProductAutocomplete from '../../products/_components/ProductAutocomplete'
+import VehicleAutocomplete from '../../system_data/_components/vehicle/VehicleAutocomplete'
 
 export default function ProductSaleModal({
     open,
     setProduct,
+    productName,
+    vehicleReg,
+    setVehicle,
+    setAddVehicleModal,
+    setQuantity,
+    quantity,
     handleClose,
     handleSubmit,
     loading,
@@ -27,12 +34,34 @@ export default function ProductSaleModal({
             <DialogTitle>Add product</DialogTitle>
             <DialogContent>
                 <Box sx={{ p: 2 }} gap={3} display="grid">
-                    <ProductAutocomplete setProduct={setProduct} />
+                    {productName ? (
+                        <TextField
+                            label="Product"
+                            defaultValue={productName}
+                            disabled
+                        />
+                    ) : (
+                        <ProductAutocomplete setProduct={setProduct} />
+                    )}
+
+                    {vehicleReg ? (
+                        <TextField
+                            label="Vehicle"
+                            defaultValue={vehicleReg}
+                            disabled
+                        />
+                    ) : (
+                        <VehicleAutocomplete
+                            setVehicle={setVehicle}
+                            setAddVehicleModal={setAddVehicleModal}
+                        />
+                    )}
 
                     <TextField
                         label="Quantity"
                         type="number"
-                        defaultValue={1}
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
                     />
                     <Stack alignItems="flex-end" sx={{ my: 3 }}>
                         <Box gap={2} display="flex">
@@ -48,7 +77,7 @@ export default function ProductSaleModal({
                                 variant="contained"
                                 onClick={handleSubmit}
                             >
-                                Add product
+                                Record sale
                             </LoadingButton>
                         </Box>
                     </Stack>
