@@ -13,24 +13,19 @@ import {
 } from '../../../components/table'
 import Scrollbar from '../../../components/scrollbar'
 import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
-import TasksTableRow from './TasksTableRow'
+import GroupedTasksTableRow from './GroupedTasksTableRow'
 import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
 
 const TABLE_HEAD = [
-    { id: 'CreatedAt', label: 'Created at', align: 'left' },
-    { id: 'vehicle', label: 'Vehicle', align: 'left' },
-    { id: 'pigeohole', label: 'Pigeonhole', align: 'left' },
-    { id: 'attendant', label: 'Attendant', align: 'left' },
-    { id: 'status', label: 'Status', align: 'left' },
-    { id: 'cost', label: 'Cost', align: 'right' },
-    // { id: 'fullyPaid', label: 'Fully paid', align: 'center' },
-    // { id: 'paidAmount', label: 'Paid amount', align: 'center' },
-    { id: 'cancel', label: 'Cancel', align: 'right' },
+    { id: 'CreatedAt', label: 'Task date', align: 'left' },
+    { id: 'cost', label: 'Total tasks', align: 'left' },
+    { id: 'total', label: 'Number of tasks', align: 'left' },
+    { id: 'more', label: 'More', align: 'left' },
     { id: '' },
 ]
 
-function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
+function GroupedTasksTable({ data }: any) {
     const {
         dense,
         page,
@@ -40,7 +35,6 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
         setPage,
         //
         selected,
-        setSelected,
         onSelectRow,
         onSelectAllRows,
         onSort,
@@ -90,19 +84,6 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
         (!dataFiltered.length && !!filterRole) ||
         (!dataFiltered.length && !!filterStatus)
 
-    const handleOpenConfirm = () => {
-        setOpenConfirm(true)
-    }
-
-    const handleCloseConfirm = () => {
-        setOpenConfirm(false)
-    }
-
-    const handleFilterStatus = (event: any, newValue: any) => {
-        setPage(0)
-        setFilterStatus(newValue)
-    }
-
     const handleFilterName = (event: any) => {
         setPage(0)
         setFilterName(event.target.value)
@@ -112,33 +93,6 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
         setFilterName('')
         setFilterRole('all')
         setFilterStatus('all')
-    }
-
-    const handleDeleteRow = async (id: any) => {
-        try {
-            setDeleteLoader(true)
-            const url = `/service/${id}`
-            const response = await axios.delete(url)
-            if (!response.data) {
-                throw new Error('Error deleting service')
-            }
-            const deleteRow = tableData.filter((row: any) => row.id !== id)
-            mutate()
-            setSelected([])
-            setTableData(deleteRow)
-
-            if (page > 0) {
-                if (dataInPage.length < 2) {
-                    setPage(page - 1)
-                }
-            }
-            enqueueSnackbar('Service deleted', { variant: 'success' })
-        } catch (err: any) {
-            // console.log(err)
-            enqueueSnackbar(err.message, { variant: 'error' })
-        } finally {
-            setDeleteLoader(false)
-        }
     }
 
     return (
@@ -159,12 +113,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                         <TableHeadCustom
                             order={order}
                             orderBy={orderBy}
-                            headLabel={TABLE_HEAD.filter((item) => {
-                                if (readOnly) {
-                                    return item.id !== 'cancel'
-                                }
-                                return item
-                            })}
+                            headLabel={TABLE_HEAD}
                             rowCount={tableData.length}
                             numSelected={selected.length}
                             onSort={onSort}
@@ -183,17 +132,14 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row: any) => (
-                                    <TasksTableRow
-                                        key={row.id}
+                                    <GroupedTasksTableRow
+                                        key={row.created_at}
                                         row={row}
-                                        readOnly={readOnly}
                                         selected={selected.includes(row.id)}
                                         onSelectRow={() => onSelectRow(row.id)}
-                                        onDeleteRow={() =>
-                                            handleDeleteRow(row.id)
-                                        }
+                                        onDeleteRow={() => {}}
                                         deleteLoader={deleteLoader}
-                                        onEditRow={() => handleUpdate(row)}
+                                        onEditRow={() => {}}
                                     />
                                 ))}
 
@@ -266,4 +212,4 @@ function applyFilter({
     return inputData
 }
 
-export default TasksTable
+export default GroupedTasksTable

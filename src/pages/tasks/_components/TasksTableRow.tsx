@@ -44,6 +44,7 @@ export default function TaskTableRow({
         payments,
         status,
         vehicle,
+        attendants,
     }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
@@ -57,26 +58,18 @@ export default function TaskTableRow({
             return acc + payment.amount
         }, 0) ?? 0
 
-    const handleOpenConfirm = () => {
-        setOpenConfirm(true)
-    }
-
     const handleCloseConfirm = () => {
         setOpenConfirm(false)
-    }
-
-    const handleOpenPopover = (event: any) => {
-        setOpenPopover(event.currentTarget)
-    }
-
-    const handleClosePopover = () => {
-        setOpenPopover(null)
     }
 
     const styles: any = {
         color: theme.palette.mode === 'dark' ? 'white' : 'black',
         textDecoration: 'none',
     }
+
+    const attendees = attendants
+        ? attendants?.map((a: any) => a?.attendant)
+        : []
 
     return (
         <>
@@ -116,12 +109,17 @@ export default function TaskTableRow({
                 </TableCell>
 
                 <TableCell align="left">
-                    <Link
-                        style={styles}
-                        to={PATH_DASHBOARD.attendants.details(attendant?.id)}
-                    >
-                        {attendant?.name}
-                    </Link>
+                    {attendees.map((a: any) => {
+                        return (
+                            <Link
+                                style={styles}
+                                key={a.id}
+                                to={PATH_DASHBOARD.attendants.details(a.id)}
+                            >
+                                {a.name}
+                            </Link>
+                        )
+                    })}
                 </TableCell>
 
                 <TableCell align="left">

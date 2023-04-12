@@ -239,7 +239,9 @@ function applyFilter({
     if (filterName) {
         inputData = inputData.filter(
             (user: any) =>
-                user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+                user?.registration
+                    ?.toLowerCase()
+                    .indexOf(filterName.toLowerCase()) !== -1
         )
     }
 

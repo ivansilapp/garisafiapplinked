@@ -13,24 +13,20 @@ import {
 } from '../../../components/table'
 import Scrollbar from '../../../components/scrollbar'
 import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
-import TasksTableRow from './TasksTableRow'
+// import ProductTableRow from './ProductTableRow'
+import SalesTableRow from './SalesTableRow'
 import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
 
 const TABLE_HEAD = [
-    { id: 'CreatedAt', label: 'Created at', align: 'left' },
+    { id: 'CreatedAt', label: 'Date sold', align: 'left' },
     { id: 'vehicle', label: 'Vehicle', align: 'left' },
-    { id: 'pigeohole', label: 'Pigeonhole', align: 'left' },
-    { id: 'attendant', label: 'Attendant', align: 'left' },
-    { id: 'status', label: 'Status', align: 'left' },
-    { id: 'cost', label: 'Cost', align: 'right' },
-    // { id: 'fullyPaid', label: 'Fully paid', align: 'center' },
-    // { id: 'paidAmount', label: 'Paid amount', align: 'center' },
-    { id: 'cancel', label: 'Cancel', align: 'right' },
-    { id: '' },
+    { id: 'amount', label: 'Price', align: 'left' },
+    { id: 'products', label: 'Products', align: 'left' },
+    // { id: 'amountPaid', label: 'Amount paid', align: 'left' },
 ]
 
-function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
+function SalesTable({ data, handleUpdate, mutate }: any) {
     const {
         dense,
         page,
@@ -90,14 +86,6 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
         (!dataFiltered.length && !!filterRole) ||
         (!dataFiltered.length && !!filterStatus)
 
-    const handleOpenConfirm = () => {
-        setOpenConfirm(true)
-    }
-
-    const handleCloseConfirm = () => {
-        setOpenConfirm(false)
-    }
-
     const handleFilterStatus = (event: any, newValue: any) => {
         setPage(0)
         setFilterStatus(newValue)
@@ -117,10 +105,10 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
     const handleDeleteRow = async (id: any) => {
         try {
             setDeleteLoader(true)
-            const url = `/service/${id}`
+            const url = `/product/${id}`
             const response = await axios.delete(url)
             if (!response.data) {
-                throw new Error('Error deleting service')
+                throw new Error('Error deleting product')
             }
             const deleteRow = tableData.filter((row: any) => row.id !== id)
             mutate()
@@ -132,7 +120,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                     setPage(page - 1)
                 }
             }
-            enqueueSnackbar('Service deleted', { variant: 'success' })
+            enqueueSnackbar('product deleted', { variant: 'success' })
         } catch (err: any) {
             // console.log(err)
             enqueueSnackbar(err.message, { variant: 'error' })
@@ -159,12 +147,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                         <TableHeadCustom
                             order={order}
                             orderBy={orderBy}
-                            headLabel={TABLE_HEAD.filter((item) => {
-                                if (readOnly) {
-                                    return item.id !== 'cancel'
-                                }
-                                return item
-                            })}
+                            headLabel={TABLE_HEAD}
                             rowCount={tableData.length}
                             numSelected={selected.length}
                             onSort={onSort}
@@ -183,10 +166,9 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row: any) => (
-                                    <TasksTableRow
+                                    <SalesTableRow
                                         key={row.id}
                                         row={row}
-                                        readOnly={readOnly}
                                         selected={selected.includes(row.id)}
                                         onSelectRow={() => onSelectRow(row.id)}
                                         onDeleteRow={() =>
@@ -248,8 +230,10 @@ function applyFilter({
 
     if (filterName) {
         inputData = inputData.filter(
-            (user: any) =>
-                user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+            (item: any) =>
+                item?.vehicle?.registration
+                    ?.toLowerCase()
+                    .indexOf(filterName.toLowerCase()) !== -1
         )
     }
 
@@ -266,4 +250,4 @@ function applyFilter({
     return inputData
 }
 
-export default TasksTable
+export default SalesTable

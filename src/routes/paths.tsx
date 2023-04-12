@@ -80,6 +80,18 @@ export const PATH_DASHBOARD = {
         root: path(ROOTS_DASHBOARD, 'reports'),
         details: (id: string | number) =>
             path(ROOTS_DASHBOARD, `reports/details/${id}`),
+
+        sales: path(ROOTS_DASHBOARD, 'reports/sales'),
+        services: path(ROOTS_DASHBOARD, 'reports/services'),
+        revenue: path(ROOTS_DASHBOARD, 'reports/revenue'),
+        expenses: path(ROOTS_DASHBOARD, 'reports/expenses'),
+        vehicleType: path(ROOTS_DASHBOARD, 'reports/vehicle-type'),
+        salesDetails: (date: string | number) =>
+            path(ROOTS_DASHBOARD, `reports/sales/details/${date}`),
+        vehicleTypeDetails: (type: string) =>
+            path(ROOTS_DASHBOARD, `reports/vehicle-type/details/${type}`),
+        durationTasks: (date: string | number) =>
+            path(ROOTS_DASHBOARD, `reports/tasks/details/${date}`),
     },
     users: {
         root: path(ROOTS_DASHBOARD, 'users'),
