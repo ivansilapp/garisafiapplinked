@@ -92,6 +92,8 @@ export const PATH_DASHBOARD = {
             path(ROOTS_DASHBOARD, `reports/vehicle-type/details/${type}`),
         durationTasks: (date: string | number) =>
             path(ROOTS_DASHBOARD, `reports/tasks/details/${date}`),
+        vehicleTypeTasks: (type: string) =>
+            path(ROOTS_DASHBOARD, `reports/vehicle-type/${type}`),
     },
     users: {
         root: path(ROOTS_DASHBOARD, 'users'),

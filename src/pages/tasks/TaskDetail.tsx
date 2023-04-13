@@ -268,7 +268,7 @@ function TaskDetail() {
                 taskId: task.id,
                 saleId: 1,
             }
-            console.log(payload)
+            // console.log(payload)
             const response = await axios.post(`${apiUrl}/payment`, payload)
 
             if (response.status === 200) {
@@ -542,7 +542,9 @@ function TaskDetail() {
                                         loading={closingLoader}
                                         onClick={closeTask}
                                         variant="contained"
-                                        disabled={task.closed}
+                                        disabled={
+                                            task.closed || !task.fullyPaid
+                                        }
                                     >
                                         Close task
                                     </LoadingButton>
@@ -628,8 +630,18 @@ function TaskDetail() {
                                                 </Grid>
                                                 <Grid item xs={12} sm={4}>
                                                     <Typography variant="h5">
-                                                        <b>Pigeonhole: </b>{' '}
-                                                        {task?.pigeonhole ?? ''}
+                                                        <b>Key Number: </b>{' '}
+                                                        <Label
+                                                            sx={{
+                                                                fontSize:
+                                                                    '18px',
+                                                            }}
+                                                            color="error"
+                                                        >
+                                                            {' '}
+                                                            {task?.pigeonhole ??
+                                                                ''}{' '}
+                                                        </Label>
                                                     </Typography>
                                                 </Grid>
 

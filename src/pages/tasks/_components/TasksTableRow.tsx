@@ -81,12 +81,13 @@ export default function TaskTableRow({
                 <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Typography variant="subtitle2" noWrap>
-                            <Link
-                                style={styles}
+                            <Button
+                                color="primary"
+                                component={Link}
                                 to={PATH_DASHBOARD.tasks.details(id)}
                             >
                                 {fDateTime(CreatedAt, null)}
-                            </Link>
+                            </Button>
                         </Typography>
                     </Stack>
                 </TableCell>
@@ -98,28 +99,33 @@ export default function TaskTableRow({
                             vehicle?.id
                         )}
                     >
-                        {vehicle.registration}
+                        {vehicle?.model} - {vehicle.registration}
                     </Link>
                 </TableCell>
 
                 <TableCell align="center">
                     <Typography variant="subtitle2" noWrap>
-                        {row?.pigeonhole}
+                        <Label color="error"> {row?.pigeonhole} </Label>
                     </Typography>
                 </TableCell>
 
                 <TableCell align="left">
-                    {attendees.map((a: any) => {
-                        return (
-                            <Link
-                                style={styles}
-                                key={a.id}
-                                to={PATH_DASHBOARD.attendants.details(a.id)}
-                            >
-                                {a.name}
-                            </Link>
-                        )
-                    })}
+                    <Stack display="flex" direction="row" spacing={1}>
+                        {attendees.map((a: any, i: number) => {
+                            return (
+                                <Button
+                                    color="info"
+                                    component={Link}
+                                    style={styles}
+                                    key={a.id}
+                                    to={PATH_DASHBOARD.attendants.details(a.id)}
+                                >
+                                    {a.name}
+                                    {i !== attendees.length - 1 && ','}
+                                </Button>
+                            )
+                        })}
+                    </Stack>
                 </TableCell>
 
                 <TableCell align="left">

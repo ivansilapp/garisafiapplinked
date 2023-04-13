@@ -79,7 +79,7 @@ function VehicleTypeReport() {
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
-                heading="Reports"
+                heading="Vehicle Type Reports"
                 links={[
                     { name: 'Dashboard', href: PATH_DASHBOARD.root },
                     {

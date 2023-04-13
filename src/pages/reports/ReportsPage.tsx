@@ -42,9 +42,9 @@ function ReportsPage() {
                         <Button component={Link} to="/reports/revenue">
                             Revenue
                         </Button>
-                        <Button component={Link} to="/reports/expenses">
+                        {/* <Button component={Link} to="/reports/expenses">
                             Expenses
-                        </Button>
+                        </Button> */}
                     </Stack>
                 </Grid>
                 <Grid item xs={12} md={6}>

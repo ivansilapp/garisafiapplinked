@@ -16,7 +16,7 @@ export default function VehicleDetailPage() {
     const { themeStretch } = useSettingsContext()
     const { vehicle } = useVehicle({ id: id ?? '' })
 
-    console.log('vehicle', vehicle)
+    // console.log('vehicle', vehicle)
 
     const computePercentage = (value: number, total: number) => {
         const percentage = (value / total) * 100

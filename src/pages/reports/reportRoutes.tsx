@@ -18,6 +18,10 @@ const TaskDurationReport = Loadable(
     lazy(() => import('./DurationServiceReport'))
 )
 
+const VehicleTypeDurationTasksReport = Loadable(
+    lazy(() => import('./VehicleTypeDurationTasksReport'))
+)
+
 export const reportsRoutes = [
     {
         path: 'reports',
@@ -80,6 +84,14 @@ export const reportsRoutes = [
         element: (
             <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
                 <TaskDurationReport />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'reports/vehicle-type/details/:type',
+        element: (
+            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+                <VehicleTypeDurationTasksReport />
             </RoleBasedGuard>
         ),
     },

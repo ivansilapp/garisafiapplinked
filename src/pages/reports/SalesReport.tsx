@@ -13,7 +13,7 @@ import {
 import { Link } from 'react-router-dom'
 // import RevenueChart from './_components/RevenueChart'
 import { ErrorBoundary } from 'react-error-boundary'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { useSettingsContext } from '../../components/settings'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
@@ -82,45 +82,53 @@ function SalesReport() {
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
-                heading="Reports"
+                heading="Sales Reports"
                 links={[
                     { name: 'Dashboard', href: PATH_DASHBOARD.root },
                     {
                         name: 'reports',
                         href: PATH_DASHBOARD.reports.root,
                     },
+                    {
+                        name: 'sales reports',
+                        href: PATH_DASHBOARD.reports.sales,
+                    },
                 ]}
             />
             <ErrorBoundary
                 fallback={<InternalError error="error loading reports data" />}
             >
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        {loading && (
+                <Suspense fallback={<p>Loading... </p>}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            {loading && (
+                                <Card>
+                                    <CardContent>
+                                        <Stack
+                                            display="flex"
+                                            direction="row"
+                                            justifyContent="center"
+                                        >
+                                            <CircularProgress />
+                                        </Stack>
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </Grid>
+
+                        <Grid item xs={12} lg={4} xl={3}>
                             <Card>
+                                <CardHeader title="Total sales" />
                                 <CardContent>
-                                    <Stack
-                                        display="flex"
-                                        direction="row"
-                                        justifyContent="center"
-                                    >
-                                        <CircularProgress />
-                                    </Stack>
+                                    {fCurrency(salesTotal)}
                                 </CardContent>
                             </Card>
-                        )}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <GroupdSalesTable data={sales} />
+                        </Grid>
                     </Grid>
-
-                    <Grid item xs={12} lg={4} xl={3}>
-                        <Card>
-                            <CardHeader title="Total sales" />
-                            <CardContent>{fCurrency(salesTotal)}</CardContent>
-                        </Card>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <GroupdSalesTable data={sales} />
-                    </Grid>
-                </Grid>
+                </Suspense>
             </ErrorBoundary>
         </Container>
     )

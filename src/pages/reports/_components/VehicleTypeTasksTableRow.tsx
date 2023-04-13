@@ -52,7 +52,7 @@ export default function VehicleTypeTasksTableRow({ row }: any) {
             <TableCell align="left">
                 <IconButton
                     component={Link}
-                    to={PATH_DASHBOARD.reports.salesDetails(vehicleType)}
+                    to={PATH_DASHBOARD.reports.vehicleTypeDetails(vehicleType)}
                 >
                     <Iconify icon="bx:bx-show" width={20} height={20} />
                 </IconButton>

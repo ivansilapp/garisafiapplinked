@@ -218,7 +218,7 @@ export default function NewTaskPage() {
                 fallback={<InternalError error="Error loading tasks" />}
             >
                 <CustomBreadcrumbs
-                    heading="Tasks"
+                    heading="Create task"
                     links={[
                         { name: 'Dashboard', href: PATH_DASHBOARD.root },
                         {

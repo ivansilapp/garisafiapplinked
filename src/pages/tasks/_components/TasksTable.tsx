@@ -20,7 +20,7 @@ import { useSnackbar } from '../../../components/snackbar'
 const TABLE_HEAD = [
     { id: 'CreatedAt', label: 'Created at', align: 'left' },
     { id: 'vehicle', label: 'Vehicle', align: 'left' },
-    { id: 'pigeohole', label: 'Pigeonhole', align: 'left' },
+    { id: 'pigeohole', label: 'Key number', align: 'left' },
     { id: 'attendant', label: 'Attendant', align: 'left' },
     { id: 'status', label: 'Status', align: 'left' },
     { id: 'cost', label: 'Cost', align: 'right' },
@@ -58,8 +58,6 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
 
     const [filterName, setFilterName] = useState('')
 
-    const [filterRole, setFilterRole] = useState('all')
-
     const [filterStatus, setFilterStatus] = useState('all')
 
     useEffect(() => {
@@ -71,12 +69,10 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
         inputData: tableData,
         comparator: getComparator(order, orderBy),
         filterName,
-        filterRole,
         filterStatus,
     })
 
-    const isFiltered =
-        filterName !== '' || filterRole !== 'all' || filterStatus !== 'all'
+    const isFiltered = filterName !== '' || filterStatus !== 'all'
 
     const dataInPage = dataFiltered.slice(
         page * rowsPerPage,
@@ -87,7 +83,6 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
 
     const isNotFound =
         (!dataFiltered.length && !!filterName) ||
-        (!dataFiltered.length && !!filterRole) ||
         (!dataFiltered.length && !!filterStatus)
 
     const handleOpenConfirm = () => {
@@ -110,7 +105,6 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
 
     const handleResetFilter = () => {
         setFilterName('')
-        setFilterRole('all')
         setFilterStatus('all')
     }
 
@@ -226,13 +220,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
     )
 }
 
-function applyFilter({
-    inputData,
-    comparator,
-    filterName,
-    filterStatus,
-    filterRole,
-}: any) {
+function applyFilter({ inputData, comparator, filterName, filterStatus }: any) {
     const stabilizedThis = inputData.map((el: any, index: number) => [
         el,
         index,
@@ -246,21 +234,42 @@ function applyFilter({
 
     inputData = stabilizedThis.map((el: any) => el[0])
 
+    const attendees =
+        inputData
+            ?.map((t: any) => t.attendants)
+            ?.map((a: any) => {
+                const names = a?.map((at: any) =>
+                    at?.attendant?.name?.toLowerCase()
+                )
+                return names
+            })
+            .flat() ?? []
+
     if (filterName) {
-        inputData = inputData.filter(
-            (user: any) =>
-                user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        )
+        // console.log(attendees, 'attendees')
+        inputData = inputData.filter((item: any) => {
+            const attendants = item?.attendants
+                ?.map((a: any) => {
+                    return a?.attendant?.name?.toLowerCase()
+                })
+                .map(
+                    (name: any) =>
+                        name?.indexOf(filterName.toLowerCase()) !== -1
+                )
+
+            return (
+                item?.vehicle?.registration
+                    .toLowerCase()
+                    .indexOf(filterName.toLowerCase()) !== -1 ||
+                attendants.includes(true)
+            )
+        })
     }
 
     if (filterStatus !== 'all') {
         inputData = inputData.filter(
             (user: any) => user.status === filterStatus
         )
-    }
-
-    if (filterRole !== 'all') {
-        inputData = inputData.filter((user: any) => user.role === filterRole)
     }
 
     return inputData
