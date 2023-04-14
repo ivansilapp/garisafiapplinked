@@ -1,12 +1,27 @@
-import { Button, Container, Grid, Stack } from '@mui/material'
+import {
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    Container,
+    Grid,
+    Stack,
+    Typography,
+} from '@mui/material'
 import { Link } from 'react-router-dom'
 import RevenueChart from './_components/RevenueChart'
 import { useSettingsContext } from '../../components/settings'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import { PATH_DASHBOARD } from '../../routes/paths'
+import useTopAttendants from '../../hooks/attendant/useTopAttendants'
+import TopAttendantsTable from './_components/TopAttendantsTable'
+import { fCurrency } from '../../utils/formatNumber'
 
 function ReportsPage() {
     const { themeStretch } = useSettingsContext()
+    const { attendants, revenue, expenses } = useTopAttendants()
+
+    console.log(attendants, revenue, expenses)
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
@@ -20,7 +35,7 @@ function ReportsPage() {
                 ]}
             />
 
-            <Grid container>
+            <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Stack
                         justifyContent="flex-end"
@@ -48,13 +63,45 @@ function ReportsPage() {
                     </Stack>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <RevenueChart
+                    <Card>
+                        <CardHeader title="30 days Revenue" />
+                        <CardContent>
+                            <Typography variant="h4" gutterBottom>
+                                {fCurrency(
+                                    (revenue?.sales_revenue ?? 0) +
+                                        (revenue?.tasks ?? 0)
+                                )}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                    {/* <RevenueChart
                         total={18765}
                         percent={2.6}
                         chart={{
                             series: [111, 136, 76, 108, 74, 54, 57, 84],
                         }}
-                    />
+                    /> */}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <Card>
+                        <CardHeader title="30 days expenses" />
+                        <CardContent>
+                            <Typography variant="h4" gutterBottom>
+                                {fCurrency(expenses?.total ?? 0)}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                    {/* <RevenueChart
+                        total={18765}
+                        percent={2.6}
+                        chart={{
+                            series: [111, 136, 76, 108, 74, 54, 57, 84],
+                        }}
+                    /> */}
+                </Grid>
+
+                <Grid item xs={12}>
+                    <TopAttendantsTable data={attendants ?? []} />
                 </Grid>
             </Grid>
         </Container>

@@ -106,10 +106,10 @@ const navConfig: INav[] = [
                 title: 'users',
                 path: PATH_DASHBOARD.users.root,
                 icon: ICONS.user,
-                children: [
-                    { title: 'list', path: PATH_DASHBOARD.users.root },
-                    { title: 'suspended', path: PATH_DASHBOARD.users.cards },
-                ],
+                // children: [
+                //     { title: 'list', path: PATH_DASHBOARD.users.root },
+                //     { title: 'suspended', path: PATH_DASHBOARD.users.cards },
+                // ],
             },
             {
                 title: 'system data',

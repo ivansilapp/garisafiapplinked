@@ -140,12 +140,12 @@ function WaitlistTable({ data, handleUpdate, mutate }: any) {
     return (
         <Suspense fallback={<p>Loading...</p>}>
             <Card>
-                <GeneralTableToolbar
+                {/* <GeneralTableToolbar
                     isFiltered={isFiltered}
                     filterName={filterName}
                     onFilterName={handleFilterName}
                     onResetFilter={handleResetFilter}
-                />
+                /> */}
 
                 <TableContainer
                     sx={{ position: 'relative', overflow: 'unset' }}
