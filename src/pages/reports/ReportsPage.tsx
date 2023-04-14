@@ -21,7 +21,7 @@ function ReportsPage() {
     const { themeStretch } = useSettingsContext()
     const { attendants, revenue, expenses } = useTopAttendants()
 
-    console.log(attendants, revenue, expenses)
+    // console.log(attendants, revenue, expenses)
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs

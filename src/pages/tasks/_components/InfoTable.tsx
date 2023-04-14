@@ -4,7 +4,7 @@ import Label from '../../../components/label'
 import TasksTable from './TasksTable'
 import WaitlistTable from './WaitlistTable'
 
-export default function InfoTable({ info, tableData, mutate }: any) {
+export default function InfoTable({ info, tableData, overdue, mutate }: any) {
     // const [filterStatus, setFilterStatus] = useState('waitlist')
     const [currentTab, setCurrentTab] = useState('waitlist')
 
@@ -27,21 +27,6 @@ export default function InfoTable({ info, tableData, mutate }: any) {
                     mutate={mutate}
                     data={info?.waitlist ?? []}
                 />
-            ),
-        },
-        {
-            value: 'pending',
-            label: 'Pending',
-            color: 'warning',
-            count: info?.pending?.length ?? 0,
-            component: (
-                <Suspense fallback={<p>Loading...</p>}>
-                    <TasksTable
-                        onDeleteRow={() => {}}
-                        mutate={mutate}
-                        data={info.pending ?? []}
-                    />
-                </Suspense>
             ),
         },
         {
@@ -75,6 +60,21 @@ export default function InfoTable({ info, tableData, mutate }: any) {
             ),
         },
         {
+            value: 'unpaid',
+            label: 'Overdue',
+            color: 'warning',
+            count: overdue?.length ?? 0,
+            component: (
+                <Suspense fallback={<p>Loading...</p>}>
+                    <TasksTable
+                        onDeleteRow={() => {}}
+                        mutate={mutate}
+                        data={overdue ?? []}
+                    />
+                </Suspense>
+            ),
+        },
+        {
             value: 'cancelled',
             label: 'Cancelled',
             color: 'error',
@@ -84,7 +84,7 @@ export default function InfoTable({ info, tableData, mutate }: any) {
                     <TasksTable
                         onDeleteRow={() => {}}
                         mutate={mutate}
-                        data={info.canceled ?? []}
+                        data={info.cancelled ?? []}
                     />
                 </Suspense>
             ),

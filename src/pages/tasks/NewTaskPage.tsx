@@ -202,6 +202,13 @@ export default function NewTaskPage() {
             return
         }
 
+        if (attendants.length >= 2) {
+            enqueueSnackbar('You can only add two attendants', {
+                variant: 'warning',
+            })
+            return
+        }
+
         const attendantIds = attendants.map((a: any) => a.id)
         if (attendantIds.includes(value.id)) {
             enqueueSnackbar('Attendant already added', { variant: 'warning' })

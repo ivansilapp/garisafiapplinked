@@ -66,6 +66,7 @@ export const PATH_DASHBOARD = {
     },
     payments: {
         root: path(ROOTS_DASHBOARD, 'payments'),
+        overdue: path(ROOTS_DASHBOARD, 'payments/overdue'),
         details: (id: string | number) =>
             path(ROOTS_DASHBOARD, `payments/details/${id}`),
     },

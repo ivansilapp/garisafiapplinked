@@ -53,9 +53,15 @@ import ProductSaleModal from './_components/ProductSaleModal'
 import TaskPaymentCard from './_components/TaskPayment'
 import VehicleDetailCard from './_components/VehicleDetail'
 import Label from '../../components/label/Label'
+import VehicleForm from '../system_data/_components/vehicle/VehicleForm'
+import AddToQueueModal from './_components/AddToQueueModal'
+import useBodyTypes from '../../hooks/body-types/useBodyTypes'
 
 function TaskDetail() {
     const { themeStretch } = useSettingsContext()
+    const { clients } = useAccountList()
+    const { bodyTypes } = useBodyTypes()
+
     const theme = useTheme()
     const navigate = useNavigate()
     const { id } = useParams<{ id: string }>()
@@ -150,6 +156,15 @@ function TaskDetail() {
                 })
                 return
             }
+
+            // check if the task.attendants has 2 attendants return
+            if (task.attendants.length === 2) {
+                enqueueSnackbar('Task already has 2 attendants', {
+                    variant: 'error',
+                })
+                return
+            }
+
             const attendantIds = task.attendants.map(
                 (taskAttendant: any) => taskAttendant.attendant.id
             )
@@ -519,6 +534,12 @@ function TaskDetail() {
                 ]}
                 action={
                     <Box display="flex" rowGap={2} columnGap={2}>
+                        <AddToQueueModal
+                            task={task}
+                            mutate={mutate}
+                            bodyTypes={bodyTypes}
+                            clients={clients}
+                        />
                         <Button
                             onClick={() => navigate(PATH_DASHBOARD.tasks.new)}
                             variant="contained"
@@ -546,7 +567,7 @@ function TaskDetail() {
                                             task.closed || !task.fullyPaid
                                         }
                                     >
-                                        Close task
+                                        Issue key
                                     </LoadingButton>
                                 ) : null}
 
@@ -979,6 +1000,9 @@ function TaskDetail() {
                         loading={saleLoader}
                         handleSubmit={handleSale}
                         setProduct={setProduct}
+                        vehicleReg={task.vehicle.registration}
+                        quantity={quantity}
+                        setQuantity={setQuantity}
                     />
                     {/* Reassign modal */}
                     <Dialog

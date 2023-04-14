@@ -10,7 +10,7 @@ import { PATH_DASHBOARD } from '../../routes/paths'
 import PaymentsTable from './_components/PaymentTable'
 import Iconify from '../../components/iconify'
 
-function PaymentPage() {
+function OverduePayment() {
     const { themeStretch } = useSettingsContext()
     const { payments } = usePaymentList()
 
@@ -20,25 +20,29 @@ function PaymentPage() {
                 fallback={<InternalError error="Error loading payments data" />}
             >
                 <CustomBreadcrumbs
-                    heading="Payments"
+                    heading="Overdue payments"
                     links={[
                         { name: 'Dashboard', href: PATH_DASHBOARD.root },
                         {
                             name: 'payments',
                             href: PATH_DASHBOARD.payments.root,
                         },
+                        {
+                            name: 'overdue payments',
+                            href: PATH_DASHBOARD.payments.root,
+                        },
                     ]}
-                    action={
-                        <Button
-                            component={Link}
-                            to="/payments/overdue"
-                            endIcon={
-                                <Iconify icon="eva:arrow-ios-forward-outline" />
-                            }
-                        >
-                            Overdue payments
-                        </Button>
-                    }
+                    // action={
+                    //     <Button
+                    //         component={Link}
+                    //         to="/payments/overdue"
+                    //         endIcon={
+                    //             <Iconify icon="eva:arrow-ios-forward-outline" />
+                    //         }
+                    //     >
+                    //         Overdue payments
+                    //     </Button>
+                    // }
                 />
 
                 <Suspense fallback={<p>Loading...</p>}>
@@ -49,4 +53,4 @@ function PaymentPage() {
     )
 }
 
-export default PaymentPage
+export default OverduePayment

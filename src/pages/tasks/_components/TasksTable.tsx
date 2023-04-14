@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { useEffect, useState } from 'react'
-import { Card, Table, TableBody, TableContainer } from '@mui/material'
+import { Card, Paper, Table, TableBody, TableContainer } from '@mui/material'
 
 import {
     useTable,
@@ -21,12 +21,14 @@ const TABLE_HEAD = [
     { id: 'CreatedAt', label: 'Created at', align: 'left' },
     { id: 'vehicle', label: 'Vehicle', align: 'left' },
     { id: 'pigeohole', label: 'Key number', align: 'left' },
+    { id: 'services', label: 'Services', align: 'left' },
     { id: 'attendant', label: 'Attendant', align: 'left' },
     { id: 'status', label: 'Status', align: 'left' },
-    { id: 'cost', label: 'Cost', align: 'right' },
+    { id: 'cost', label: 'Cost', align: 'left' },
+    { id: 'payment', label: 'Payment', align: 'left' },
     // { id: 'fullyPaid', label: 'Fully paid', align: 'center' },
     // { id: 'paidAmount', label: 'Paid amount', align: 'center' },
-    { id: 'cancel', label: 'Cancel', align: 'right' },
+    // { id: 'cancel', label: 'Cancel', align: 'right' },
     { id: '' },
 ]
 
@@ -136,7 +138,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
     }
 
     return (
-        <Card>
+        <Paper>
             <GeneralTableToolbar
                 isFiltered={isFiltered}
                 filterName={filterName}
@@ -216,7 +218,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                 dense={dense}
                 onChangeDense={onChangeDense}
             />
-        </Card>
+        </Paper>
     )
 }
 

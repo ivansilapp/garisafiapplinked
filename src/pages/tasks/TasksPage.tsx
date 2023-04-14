@@ -32,6 +32,7 @@ import VehicleAutocomplete from '../system_data/_components/vehicle/VehicleAutoc
 import VehicleForm from '../system_data/_components/vehicle/VehicleForm'
 import AnalyticsBar from './_components/AnalyticsBar'
 import InfoTable from './_components/InfoTable'
+import useUnpaidTasks from '../../hooks/task/useUnpaidTasks'
 
 function Tasks() {
     const { themeStretch } = useSettingsContext()
@@ -39,6 +40,7 @@ function Tasks() {
     const { info, mutate } = useTaskAnalytics()
     const { clients } = useClientList()
     const { bodyTypes } = useBodyTypes()
+    const overdueData = useUnpaidTasks()
 
     const [open, setOpen] = useState(false)
     const [activeVehilce, setActiveVehilce] = useState<any>(null)
@@ -142,7 +144,11 @@ function Tasks() {
 
                 <Suspense fallback={<p>Loading...</p>}>
                     <AnalyticsBar info={info} />
-                    <InfoTable mutate={mutate} info={info} />
+                    <InfoTable
+                        mutate={mutate}
+                        info={info}
+                        overdue={overdueData?.tasks ?? []}
+                    />
                 </Suspense>
 
                 <Dialog

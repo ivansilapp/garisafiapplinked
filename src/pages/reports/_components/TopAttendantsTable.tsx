@@ -134,7 +134,7 @@ function TopAttendantsTable({ data }: any) {
                                 )
                                 .map((row: any) => (
                                     <TopAttendantsTableRow
-                                        key={row.vehicleType}
+                                        key={row.id}
                                         row={row}
                                         selected={selected.includes(row.id)}
                                         onSelectRow={() => onSelectRow(row.id)}

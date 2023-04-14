@@ -12,7 +12,7 @@ export default function useTable(props: any) {
     const [page, setPage] = useState(props?.defaultCurrentPage || 0)
 
     const [rowsPerPage, setRowsPerPage] = useState(
-        props?.defaultRowsPerPage || 5
+        props?.defaultRowsPerPage || 30
     )
 
     const [selected, setSelected] = useState(props?.defaultSelected || [])

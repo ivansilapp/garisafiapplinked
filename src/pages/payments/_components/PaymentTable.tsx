@@ -207,6 +207,9 @@ function applyFilter({
             (payment: any) =>
                 payment.reference
                     .toLowerCase()
+                    .indexOf(filterName.toLowerCase()) !== -1 ||
+                payment?.account?.name
+                    .toLowerCase()
                     .indexOf(filterName.toLowerCase()) !== -1
         )
     }

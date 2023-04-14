@@ -16,6 +16,7 @@ import {
 import { Link, NavLink } from 'react-router-dom'
 import { useTheme } from '@mui/system'
 import LoadingButton from '@mui/lab/LoadingButton'
+import { toUpper } from 'lodash'
 import Label from '../../../components/label'
 import Iconify from '../../../components/iconify'
 import MenuPopover from '../../../components/menu-popover'
@@ -45,13 +46,25 @@ export default function TaskTableRow({
         status,
         vehicle,
         attendants,
+        jobs,
     }: any = row
+
+    const serviceInitials =
+        jobs
+            ?.map((j: any) => {
+                const names = j?.name.split(' ')
+                const initials = names.map((n: any) => n[0]).join('')
+                return initials
+            })
+            .join(', ') ?? ''
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
-    const [openPopover, setOpenPopover] = useState(null)
+    // const [openPopover, setOpenPopover] = useState(null)
 
     const theme = useTheme()
+
+    const isLight = theme.palette.mode === 'light'
 
     const paidAmount =
         payments?.reduce((acc: any, payment: any) => {
@@ -99,15 +112,16 @@ export default function TaskTableRow({
                             vehicle?.id
                         )}
                     >
-                        {vehicle?.model} - {vehicle.registration}
+                        {vehicle?.registration} - {vehicle?.model}
                     </Link>
                 </TableCell>
 
-                <TableCell align="center">
+                <TableCell align="left">
                     <Typography variant="subtitle2" noWrap>
                         <Label color="error"> {row?.pigeonhole} </Label>
                     </Typography>
                 </TableCell>
+                <TableCell align="left">{toUpper(serviceInitials)}</TableCell>
 
                 <TableCell align="left">
                     <Stack display="flex" direction="row" spacing={1}>
@@ -120,7 +134,7 @@ export default function TaskTableRow({
                                     key={a.id}
                                     to={PATH_DASHBOARD.attendants.details(a.id)}
                                 >
-                                    {a.name}
+                                    {a?.name}
                                     {i !== attendees.length - 1 && ','}
                                 </Button>
                             )
@@ -142,6 +156,14 @@ export default function TaskTableRow({
                 </TableCell>
 
                 <TableCell align="right">{fCurrency(cost)}</TableCell>
+                <TableCell align="right">
+                    <Label
+                        variant={isLight ? 'soft' : 'filled'}
+                        color={fullyPaid ? 'success' : 'error'}
+                    >
+                        {fullyPaid ? 'Paid' : 'Not paid'}
+                    </Label>
+                </TableCell>
 
                 {/* <TableCell align="left">{fCurrency(paidAmount)}</TableCell> */}
                 {/* <TableCell align="left">
@@ -158,7 +180,7 @@ export default function TaskTableRow({
                     </Button>
                 </TableCell> */}
 
-                {!readOnly ? (
+                {/* {!readOnly ? (
                     <TableCell align="right">
                         <Button
                             variant="outlined"
@@ -169,7 +191,7 @@ export default function TaskTableRow({
                             Cancel
                         </Button>
                     </TableCell>
-                ) : null}
+                ) : null} */}
             </TableRow>
             <ConfirmDialog
                 open={openConfirm}
