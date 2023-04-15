@@ -56,10 +56,11 @@ import Label from '../../components/label/Label'
 import VehicleForm from '../system_data/_components/vehicle/VehicleForm'
 import AddToQueueModal from './_components/AddToQueueModal'
 import useBodyTypes from '../../hooks/body-types/useBodyTypes'
+import useClientList from '../../hooks/client/useClientList'
 
 function TaskDetail() {
     const { themeStretch } = useSettingsContext()
-    const { clients } = useAccountList()
+    const { clients } = useClientList()
     const { bodyTypes } = useBodyTypes()
 
     const theme = useTheme()
