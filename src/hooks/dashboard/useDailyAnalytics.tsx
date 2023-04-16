@@ -15,6 +15,7 @@ export default function useDailyAnalytics() {
         tasks: data ? data.tasks : [],
         expenses: data ? data.expenses : [],
         sales: data ? data.sales : [],
+        pigeonholes: data ? data.pigeonholes : [],
         mutate,
     }
 }

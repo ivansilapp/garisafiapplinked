@@ -660,9 +660,8 @@ function TaskDetail() {
                                                             }}
                                                             color="error"
                                                         >
-                                                            {' '}
                                                             {task?.pigeonhole ??
-                                                                ''}{' '}
+                                                                ''}
                                                         </Label>
                                                     </Typography>
                                                 </Grid>

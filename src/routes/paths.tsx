@@ -95,6 +95,7 @@ export const PATH_DASHBOARD = {
             path(ROOTS_DASHBOARD, `reports/tasks/details/${date}`),
         vehicleTypeTasks: (type: string) =>
             path(ROOTS_DASHBOARD, `reports/vehicle-type/${type}`),
+        pigeonholes: path(ROOTS_DASHBOARD, 'reports/pigeonholes'),
     },
     users: {
         root: path(ROOTS_DASHBOARD, 'users'),

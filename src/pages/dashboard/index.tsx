@@ -11,6 +11,8 @@ import AccountBalances from './_components/AccountBalances'
 import TaskByCarType from './_components/TaskByCarType'
 import TaskCountCard from './_components/TaskCountCard'
 import ValueGraphWidget from './_components/ValueGraphWidget'
+import OccupiedCard from './_components/OccupiedCard'
+import { PATH_DASHBOARD } from '../../routes/paths'
 
 function Dashboard() {
     const theme = useTheme()
@@ -24,6 +26,7 @@ function Dashboard() {
         tasks,
         expenses,
         sales,
+        pigeonholes,
     } = useDailyAnalytics()
     const { bodyTypes } = useBodyTypes()
 
@@ -237,6 +240,18 @@ function Dashboard() {
                                     ],
                                 }}
                             />
+                        </Grid>
+
+                        <Grid container item xs={12}>
+                            <Grid item xs={12} md={4}>
+                                <OccupiedCard
+                                    title="Pigeon Hole"
+                                    value={pigeonholes?.length ?? 0}
+                                    url={PATH_DASHBOARD.reports.pigeonholes}
+                                    total={60}
+                                    icon="/assets/icons/apps/ic_dropbox.svg"
+                                />
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Suspense>
