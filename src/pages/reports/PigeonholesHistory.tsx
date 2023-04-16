@@ -24,11 +24,12 @@ import useOccupiedPigeoholes from '../../hooks/pigeoholes/useOccupiedPigeonholes
 import InternalError from '../../components/shared/500Error'
 import PigeonholesTable from './_components/PigeonholesTable'
 import Iconify from '../../components/iconify'
+import usePigeoholes from '../../hooks/pigeoholes/usePigeonholes'
 
 function PigeonholesReport() {
     const { themeStretch } = useSettingsContext()
 
-    const { pigeonholes } = useOccupiedPigeoholes()
+    const { pigeonholes } = usePigeoholes()
 
     const { enqueueSnackbar } = useSnackbar()
 
@@ -59,16 +60,11 @@ function PigeonholesReport() {
                         name: 'key holes',
                         href: PATH_DASHBOARD.reports.pigeonholes,
                     },
+                    {
+                        name: 'history',
+                        href: PATH_DASHBOARD.reports.pigeonholesHistory,
+                    },
                 ]}
-                action={
-                    <Button
-                        component={Link}
-                        to={PATH_DASHBOARD.reports.pigeonholesHistory}
-                        endIcon={<Iconify icon="eva:arrow-forward-outline" />}
-                    >
-                        History
-                    </Button>
-                }
             />
 
             <Grid container>

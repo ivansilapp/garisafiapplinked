@@ -24,6 +24,8 @@ const VehicleTypeDurationTasksReport = Loadable(
 
 const PigeonholesReport = Loadable(lazy(() => import('./PigeonholesReport')))
 
+const PigeonholesHistory = Loadable(lazy(() => import('./PigeonholesHistory')))
+
 export const reportsRoutes = [
     {
         path: 'reports',
@@ -102,6 +104,14 @@ export const reportsRoutes = [
         element: (
             <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
                 <PigeonholesReport />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'reports/pigeonholes/history',
+        element: (
+            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+                <PigeonholesHistory />
             </RoleBasedGuard>
         ),
     },

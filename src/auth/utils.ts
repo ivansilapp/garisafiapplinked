@@ -159,3 +159,10 @@ export const setSession = (accessToken: string | null) => {
         delete axios.defaults.headers.common.Authorization
     }
 }
+
+export const taskStatus = {
+    pending: 'pending',
+    ongoing: 'ongoing',
+    complete: 'complete',
+    cancelled: 'cancelled',
+}

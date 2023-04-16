@@ -57,6 +57,7 @@ import VehicleForm from '../system_data/_components/vehicle/VehicleForm'
 import AddToQueueModal from './_components/AddToQueueModal'
 import useBodyTypes from '../../hooks/body-types/useBodyTypes'
 import useClientList from '../../hooks/client/useClientList'
+import { taskStatus } from '../../auth/utils'
 
 function TaskDetail() {
     const { themeStretch } = useSettingsContext()
@@ -202,12 +203,12 @@ function TaskDetail() {
         try {
             setCancelLoader(true)
             const response = await axios.put(`/task/${task.id}`, {
-                status: 'cancelled',
+                status: taskStatus.cancelled,
             })
 
             if (response.status === 200) {
                 mutate()
-                enqueueSnackbar('Task  canceled', {
+                enqueueSnackbar('Task  cancelled', {
                     variant: 'success',
                 })
                 setCancelModal(false)

@@ -1,8 +1,8 @@
 import useSWR from 'swr'
 import { apiUrl } from '../../config-global'
 
-export default function useOccupiedPigeoholes() {
-    const url = `${apiUrl}/tasks/occupied-pigeonhole`
+export default function usePigeoholes() {
+    const url = `${apiUrl}/tasks/pigeonhole`
     const { error, data, mutate } = useSWR(url, { suspense: true })
 
     return {

@@ -30,7 +30,7 @@ import { fCurrency, fNumber } from '../../../utils/formatNumber'
 // ----------------------------------------------------------------------
 
 export default function TopAttendantsTableRow({ row }: any) {
-    const { id, number, task, occupied, CreatedAt, releasedAt }: any = row
+    const { id, number, task, occupied, CreatedAt, closedAt }: any = row
 
     const theme = useTheme()
 
@@ -42,9 +42,7 @@ export default function TopAttendantsTableRow({ row }: any) {
 
             <TableCell align="left">
                 {occupied ? (
-                    <Label variant="ghost" color="error">
-                        Occupied
-                    </Label>
+                    <Label color="error">Occupied</Label>
                 ) : (
                     <Label variant="ghost" color="error">
                         Released
@@ -53,7 +51,16 @@ export default function TopAttendantsTableRow({ row }: any) {
             </TableCell>
 
             <TableCell align="left">
-                {releasedAt ? fDateTime(releasedAt, null) : '--'}
+                {closedAt ? fDateTime(closedAt, null) : '--'}
+            </TableCell>
+
+            <TableCell align="left">
+                <Button
+                    to={PATH_DASHBOARD.tasks.details(task.id)}
+                    component={Link}
+                >
+                    task {task.id}
+                </Button>
             </TableCell>
         </TableRow>
     )

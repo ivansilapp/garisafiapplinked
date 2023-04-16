@@ -22,7 +22,7 @@ const TABLE_HEAD = [
     { id: 'number', label: 'Number', align: 'left' },
     { id: 'released', label: 'Released', align: 'left' },
     { id: 'releaseAt', label: 'Release date', align: 'left' },
-    { id: '' },
+    { id: 'taks', label: 'Task', align: 'left' },
 ]
 
 function PigeonholesTable({ data }: any) {
