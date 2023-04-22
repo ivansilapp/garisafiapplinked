@@ -1,21 +1,21 @@
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 // @mui
-import { ThemeProvider, createTheme, useTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme, useTheme } from '@mui/material/styles'
 //
-import useLocales from './useLocales';
+import useLocales from './useLocales'
 
 // ----------------------------------------------------------------------
 
 ThemeLocalization.propTypes = {
-  children: PropTypes.node,
-};
+    children: PropTypes.node,
+}
 
 export default function ThemeLocalization({ children }) {
-  const outerTheme = useTheme();
+    const outerTheme = useTheme()
 
-  const { currentLang } = useLocales();
+    const { currentLang } = useLocales()
 
-  const theme = createTheme(outerTheme, currentLang.systemValue);
+    const theme = createTheme(outerTheme, currentLang.systemValue)
 
-  return <ThemeProvider theme={theme}> {children} </ThemeProvider>;
+    return <ThemeProvider theme={theme}> {children} </ThemeProvider>
 }

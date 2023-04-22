@@ -21,6 +21,7 @@ const TABLE_HEAD = [
     { id: 'registration', label: 'Registration', align: 'left' },
     { id: 'model', label: 'Model', align: 'left' },
     { id: 'bodyType', label: 'Body type', align: 'left' },
+    { id: 'points', label: 'Reward points', align: 'left' },
     { id: 'update', label: 'Update', align: 'center' },
     { id: 'delete', label: 'delete', align: 'right' },
     { id: '' },
@@ -50,7 +51,7 @@ function VehicleTable({ data, handleUpdate, mutate }: any) {
 
     const [tableData, setTableData] = useState(data ?? [])
 
-    const [openConfirm, setOpenConfirm] = useState(false)
+    // const [openConfirm, setOpenConfirm] = useState(false)
 
     const [filterName, setFilterName] = useState('')
 
@@ -85,19 +86,6 @@ function VehicleTable({ data, handleUpdate, mutate }: any) {
         (!dataFiltered.length && !!filterName) ||
         (!dataFiltered.length && !!filterRole) ||
         (!dataFiltered.length && !!filterStatus)
-
-    const handleOpenConfirm = () => {
-        setOpenConfirm(true)
-    }
-
-    const handleCloseConfirm = () => {
-        setOpenConfirm(false)
-    }
-
-    const handleFilterStatus = (event: any, newValue: any) => {
-        setPage(0)
-        setFilterStatus(newValue)
-    }
 
     const handleFilterName = (event: any) => {
         setPage(0)

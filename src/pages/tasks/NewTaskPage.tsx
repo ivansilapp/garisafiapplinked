@@ -32,7 +32,10 @@ import { useSnackbar } from '../../components/snackbar'
 import { apiUrl } from '../../config-global'
 import axios from '../../utils/axios'
 import TaskForm from './_components/TaskForm'
-import FormProvider from '../../components/hook-form'
+import FormProvider, {
+    RHFCheckbox,
+    RHFMultiCheckbox,
+} from '../../components/hook-form'
 import useServiceList from '../../hooks/service/useServiceList'
 import usePrices from '../../hooks/prices/usePrices'
 import AttendantAutocomplete from '../../hooks/attendant/AttendantAutocomplete'
@@ -70,6 +73,7 @@ export default function NewTaskPage() {
             status: currentInvoice?.status || 'pending',
             discount: currentInvoice?.discount || 0,
             vehicleId: currentInvoice?.vehicleId || '',
+            carKeys: currentInvoice?.carKeys || true,
             items: currentInvoice?.items || [
                 {
                     service: '',
@@ -165,6 +169,7 @@ export default function NewTaskPage() {
             }
 
             const url = `${apiUrl}/task`
+            // console.log(payload, 'payload')
             let options = {
                 ...payload,
                 vehicleId: vehicle.id,
@@ -315,7 +320,7 @@ export default function NewTaskPage() {
                         </Box>
 
                         <Stack
-                            sx={{ width: '100%', py: 3 }}
+                            sx={{ width: '100%' }}
                             alignContent="flex-end"
                             justifyContent="end"
                             alignItems={{ xs: 'flex-end', md: 'flex-end' }}

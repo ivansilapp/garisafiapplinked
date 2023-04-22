@@ -91,7 +91,9 @@ export default function AttendantTableRow({
                 <TableCell align="left">
                     {fCurrency(calculateCommission(commissions))}
                 </TableCell>
-                <TableCell align="left">{fCurrency(totalTips)}</TableCell>
+                <TableCell align="left">
+                    <Label color="error">{fCurrency(totalTips)}</Label>
+                </TableCell>
                 <TableCell align="left">{status}</TableCell>
 
                 <TableCell align="center">

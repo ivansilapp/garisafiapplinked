@@ -55,6 +55,7 @@ function BodyTypeForm({ type, onSubmit, loading, handleClose }: any) {
                         variant="outlined"
                         disabled={loading}
                         onClick={handleClose}
+                        color="warning"
                     >
                         Cancel
                     </Button>

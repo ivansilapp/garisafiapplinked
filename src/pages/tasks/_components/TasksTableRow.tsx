@@ -24,6 +24,7 @@ import ConfirmDialog from '../../../components/confirm-dialog'
 import { PATH_DASHBOARD } from '../../../routes/paths'
 import { fDateTime } from '../../../utils/formatTime'
 import { fCurrency } from '../../../utils/formatNumber'
+import { removeSpecialCharacters } from '../../../components/animate'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
@@ -54,7 +55,7 @@ export default function TaskTableRow({
             ?.map((j: any) => {
                 const names = j?.name.split(' ')
                 const initials = names.map((n: any) => n[0]).join('')
-                return initials
+                return removeSpecialCharacters(initials)
             })
             .join(', ') ?? ''
 

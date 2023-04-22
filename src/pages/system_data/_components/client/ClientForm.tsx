@@ -85,6 +85,7 @@ function ClientForm({ client, onSubmit, handleClose }: any) {
                         variant="outlined"
                         disabled={isSubmitting}
                         onClick={handleClose}
+                        color="warning"
                     >
                         Cancel
                     </Button>

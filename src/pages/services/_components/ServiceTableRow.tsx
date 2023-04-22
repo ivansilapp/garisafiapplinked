@@ -11,6 +11,9 @@ import {
     TableCell,
     IconButton,
     Typography,
+    Switch,
+    Backdrop,
+    CircularProgress,
 } from '@mui/material'
 // components
 import { Link, NavLink } from 'react-router-dom'
@@ -21,6 +24,8 @@ import Iconify from '../../../components/iconify'
 import MenuPopover from '../../../components/menu-popover'
 import ConfirmDialog from '../../../components/confirm-dialog'
 import { PATH_DASHBOARD } from '../../../routes/paths'
+import axiosInstance from '../../../utils/axios'
+import { useSnackbar } from '../../../components/snackbar'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
@@ -32,13 +37,15 @@ export default function ServiceTableRow({
     onDeleteRow,
     deleteLoader,
 }: any) {
-    const { id, name }: any = row
+    const { id, name, isRedeemable }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
-    const [openPopover, setOpenPopover] = useState(null)
+    const [loader, setLoader] = useState(false)
+    const [status, setStatus] = useState(isRedeemable)
 
     const theme = useTheme()
+    const { enqueueSnackbar } = useSnackbar()
 
     const handleOpenConfirm = () => {
         setOpenConfirm(true)
@@ -48,17 +55,35 @@ export default function ServiceTableRow({
         setOpenConfirm(false)
     }
 
-    const handleOpenPopover = (event: any) => {
-        setOpenPopover(event.currentTarget)
-    }
-
-    const handleClosePopover = () => {
-        setOpenPopover(null)
-    }
-
     const styles: any = {
         color: theme.palette.mode === 'dark' ? 'white' : 'black',
         textDecoration: 'none',
+    }
+
+    const handleReedemable = async (e: any) => {
+        try {
+            setLoader(true)
+            const redemable = e.target.checked
+            const response = await axiosInstance.put(
+                `/service/update-redemable`,
+                {
+                    isRedemable: redemable,
+                    id: Number(id),
+                }
+            )
+            if (response.status === 200) {
+                setStatus(redemable)
+                enqueueSnackbar('Updated successfully', {
+                    variant: 'success',
+                })
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Something went wrong'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            // loading = false
+            setLoader(false)
+        }
     }
 
     return (
@@ -69,6 +94,15 @@ export default function ServiceTableRow({
                 </TableCell> */}
 
                 <TableCell>
+                    <Backdrop
+                        sx={{
+                            color: '#fff',
+                            zIndex: (t: any) => t.zIndex.drawer + 1,
+                        }}
+                        open={loader}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Typography variant="subtitle2" noWrap>
                             <Link
@@ -85,6 +119,10 @@ export default function ServiceTableRow({
                     <Link style={styles} to={`/services/${id}`}>
                         Prices
                     </Link>
+                </TableCell>
+
+                <TableCell align="left">
+                    <Switch checked={status} onChange={handleReedemable} />
                 </TableCell>
 
                 <TableCell align="center">

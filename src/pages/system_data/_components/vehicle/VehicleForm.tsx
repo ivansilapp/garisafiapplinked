@@ -43,6 +43,7 @@ function VehicleForm({
             clientId: vehicle?.clientId || '',
             bodyId: vehicle?.bodyId || '',
             model: vehicle?.model || '',
+            points: 0,
         }),
         [vehicle]
     )
@@ -85,6 +86,13 @@ function VehicleForm({
                     ))}
                 </RHFSelect>
 
+                <RHFTextField
+                    type="number"
+                    name="points"
+                    label="Reward points"
+                    disabled={isEdit}
+                />
+
                 <RHFSelect native name="clientId" label="Client">
                     {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                     <option value="" defaultValue="" />
@@ -108,6 +116,7 @@ function VehicleForm({
                         variant="outlined"
                         disabled={loading}
                         onClick={handleClose}
+                        color="warning"
                     >
                         Cancel
                     </Button>

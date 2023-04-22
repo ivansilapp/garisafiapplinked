@@ -20,6 +20,7 @@ import { useSnackbar } from '../../../components/snackbar'
 const TABLE_HEAD = [
     { id: 'name', label: 'Service', align: 'left' },
     { id: 'prices', label: 'Prices', align: 'left' },
+    { id: 'redeemable', label: 'Redeemable', align: 'left' },
     { id: 'update', label: 'Update', align: 'center' },
     { id: 'delete', label: 'delete', align: 'right' },
     { id: '' },

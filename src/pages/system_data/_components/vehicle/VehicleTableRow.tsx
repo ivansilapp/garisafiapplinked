@@ -32,7 +32,7 @@ export default function VehicleTableRow({
     onDeleteRow,
     deleteLoader,
 }: any) {
-    const { id, bodyType, registration, model }: any = row
+    const { id, bodyType, registration, points, model }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
@@ -86,6 +86,7 @@ export default function VehicleTableRow({
                 <TableCell align="left">{model}</TableCell>
 
                 <TableCell align="left">{bodyType?.name}</TableCell>
+                <TableCell align="left">{points?.points}</TableCell>
 
                 <TableCell align="center">
                     <Button

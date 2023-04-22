@@ -10,3 +10,8 @@ export * from './actions'
 export * from './container'
 export * from './transition'
 export * from './background'
+
+// fuction that removes special characters from a string
+export const removeSpecialCharacters = (str: string) => {
+    return str.replace(/[^a-zA-Z0-9]/g, '')
+}

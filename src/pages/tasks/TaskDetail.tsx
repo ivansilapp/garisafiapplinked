@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-restricted-globals */
 import { LoadingButton } from '@mui/lab'
 import {
@@ -76,6 +77,8 @@ function TaskDetail() {
     const [addAttendantModal, setAddAttendantModal] = useState(false)
     const [saleModal, setSaleModal] = useState(false)
 
+    const [hasRefrence, setHasRefrence] = useState(false)
+
     const [cancelLoader, setCancelLoader] = useState(false)
     const [reassignLoader, setReassignLoader] = useState(false)
     const [completeLoader, setCompleteLoader] = useState(false)
@@ -83,6 +86,7 @@ function TaskDetail() {
     const [addServiceLoader, setAddServiceLoader] = useState(false)
     const [closingLoader, setClosingLoader] = useState(false)
     const [saleLoader, setSaleLoader] = useState(false)
+    const [redeemLoader, setRedeemLoader] = useState(false)
 
     const [product, setProduct] = useState<any>(null)
     const [quantity, setQuantity] = useState<any>(1)
@@ -110,7 +114,7 @@ function TaskDetail() {
     const { enqueueSnackbar } = useSnackbar()
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    const { task, mutate } = useTask({ id })
+    const { task, mutate }: any = useTask({ id })
     const { accounts } = useAccountList()
     const { services } = useServiceList()
     const { prices } = usePrices()
@@ -150,6 +154,7 @@ function TaskDetail() {
             setReassignLoader(false)
         }
     }
+
     const handleAddAttendant = async () => {
         try {
             if (!attendant) {
@@ -245,6 +250,9 @@ function TaskDetail() {
 
     const handleAccountChange = (e: SelectChangeEvent) => {
         setAccount(e.target.value)
+        const ac = accounts.find((a: any) => a.id === e.target.value)
+        // console.log(ac, 'is the account')
+        setHasRefrence(ac?.name?.toLowerCase()?.includes('cash'))
     }
 
     const handleAmountChange = (e: any) => {
@@ -519,6 +527,34 @@ function TaskDetail() {
     const salesCost = task?.sales[0] ? task.sales[0].amount : 0
     const serviceCost = task?.cost ?? 0
 
+    const handleRedeem = async () => {
+        try {
+            setRedeemLoader(true)
+            const url = `${apiUrl}/payment/redeem`
+
+            const payload = {
+                taskId: task.id,
+            }
+
+            const reponse = await axios.put(url, payload)
+
+            if (reponse.status === 200) {
+                mutate()
+                enqueueSnackbar('Task redeemed successfully', {
+                    variant: 'success',
+                })
+            } else {
+                const { data } = reponse
+                throw new Error(data.error ?? 'Error redeeming task')
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error redeeming task'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setRedeemLoader(false)
+        }
+    }
+
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
             <CustomBreadcrumbs
@@ -617,16 +653,31 @@ function TaskDetail() {
                                     Complete task
                                 </Button>
                                 {task.status === 'complete' ? (
-                                    <Button
-                                        color="info"
-                                        variant="contained"
-                                        disabled={task.fullyPaid}
-                                        onClick={() => setPaymentModal(true)}
-                                    >
-                                        {task.fullyPaid
-                                            ? 'Fully Paid'
-                                            : 'Add Payment'}
-                                    </Button>
+                                    task?.vehicle?.points?.points === 9 &&
+                                    !task.isRedeemed ? (
+                                        <LoadingButton
+                                            loading={redeemLoader}
+                                            color="info"
+                                            variant="contained"
+                                            disabled={task.fullyPaid}
+                                            onClick={handleRedeem}
+                                        >
+                                            Redeem points
+                                        </LoadingButton>
+                                    ) : (
+                                        <Button
+                                            color="info"
+                                            variant="contained"
+                                            disabled={task.fullyPaid}
+                                            onClick={() =>
+                                                setPaymentModal(true)
+                                            }
+                                        >
+                                            {task.fullyPaid
+                                                ? 'Fully Paid'
+                                                : 'Add Payment'}
+                                        </Button>
+                                    )
                                 ) : null}
                             </Box>
                         </Stack>
@@ -730,12 +781,21 @@ function TaskDetail() {
                                                     <Typography variant="h5" />
                                                 </Grid>
                                                 <Grid item xs={12} sm={4}>
-                                                    <Typography variant="h5">
+                                                    <Typography variant="h6">
                                                         <b>
                                                             Car Keys:{' '}
                                                             {task?.carKeys
                                                                 ? 'Yes'
                                                                 : 'No'}
+                                                            {task?.closed ? (
+                                                                <small>
+                                                                    {
+                                                                        ' (submitted)'
+                                                                    }
+                                                                </small>
+                                                            ) : (
+                                                                ''
+                                                            )}
                                                         </b>
                                                     </Typography>
                                                 </Grid>
@@ -1091,7 +1151,7 @@ function TaskDetail() {
                         open={completeModal}
                         onClose={() => setCompleteModal(false)}
                     >
-                        <DialogTitle>Mark task as completed</DialogTitle>
+                        <DialogTitle>Mark completed</DialogTitle>
                         <DialogContent>
                             <Box sx={{ p: 2 }}>
                                 <Stack
@@ -1182,6 +1242,7 @@ function TaskDetail() {
                                     label="Payment reference"
                                     variant="outlined"
                                     value={reference}
+                                    disabled={hasRefrence}
                                     onChange={(e) => {
                                         setReference(e.target.value)
                                     }}

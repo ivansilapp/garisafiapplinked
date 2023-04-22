@@ -30,7 +30,7 @@ import { fCurrency, fNumber } from '../../../utils/formatNumber'
 // ----------------------------------------------------------------------
 
 export default function SalesTableRow({ row }: any) {
-    const { amount, amountPaid, CreatedAt, vehicle, products }: any = row
+    const { amount, CreatedAt, vehicle, products }: any = row
 
     // const theme = useTheme()
 
@@ -48,8 +48,9 @@ export default function SalesTableRow({ row }: any) {
 
             <TableCell align="left">{vehicle?.registration}</TableCell>
 
-            <TableCell align="left">{fCurrency(amount)}</TableCell>
             <TableCell align="left">{items}</TableCell>
+
+            <TableCell align="left">{fCurrency(amount)}</TableCell>
 
             {/* <TableCell align="left">{fCurrency(amountPaid)}</TableCell> */}
 

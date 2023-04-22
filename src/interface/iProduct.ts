@@ -1,5 +1,5 @@
 interface IProduct {
-  name: string
+    name: string
 }
 
 export default IProduct

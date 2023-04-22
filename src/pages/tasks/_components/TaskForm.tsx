@@ -17,7 +17,11 @@ import {
 import { fCurrency } from '../../../utils/formatNumber'
 // components
 import Iconify from '../../../components/iconify'
-import { RHFSelect, RHFTextField } from '../../../components/hook-form'
+import {
+    RHFCheckbox,
+    RHFSelect,
+    RHFTextField,
+} from '../../../components/hook-form'
 import { apiUrl } from '../../../config-global'
 import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
@@ -168,7 +172,7 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
                 divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />}
                 spacing={3}
             >
-                {fields.map((item, index) => (
+                {fields?.map((item, index) => (
                     <Stack key={item.id} alignItems="flex-end" spacing={1.5}>
                         <Stack
                             direction={{ xs: 'column', md: 'row' }}
@@ -264,7 +268,7 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
                                         </InputAdornment>
                                     ),
                                 }}
-                                sx={{ maxWidth: { md: 96 } }}
+                                sx={{ maxWidth: { md: 146 } }}
                             />
                         </Stack>
 
@@ -323,6 +327,10 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
                     /> */}
                 </Stack>
             </Stack>
+            <Divider sx={{ my: 3, borderStyle: 'dashed' }} />
+            <Stack>
+                <RHFCheckbox label="Car keys" name="carKeys" />
+            </Stack>
 
             <Stack spacing={2} sx={{ mt: 3 }}>
                 <Stack direction="row" justifyContent="flex-end">
@@ -332,7 +340,7 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
                     </Typography>
                 </Stack>
 
-                <Stack direction="row" justifyContent="flex-end">
+                {/* <Stack direction="row" justifyContent="flex-end">
                     <Typography>Discount :</Typography>
                     <Typography
                         sx={{
@@ -345,14 +353,14 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
                             ? `- ${fCurrency(values.discount)}`
                             : '-'}
                     </Typography>
-                </Stack>
+                </Stack> */}
 
-                <Stack direction="row" justifyContent="flex-end">
+                {/* <Stack direction="row" justifyContent="flex-end">
                     <Typography>Taxes :</Typography>
                     <Typography sx={{ textAlign: 'right', width: 120 }}>
                         {values.taxes ? fCurrency(values.taxes) : '-'}
                     </Typography>
-                </Stack>
+                </Stack> */}
 
                 <Stack direction="row" justifyContent="flex-end">
                     <Typography variant="h6">Total price :</Typography>

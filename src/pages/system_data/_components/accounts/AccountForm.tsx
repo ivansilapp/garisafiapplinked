@@ -95,6 +95,7 @@ function AccountForm({
                         variant="outlined"
                         disabled={loading}
                         onClick={handleClose}
+                        color="warning"
                     >
                         Cancel
                     </Button>

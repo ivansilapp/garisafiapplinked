@@ -144,6 +144,9 @@ function Tasks() {
 
                 <Suspense fallback={<p>Loading...</p>}>
                     <AnalyticsBar info={info} />
+                </Suspense>
+
+                <Suspense fallback={<p>Loading...</p>}>
                     <InfoTable
                         mutate={mutate}
                         info={info}
@@ -203,17 +206,19 @@ function Tasks() {
                     onClose={handleVehicleModalClose}
                 >
                     <DialogTitle>Add vehicle</DialogTitle>
-                    <DialogContent>
-                        {/* <DialogContentText /> */}
+                    <Suspense fallback={<p>Loading...</p>}>
+                        <DialogContent>
+                            {/* <DialogContentText /> */}
 
-                        <VehicleForm
-                            onSubmit={onSubmitVehicle}
-                            vehicle={activeVehilce}
-                            handleClose={handleVehicleModalClose}
-                            clients={clients}
-                            bodyTypes={bodyTypes}
-                        />
-                    </DialogContent>
+                            <VehicleForm
+                                onSubmit={onSubmitVehicle}
+                                vehicle={activeVehilce}
+                                handleClose={handleVehicleModalClose}
+                                clients={clients}
+                                bodyTypes={bodyTypes}
+                            />
+                        </DialogContent>
+                    </Suspense>
                 </Dialog>
             </ErrorBoundary>
         </Container>

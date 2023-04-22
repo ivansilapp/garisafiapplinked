@@ -81,5 +81,7 @@ function PigeonholesReport() {
         </Container>
     )
 }
+// postgres=# alter user postgres with password '123456';
+//  ALTER USER postgres WITH PASSWORD '123456';
 
 export default PigeonholesReport

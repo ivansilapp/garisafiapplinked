@@ -1,4 +1,4 @@
-import { Container, Grid } from '@mui/material'
+import { Container, Grid, Typography } from '@mui/material'
 import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useParams } from 'react-router-dom'
@@ -10,6 +10,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths'
 import TasksTable from '../../tasks/_components/TasksTable'
 import PointsWidget from '../_components/vehicle/PointsWidget'
 import VehicleDetailCard from '../_components/vehicle/VehicleDetailCard'
+import SalesTable from '../../products/_components/SalesTable'
 
 export default function VehicleDetailPage() {
     const { id } = useParams<{ id: string }>()
@@ -67,11 +68,26 @@ export default function VehicleDetailPage() {
                         </Grid>
 
                         <Grid item xs={12} md={12}>
+                            <Typography px={2} variant="h4">
+                                Tasks
+                            </Typography>
                             <TasksTable
                                 data={vehicle?.tasks}
                                 mutate={() => {}}
                                 handleUpdate={() => {}}
                                 readOnly
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography px={2} variant="h4">
+                                Sales
+                            </Typography>
+
+                            <SalesTable
+                                data={vehicle.sales ?? []}
+                                mutate={() => {}}
+                                handleUpdate={() => {}}
                             />
                         </Grid>
                     </Grid>
