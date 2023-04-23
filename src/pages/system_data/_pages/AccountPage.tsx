@@ -89,7 +89,7 @@ function AccountsPage() {
     }
 
     return (
-        <Container maxWidth={themeStretch ? false : 'lg'}>
+        <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
                 heading="Vehicles"
                 links={[

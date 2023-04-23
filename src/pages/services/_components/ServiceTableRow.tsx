@@ -105,12 +105,13 @@ export default function ServiceTableRow({
                     </Backdrop>
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Typography variant="subtitle2" noWrap>
-                            <Link
+                            {name}
+                            {/* <Link
                                 style={styles}
                                 to={PATH_DASHBOARD.users.details(id)}
                             >
                                 {name}
-                            </Link>
+                            </Link> */}
                         </Typography>
                     </Stack>
                 </TableCell>

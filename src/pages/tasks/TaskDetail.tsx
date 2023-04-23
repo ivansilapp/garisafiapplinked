@@ -399,7 +399,7 @@ function TaskDetail() {
 
     const closeTask = async () => {
         try {
-            setClosingLoader(false)
+            setClosingLoader(true)
             const response = await axios.get(`${apiUrl}/task/close/${task.id}`)
             if (response.status === 200) {
                 task.closed = true

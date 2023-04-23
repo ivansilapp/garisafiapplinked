@@ -36,7 +36,7 @@ export default function BodyTypeTableRow({
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
-    const [openPopover, setOpenPopover] = useState(null)
+    // const [openPopover, setOpenPopover] = useState(null)
 
     const theme = useTheme()
 
@@ -46,14 +46,6 @@ export default function BodyTypeTableRow({
 
     const handleCloseConfirm = () => {
         setOpenConfirm(false)
-    }
-
-    const handleOpenPopover = (event: any) => {
-        setOpenPopover(event.currentTarget)
-    }
-
-    const handleClosePopover = () => {
-        setOpenPopover(null)
     }
 
     const styles: any = {
@@ -71,12 +63,13 @@ export default function BodyTypeTableRow({
                 <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Typography variant="subtitle2" noWrap>
-                            <Link
+                            {name}
+                            {/* <Link
                                 style={styles}
                                 to={PATH_DASHBOARD.users.details(id)}
                             >
                                 {name}
-                            </Link>
+                            </Link> */}
                         </Typography>
                     </Stack>
                 </TableCell>
