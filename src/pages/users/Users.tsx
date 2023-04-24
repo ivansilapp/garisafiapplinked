@@ -69,6 +69,10 @@ function Users() {
 
     const [tableData, setTableData] = useState(users)
 
+    useEffect(() => {
+        setTableData(users)
+    }, [users])
+
     const [openConfirm, setOpenConfirm] = useState(false)
 
     const [filterName, setFilterName] = useState('')

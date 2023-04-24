@@ -18,6 +18,8 @@ import {
     FormControlLabel,
     InputAdornment,
     IconButton,
+    MenuItem,
+    Divider,
 } from '@mui/material'
 // utils
 import { fData } from '../../../utils/formatNumber'
@@ -36,11 +38,13 @@ import FormProvider, {
 } from '../../../components/hook-form'
 import axios from '../../../utils/axios'
 import Iconify from '../../../components/iconify'
+import { ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE } from '../../../utils/roles'
 
 // ----------------------------------------------------------------------
 
 export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
     const [showPassword, setShowPassword] = useState(false)
+    const [activeRole, setActiveRole] = useState('')
     const navigate = useNavigate()
 
     const { enqueueSnackbar } = useSnackbar()
@@ -286,7 +290,40 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
                             <RHFTextField name="address" label="Address" />
                             <RHFTextField name="zipCode" label="Zip/Code" />
                             <RHFTextField name="company" label="Company" /> */}
-                            <RHFTextField name="role" label="Role" />
+                            {/* <RHFTextField name="role" label="Role" /> */}
+
+                            <RHFSelect
+                                name="role"
+                                label="User role"
+                                InputLabelProps={{ shrink: true }}
+                                sx={{ maxWidth: { md: 360 } }}
+                            >
+                                <MenuItem
+                                    value=""
+                                    onClick={() => setActiveRole('')}
+                                    sx={{
+                                        fontStyle: 'italic',
+                                        color: 'text.secondary',
+                                    }}
+                                >
+                                    None
+                                </MenuItem>
+
+                                <Divider />
+
+                                {[CASHIER_ROLE, MANAGER_ROLE, ADMIN_ROLE].map(
+                                    (role: any) => (
+                                        <MenuItem
+                                            disabled={activeRole === role}
+                                            key={role}
+                                            value={role}
+                                            onClick={() => setActiveRole(role)}
+                                        >
+                                            {role}
+                                        </MenuItem>
+                                    )
+                                )}
+                            </RHFSelect>
 
                             <RHFTextField
                                 name="password"
