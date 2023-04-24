@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 // @mui
 import { Box, Stack, Drawer } from '@mui/material'
@@ -16,6 +16,8 @@ import navConfig from './config-navigation'
 import NavDocs from './NavDocs'
 import NavAccount from './NavAccount'
 import NavToggleButton from './NavToggleButton'
+import useUser from '../../../hooks/user/useUser'
+import { useAuthContext } from '../../../auth/useAuthContext'
 
 // ----------------------------------------------------------------------
 
@@ -26,6 +28,9 @@ import NavToggleButton from './NavToggleButton'
 
 export default function NavVertical({ openNav, onCloseNav }: any) {
     const { pathname } = useLocation()
+    const { user }: any = useAuthContext()
+
+    const [navData, setNavData] = useState<any>([])
 
     const isDesktop = useResponsive('up', 'lg', '')
 
@@ -35,6 +40,28 @@ export default function NavVertical({ openNav, onCloseNav }: any) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname])
+
+    useEffect(() => {
+        if (user) {
+            const { role } = user
+            const data = navConfig
+                .map((item: any) => {
+                    const items = item?.items?.filter((navItem: any) => {
+                        return navItem?.role?.includes(role)
+                    })
+                    if (items.length > 0) {
+                        return {
+                            ...item,
+                            items,
+                        }
+                    }
+                    return null
+                })
+                .filter((item: any) => item)
+            // console.log(data, 'data')
+            setNavData(data)
+        }
+    }, [user])
 
     const renderContent = (
         // eslint-disable-next-line react/jsx-filename-extension
@@ -62,7 +89,7 @@ export default function NavVertical({ openNav, onCloseNav }: any) {
                 <NavAccount />
             </Stack>
 
-            <NavSectionVertical data={navConfig} />
+            <NavSectionVertical data={navData} />
 
             <Box sx={{ flexGrow: 1 }} />
 

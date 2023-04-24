@@ -602,7 +602,9 @@ function TaskDetail() {
                                         onClick={closeTask}
                                         variant="contained"
                                         disabled={
-                                            task.closed || !task.fullyPaid
+                                            task.closed ||
+                                            !task.fullyPaid ||
+                                            task.pigeonhole === 0
                                         }
                                     >
                                         Issue key
@@ -702,21 +704,23 @@ function TaskDetail() {
                                                         )}
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={12} sm={4}>
-                                                    <Typography variant="h5">
-                                                        <b>Key Number: </b>{' '}
-                                                        <Label
-                                                            sx={{
-                                                                fontSize:
-                                                                    '18px',
-                                                            }}
-                                                            color="error"
-                                                        >
-                                                            {task?.pigeonhole ??
-                                                                ''}
-                                                        </Label>
-                                                    </Typography>
-                                                </Grid>
+                                                {task.pigeonhole !== 0 ? (
+                                                    <Grid item xs={12} sm={4}>
+                                                        <Typography variant="h5">
+                                                            <b>Key Number: </b>{' '}
+                                                            <Label
+                                                                sx={{
+                                                                    fontSize:
+                                                                        '18px',
+                                                                }}
+                                                                color="error"
+                                                            >
+                                                                {task?.pigeonhole ??
+                                                                    ''}
+                                                            </Label>
+                                                        </Typography>
+                                                    </Grid>
+                                                ) : null}
 
                                                 <Grid item xs={12} sm={4}>
                                                     <Typography variant="h5">

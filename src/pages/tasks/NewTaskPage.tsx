@@ -173,7 +173,6 @@ export default function NewTaskPage() {
             let options = {
                 ...payload,
                 vehicleId: vehicle.id,
-                carKeys: true,
             }
 
             if (attendants.length > 0) {

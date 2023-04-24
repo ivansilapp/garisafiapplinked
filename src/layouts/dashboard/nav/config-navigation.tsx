@@ -4,7 +4,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths'
 import Label from '../../../components/label'
 import Iconify from '../../../components/iconify'
 import SvgColor from '../../../components/svg-color'
-import { ADMIN_ROLE, MANAGER_ROLE } from '../../../utils/roles'
+import { ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE } from '../../../utils/roles'
 
 // ----------------------------------------------------------------------
 
@@ -61,37 +61,43 @@ const navConfig: INav[] = [
                 title: 'Dashboard',
                 path: PATH_DASHBOARD.root,
                 icon: ICONS.dashboard,
+                role: [ADMIN_ROLE],
             },
             {
                 title: 'Tasks',
                 path: PATH_DASHBOARD.tasks.root,
                 icon: ICONS.cart,
-                role: [ADMIN_ROLE],
+                role: [ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE],
             },
             {
                 title: 'Products',
                 path: PATH_DASHBOARD.products.root,
                 icon: ICONS.ecommerce,
+                role: [ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE],
             },
             {
                 title: 'Services',
                 path: PATH_DASHBOARD.services.root,
                 icon: ICONS.folder,
+                role: [ADMIN_ROLE, MANAGER_ROLE],
             },
             {
                 title: 'Attendants',
                 path: PATH_DASHBOARD.attendants.root,
                 icon: ICONS.file,
+                role: [ADMIN_ROLE, MANAGER_ROLE],
             },
             {
                 title: 'payments',
                 path: PATH_DASHBOARD.payments.root,
                 icon: ICONS.banking,
+                role: [ADMIN_ROLE],
             },
             {
                 title: 'reports',
                 path: PATH_DASHBOARD.reports.root,
                 icon: ICONS.analytics,
+                role: [ADMIN_ROLE],
             },
         ],
     },
@@ -106,6 +112,7 @@ const navConfig: INav[] = [
                 title: 'users',
                 path: PATH_DASHBOARD.users.root,
                 icon: ICONS.user,
+                role: [ADMIN_ROLE],
                 // children: [
                 //     { title: 'list', path: PATH_DASHBOARD.users.root },
                 //     { title: 'suspended', path: PATH_DASHBOARD.users.cards },
@@ -115,6 +122,7 @@ const navConfig: INav[] = [
                 title: 'system data',
                 path: PATH_DASHBOARD.systemData.root,
                 icon: ICONS.dashboard,
+                role: [ADMIN_ROLE],
                 children: [
                     {
                         title: 'body types',
@@ -142,6 +150,7 @@ const navConfig: INav[] = [
                 title: 'settings',
                 path: PATH_DASHBOARD.settings.root,
                 icon: ICONS.dashboard,
+                role: [ADMIN_ROLE],
             },
 
             // // E-COMMERCE

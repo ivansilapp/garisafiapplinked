@@ -31,7 +31,7 @@ export const apiUrl = HOST_API_KEY
 export const MAP_API = '' // process.env.REACT_APP_MAPBOX_API
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
-export const PATH_AFTER_LOGIN = '/dashboard' //  PATH_DASHBOARD.general.app // as '/dashboard/app'
+export const PATH_AFTER_LOGIN = '/tasks' //  PATH_DASHBOARD.general.app // as '/dashboard/app'
 
 // LAYOUT
 // ----------------------------------------------------------------------

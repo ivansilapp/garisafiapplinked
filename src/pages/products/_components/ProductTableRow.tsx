@@ -101,10 +101,10 @@ export default function ProductTableRow({
         setOpenConfirm(false)
     }
 
-    const styles: any = {
-        color: theme.palette.mode === 'dark' ? 'white' : 'black',
-        textDecoration: 'none',
-    }
+    // const styles: any = {
+    //     color: theme.palette.mode === 'dark' ? 'white' : 'black',
+    //     textDecoration: 'none',
+    // }
 
     return (
         <>
@@ -116,12 +116,13 @@ export default function ProductTableRow({
                 <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Typography variant="subtitle2" noWrap>
-                            <Link
+                            {name}
+                            {/* <Link
                                 style={styles}
                                 to={PATH_DASHBOARD.users.details(id)}
                             >
                                 {name}
-                            </Link>
+                            </Link> */}
                         </Typography>
                     </Stack>
                 </TableCell>
