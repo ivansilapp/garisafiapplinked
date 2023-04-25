@@ -34,6 +34,7 @@ import { useSnackbar } from '../../components/snackbar'
 import { apiUrl } from '../../config-global'
 import axios from '../../utils/axios'
 import PaymentsTable from '../payments/_components/PaymentTable'
+import CommissionTable from './_components/CommissionTable'
 
 // export const ecommerceSalesOverview = [...Array(3)].map((_, index) => ({
 //     label: ['Total Revenue', 'Total Earnings'][index],
@@ -265,6 +266,17 @@ function AttendantDetail() {
                             </Typography>
                             <PaymentsTable
                                 data={attendant?.payments ?? []}
+                                handleUpdate={() => {}}
+                                mutate={() => {}}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} sx={{ mt: 4 }}>
+                            <Typography px={2} variant="h4" gutterBottom>
+                                Attendant commissions
+                            </Typography>
+                            <CommissionTable
+                                data={commissions}
                                 handleUpdate={() => {}}
                                 mutate={() => {}}
                             />

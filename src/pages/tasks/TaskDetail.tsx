@@ -32,7 +32,7 @@ import {
 import { useTheme } from '@mui/material/styles'
 import { Fragment, Suspense, useEffect, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import ConfirmDialog from '../../components/confirm-dialog'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import { RHFSelect } from '../../components/hook-form'
@@ -628,7 +628,7 @@ function TaskDetail() {
                                     onClick={() => setSaleModal(true)}
                                     disabled={
                                         task.status === 'cancelled' ||
-                                        task.status === 'complete'
+                                        task.payments.length > 0
                                     }
                                 >
                                     Add product
@@ -978,13 +978,24 @@ function TaskDetail() {
                                                                 </IconButton>
                                                             }
                                                         >
-                                                            <ListItemText
-                                                                primary={
-                                                                    taskAttendant
-                                                                        .attendant
-                                                                        .name
-                                                                }
-                                                            />
+                                                            <ListItemText>
+                                                                <Button
+                                                                    component={
+                                                                        Link
+                                                                    }
+                                                                    to={PATH_DASHBOARD.attendants.details(
+                                                                        taskAttendant
+                                                                            .attendant
+                                                                            .id
+                                                                    )}
+                                                                >
+                                                                    {
+                                                                        taskAttendant
+                                                                            .attendant
+                                                                            .name
+                                                                    }
+                                                                </Button>
+                                                            </ListItemText>
                                                         </ListItem>
                                                     )
                                                 }
