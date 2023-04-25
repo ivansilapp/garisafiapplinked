@@ -85,6 +85,7 @@ function Dashboard() {
         )
     }
     const todaysTasks = tasks ? tasks.sort(dateSort)[tasks.length - 1] : null
+
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <ErrorBoundary
@@ -150,7 +151,7 @@ function Dashboard() {
                                             tasks
                                                 ?.sort(dateSort)
                                                 ?.map(
-                                                    (task: any) => task.total
+                                                    (task: any) => task.cost
                                                 ) ?? [],
                                     }}
                                 />
@@ -189,7 +190,7 @@ function Dashboard() {
                                                 ?.sort(dateSort)
                                                 ?.map(
                                                     (expense: any) =>
-                                                        expense.total
+                                                        expense.cost
                                                 ) ?? [],
                                     }}
                                 />
