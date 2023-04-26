@@ -39,6 +39,8 @@ import FormProvider, {
 import useServiceList from '../../hooks/service/useServiceList'
 import usePrices from '../../hooks/prices/usePrices'
 import AttendantAutocomplete from '../../hooks/attendant/AttendantAutocomplete'
+import { useAuthContext } from '../../auth/useAuthContext'
+import { ADMIN_ROLE } from '../../utils/roles'
 
 const currentInvoice: any = {}
 
@@ -48,6 +50,10 @@ export default function NewTaskPage() {
     const { enqueueSnackbar } = useSnackbar()
     const { services } = useServiceList()
     const { prices } = usePrices()
+
+    // get user from context
+    const { user }: any = useAuthContext()
+    const isAdmin = user?.role === ADMIN_ROLE
 
     const [open, setOpen] = useState(false)
     const [vehicleLoader, setVehicleLoader] = useState(false)
@@ -378,6 +384,7 @@ export default function NewTaskPage() {
                                 services={services}
                                 vehicle={vehicle}
                                 pricelist={prices}
+                                isAdmin={isAdmin}
                             />
 
                             <Stack

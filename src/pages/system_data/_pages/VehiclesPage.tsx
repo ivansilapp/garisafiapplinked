@@ -48,8 +48,12 @@ function VihiclesPage() {
         }
     }
 
-    const onSubmit = async (payload: any) => {
+    const onSubmit = async (payloadData: any) => {
         try {
+            const payload = {
+                ...payloadData,
+                points: Number(payloadData.points),
+            }
             if (activeVehilce && activeVehilce.id) {
                 // update record
                 const { data } = await axios.put(
@@ -77,7 +81,8 @@ function VihiclesPage() {
                 }
             }
         } catch (err: any) {
-            enqueueSnackbar(err.message || 'Opearation failed', {
+            const msg = err.error || err.message || 'Opearation failed'
+            enqueueSnackbar(msg, {
                 variant: 'error',
             })
         } finally {

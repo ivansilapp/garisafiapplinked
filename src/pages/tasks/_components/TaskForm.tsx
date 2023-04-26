@@ -28,7 +28,12 @@ import { useSnackbar } from '../../../components/snackbar'
 
 // ----------------------------------------------------------------------
 
-export default function TaskForm({ services, vehicle, pricelist }: any) {
+export default function TaskForm({
+    services,
+    vehicle,
+    pricelist,
+    isAdmin,
+}: any) {
     const { control, setValue, watch, resetField, getValues } = useFormContext()
     const { enqueueSnackbar } = useSnackbar()
     const [activeIds, setActiveIds] = useState<any>([])
@@ -310,6 +315,7 @@ export default function TaskForm({ services, vehicle, pricelist }: any) {
                         size="small"
                         label="Discount"
                         name="discount"
+                        disabled={!isAdmin}
                         onChange={(event: any) =>
                             setValue('discount', Number(event.target.value))
                         }

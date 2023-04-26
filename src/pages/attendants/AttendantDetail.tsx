@@ -35,6 +35,7 @@ import { apiUrl } from '../../config-global'
 import axios from '../../utils/axios'
 import PaymentsTable from '../payments/_components/PaymentTable'
 import CommissionTable from './_components/CommissionTable'
+import AppLoader from '../../components/loader/AppLoader'
 
 // export const ecommerceSalesOverview = [...Array(3)].map((_, index) => ({
 //     label: ['Total Revenue', 'Total Earnings'][index],
@@ -61,6 +62,8 @@ function AttendantDetail() {
 
     const [filterEndDate, setFilterEndDate] = useState<any>(null)
     const [filterStartDate, setFilterStartDate] = useState<any>(null)
+
+    const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
         handleDateFilter()
@@ -97,6 +100,7 @@ function AttendantDetail() {
 
             //     return
             // }
+            setLoading(true)
             const startDate = filterStartDate
                 ? format(filterStartDate, 'yyyy-MM-dd')
                 : null
@@ -130,6 +134,8 @@ function AttendantDetail() {
             const msg =
                 err?.error || err.message || 'Error loading attendant details'
             enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -167,6 +173,9 @@ function AttendantDetail() {
                     <InternalError error="Error loading attendant details" />
                 }
             >
+                {loading ? (
+                    <AppLoader open={loading} setOpen={() => {}} />
+                ) : null}
                 <Suspense fallback={<p> Loading...</p>}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} sx={{ mb: 3 }}>
@@ -259,13 +268,12 @@ function AttendantDetail() {
                                 readOnly={1}
                             />
                         </Grid>
-
                         <Grid item xs={12} sx={{ mt: 4 }}>
                             <Typography px={2} variant="h4" gutterBottom>
-                                Attendant payments
+                                Attendant commissions
                             </Typography>
-                            <PaymentsTable
-                                data={attendant?.payments ?? []}
+                            <CommissionTable
+                                data={commissions}
                                 handleUpdate={() => {}}
                                 mutate={() => {}}
                             />
@@ -273,10 +281,10 @@ function AttendantDetail() {
 
                         <Grid item xs={12} sx={{ mt: 4 }}>
                             <Typography px={2} variant="h4" gutterBottom>
-                                Attendant commissions
+                                Attendant payments
                             </Typography>
-                            <CommissionTable
-                                data={commissions}
+                            <PaymentsTable
+                                data={attendant?.payments ?? []}
                                 handleUpdate={() => {}}
                                 mutate={() => {}}
                             />
