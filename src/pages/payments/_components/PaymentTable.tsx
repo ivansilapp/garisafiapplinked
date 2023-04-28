@@ -1,7 +1,22 @@
 /* eslint-disable no-param-reassign */
 import { useEffect, useState } from 'react'
-import { Card, Table, TableBody, TableContainer } from '@mui/material'
+import {
+    Button,
+    Card,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Table,
+    TableBody,
+    TableContainer,
+} from '@mui/material'
 
+import { LoadingButton } from '@mui/lab'
 import {
     useTable,
     getComparator,
@@ -29,7 +44,7 @@ const TABLE_HEAD = [
     { id: '' },
 ]
 
-function PaymentsTable({ data, handleUpdate, mutate }: any) {
+function PaymentsTable({ data, accounts, handleUpdate, mutate }: any) {
     const {
         dense,
         page,
@@ -54,6 +69,10 @@ function PaymentsTable({ data, handleUpdate, mutate }: any) {
     const [tableData, setTableData] = useState(data ?? [])
 
     const [openConfirm, setOpenConfirm] = useState(false)
+    const [updateModal, setUpdateModal] = useState(false)
+    const [payment, setPayment] = useState(null)
+    const [updateLoader, setUpdateLoader] = useState(false)
+    const [account, setAccount] = useState<any>('')
 
     const [filterName, setFilterName] = useState('')
 
@@ -64,6 +83,8 @@ function PaymentsTable({ data, handleUpdate, mutate }: any) {
     useEffect(() => {
         setTableData(data)
     }, [data])
+
+    // const { enqueueSnackbar } = useSnackbar()
 
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const dataFiltered = applyFilter({
@@ -113,6 +134,66 @@ function PaymentsTable({ data, handleUpdate, mutate }: any) {
         setFilterStatus('all')
     }
 
+    const handlePaymentUpdate = async () => {
+        try {
+            setUpdateLoader(true)
+            // update logic
+            const { accountId, id }: any = payment
+
+            if (account < 1) {
+                enqueueSnackbar('Select valid account', {
+                    variant: 'error',
+                })
+                return
+            }
+
+            if (account === accountId) {
+                enqueueSnackbar('Select diffrent account', {
+                    variant: 'error',
+                })
+            }
+
+            const response = await axios.put(`/account/update-payment`, {
+                paymentId: id,
+                accountId: account,
+            })
+            if (response.status === 200) {
+                enqueueSnackbar('Payment updated successfully', {
+                    variant: 'success',
+                })
+                setUpdateModal(false)
+                mutate()
+            } else {
+                // const { data } = response
+                throw new Error(response.data)
+            }
+        } catch (err: any) {
+            // catch error
+            const msg = err.error || err.message || 'Something went wrong'
+            enqueueSnackbar(msg, {
+                variant: 'error',
+            })
+        } finally {
+            // setUpdateModal to false
+            setUpdateLoader(false)
+        }
+    }
+
+    const handleAccountChange = (e: any) => {
+        try {
+            const accountId = Number(e.target.value) || 0
+
+            if (accountId > 0) {
+                setAccount(accountId)
+            }
+            // update logic
+        } catch (err: any) {
+            // catch error
+        } finally {
+            // setUpdateModal to false
+        }
+    }
+
     return (
         <Card>
             <GeneralTableToolbar
@@ -150,7 +231,14 @@ function PaymentsTable({ data, handleUpdate, mutate }: any) {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row: any) => (
-                                    <PaymentTableRow key={row.id} row={row} />
+                                    <PaymentTableRow
+                                        key={row.id}
+                                        row={row}
+                                        handlePaymentUpdate={(p: any) => {
+                                            setPayment(p)
+                                            setUpdateModal(true)
+                                        }}
+                                    />
                                 ))}
 
                             <TableEmptyRows
@@ -178,6 +266,64 @@ function PaymentsTable({ data, handleUpdate, mutate }: any) {
                 dense={dense}
                 onChangeDense={onChangeDense}
             />
+
+            <Dialog
+                fullWidth
+                maxWidth="sm"
+                open={updateModal}
+                onClose={() => {
+                    setUpdateModal(false)
+                }}
+            >
+                <DialogTitle>Add Service</DialogTitle>
+                <DialogContent>
+                    {/* <DialogContentText /> */}
+
+                    <FormControl fullWidth>
+                        <InputLabel id="account-selection-label">
+                            Account
+                        </InputLabel>
+                        <Select
+                            labelId="account-selection-label"
+                            id="account-selection"
+                            value={account}
+                            label="Account"
+                            onChange={handleAccountChange}
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            {accounts.map((ac: any) => {
+                                return (
+                                    <MenuItem key={ac.id} value={ac.id}>
+                                        {ac.name}
+                                    </MenuItem>
+                                )
+                            })}
+                        </Select>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="warning"
+                        variant="outlined"
+                        onClick={() => {
+                            setAccount('')
+                            setUpdateModal(false)
+                        }}
+                    >
+                        Cancel
+                    </Button>
+
+                    <LoadingButton
+                        variant="outlined"
+                        loading={updateLoader}
+                        onClick={handlePaymentUpdate}
+                    >
+                        Update
+                    </LoadingButton>
+                </DialogActions>
+            </Dialog>
         </Card>
     )
 }

@@ -285,6 +285,14 @@ function TaskDetail() {
                 })
                 return
             }
+            // check if account is mpesa and has refrence
+            if (!hasRefrence && reference === '') {
+                enqueueSnackbar('Please enter a refrence', {
+                    variant: 'error',
+                })
+                return
+            }
+
             setPaymentLoader(true)
             const payload = {
                 amount: Number(amount) ?? 0,
@@ -1237,9 +1245,6 @@ function TaskDetail() {
                                             )
                                         })}
                                     </Select>
-                                    {/* <FormHelperText>
-                                        Choose the account client is paying with
-                                    </FormHelperText> */}
                                 </FormControl>
 
                                 <TextField

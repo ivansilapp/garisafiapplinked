@@ -27,7 +27,7 @@ import { fCurrency } from '../../../utils/formatNumber'
 
 // ----------------------------------------------------------------------
 
-export default function PaymentTableRow({ row }: any) {
+export default function PaymentTableRow({ row, handlePaymentUpdate }: any) {
     const {
         id,
         amount,
@@ -40,6 +40,7 @@ export default function PaymentTableRow({ row }: any) {
     }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
+    const [updateModal, setUpdateModal] = useState(false)
 
     const theme = useTheme()
 
@@ -74,7 +75,11 @@ export default function PaymentTableRow({ row }: any) {
             {/* <TableCell align="center">{type}</TableCell> */}
             <TableCell align="left">{user?.name}</TableCell>
 
-            <TableCell align="left">Preview</TableCell>
+            <TableCell align="left">
+                <IconButton onClick={() => handlePaymentUpdate(row)}>
+                    <Iconify icon="mdi:pencil" />
+                </IconButton>
+            </TableCell>
         </TableRow>
     )
 }

@@ -9,10 +9,12 @@ import usePaymentList from '../../hooks/payments/usePaymentList'
 import { PATH_DASHBOARD } from '../../routes/paths'
 import PaymentsTable from './_components/PaymentTable'
 import Iconify from '../../components/iconify'
+import useAccountList from '../../hooks/account/useAccountList'
 
 function PaymentPage() {
     const { themeStretch } = useSettingsContext()
-    const { payments } = usePaymentList()
+    const { payments, mutate } = usePaymentList()
+    const { accounts } = useAccountList()
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -28,21 +30,25 @@ function PaymentPage() {
                             href: PATH_DASHBOARD.payments.root,
                         },
                     ]}
-                    action={
-                        <Button
-                            component={Link}
-                            to="/payments/overdue"
-                            endIcon={
-                                <Iconify icon="eva:arrow-ios-forward-outline" />
-                            }
-                        >
-                            Overdue payments
-                        </Button>
-                    }
+                    // action={
+                    //     <Button
+                    //         component={Link}
+                    //         to="/payments/overdue"
+                    //         endIcon={
+                    //             <Iconify icon="eva:arrow-ios-forward-outline" />
+                    //         }
+                    //     >
+                    //         Overdue payments
+                    //     </Button>
+                    // }
                 />
 
                 <Suspense fallback={<p>Loading...</p>}>
-                    <PaymentsTable data={payments} />
+                    <PaymentsTable
+                        data={payments}
+                        mutate={mutate}
+                        accounts={accounts}
+                    />
                 </Suspense>
             </ErrorBoundary>
         </Container>
