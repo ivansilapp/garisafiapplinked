@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import sum from 'lodash/sum'
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 // form
 import { useFormContext, useFieldArray } from 'react-hook-form'
 // @mui
@@ -37,6 +37,7 @@ export default function TaskForm({
     const { control, setValue, watch, resetField, getValues } = useFormContext()
     const { enqueueSnackbar } = useSnackbar()
     const [activeIds, setActiveIds] = useState<any>([])
+    const [hasCarpetCleaning, setHasCarpetCleaning] = useState(false)
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -48,6 +49,16 @@ export default function TaskForm({
     const totalOnRow = values.items.map((item: any) => 1 * item.price)
 
     const totalPrice = sum(totalOnRow) - values.discount
+
+    const isCarpetcleaning = (item: any) => {
+        // check if item service includes 'carpet'
+        const value =
+            item && item.service
+                ? item?.service?.toLowerCase()?.includes('carpet')
+                : false
+
+        return value
+    }
 
     useEffect(() => {
         setValue('cost', totalPrice)
@@ -63,6 +74,9 @@ export default function TaskForm({
                 const serviceItem = services.find(
                     (s: any) => s.name === service
                 )
+                if (isCarpetcleaning({ service: serviceItem?.name })) {
+                    return item
+                }
                 const priceData = pricelist.find(
                     (p: any) =>
                         p.serviceId === serviceItem?.id && p.bodyId === bodyId
@@ -87,6 +101,8 @@ export default function TaskForm({
             quantity: 1,
             price: 0,
             total: 0,
+            height: 1,
+            width: 1,
         })
     }
 
@@ -100,6 +116,8 @@ export default function TaskForm({
             resetField(`items[${index}].price`)
             resetField(`items[${index}].total`)
             resetField(`items[${index}].serviceId`)
+            resetField(`items[${index}].height`)
+            resetField(`items[${index}].width`)
 
             const vs = getValues()
             const { serviceId } = vs.items[index]
@@ -120,7 +138,30 @@ export default function TaskForm({
             //     })
             //     return
             // }
-            setActiveIds([...activeIds, service.id])
+            const carpetCleaning: boolean = isCarpetcleaning({
+                service: service.name,
+            })
+            // service.name.includes('Carpet cleaning')
+            if (carpetCleaning) {
+                price = 20
+                setValue(`items[${index}].price`, price)
+                setValue(`items[${index}].serviceId`, service?.id)
+                setValue(`items[${index}].priceId`, 0)
+                setValue(
+                    `items[${index}].total`,
+                    values.items.map(
+                        (item: any) => item.width * item.height * price
+                    )[index]
+                )
+
+                // setActiveIds([...activeIds])
+                setHasCarpetCleaning(true)
+
+                return
+            }
+            if (!carpetCleaning) {
+                setActiveIds([...activeIds, service.id])
+            }
             if (vehicle !== null) {
                 const { data } = await axios.get(
                     `${apiUrl}/pricelist/details/${service.id}/${vehicle.bodyType.id}`
@@ -163,6 +204,35 @@ export default function TaskForm({
                     index
                 ]
             )
+        },
+        [setValue, values.items]
+    )
+
+    const handleSizeChange = useCallback(
+        (event: any, side: string, index: any) => {
+            const { value } = event.target
+            // console.log(value, 'handle size change')
+
+            if (side === 'height') {
+                setValue(`items[${index}].height`, Number(value))
+            } else {
+                setValue(`items[${index}].width`, Number(value))
+            }
+            const { width } = values.items[index]
+            const { height } = values.items[index]
+            const price = 20 * Number(width) * Number(height)
+            setValue(`items[${index}].price`, price)
+
+            setValue(
+                `items[${index}].total`,
+                values.items.map((item: any) => {
+                    if (item?.service?.toLowerCase()?.includes('carpet')) {
+                        return item.width * item.height
+                    }
+                    return item.quantity * item.price
+                })[index]
+            )
+            // console.log(values.items, 'values.items')
         },
         [setValue, values.items]
     )
@@ -240,24 +310,73 @@ export default function TaskForm({
                                 sx={{ display: 'none', maxWidth: { md: 96 } }}
                             />
 
-                            {/* <RHFTextField
-                                size="small"
-                                type="number"
-                                name={`items[${index}].price`}
-                                label="Price"
-                                placeholder="0"
-                                onChange={(event: any) =>
-                                    handleChangePrice(event, index)
-                                }
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            Ksh
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{ maxWidth: { md: 96 } }}
-                            /> */}
+                            {isCarpetcleaning(values.items[index]) ? (
+                                <>
+                                    {/* <RHFTextField
+                                        size="small"
+                                        type="number"
+                                        name={`items[${index}].price`}
+                                        label="Price"
+                                        placeholder="0"
+                                        onChange={(event: any) =>
+                                            //  handleChangePrice(event, index)
+                                            console.log(event.target.value, index)
+                                        }
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    Ksh
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{ maxWidth: { md: 96 } }}
+                                    /> */}
+                                    <RHFTextField
+                                        size="small"
+                                        type="number"
+                                        name={`items[${index}].width`}
+                                        label="Width"
+                                        placeholder="0"
+                                        onChange={
+                                            (event: any) =>
+                                                //  handleChangeQuantity(event, index)
+                                                handleSizeChange(
+                                                    event,
+                                                    'width',
+                                                    index
+                                                )
+                                            // console.log(
+                                            //     event.target.value,
+                                            //     index
+                                            // )
+                                        }
+                                        InputLabelProps={{ shrink: true }}
+                                        sx={{ maxWidth: { md: 96 } }}
+                                    />
+                                    <RHFTextField
+                                        size="small"
+                                        type="number"
+                                        name={`items[${index}].height`}
+                                        label="Height"
+                                        placeholder="0"
+                                        onChange={
+                                            (event: any) =>
+                                                // handleChangeQuantity(event, index)
+                                                handleSizeChange(
+                                                    event,
+                                                    'height',
+                                                    index
+                                                )
+                                            // console.log(
+                                            //     event.target.value,
+                                            //     index
+                                            // )
+                                        }
+                                        InputLabelProps={{ shrink: true }}
+                                        sx={{ maxWidth: { md: 96 } }}
+                                    />
+                                </>
+                            ) : null}
 
                             <RHFTextField
                                 disabled

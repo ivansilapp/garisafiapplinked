@@ -41,6 +41,7 @@ import usePrices from '../../hooks/prices/usePrices'
 import AttendantAutocomplete from '../../hooks/attendant/AttendantAutocomplete'
 import { useAuthContext } from '../../auth/useAuthContext'
 import { ADMIN_ROLE } from '../../utils/roles'
+import { taskStatus } from '../../auth/utils'
 
 const currentInvoice: any = {}
 
@@ -76,7 +77,7 @@ export default function NewTaskPage() {
 
     const defaultValues = useMemo(
         () => ({
-            status: currentInvoice?.status || 'pending',
+            status: currentInvoice?.status || taskStatus.pending,
             discount: currentInvoice?.discount || 0,
             vehicleId: currentInvoice?.vehicleId || '',
             carKeys: currentInvoice?.carKeys || true,
@@ -86,6 +87,8 @@ export default function NewTaskPage() {
                     quantity: 1,
                     price: 0,
                     total: 0,
+                    width: 1,
+                    height: 1,
                 },
             ],
             totalPrice: currentInvoice?.totalPrice || 0,
