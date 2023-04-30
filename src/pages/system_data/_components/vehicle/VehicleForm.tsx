@@ -72,9 +72,13 @@ function VehicleForm({
                     xs: 'repeat(1, 1fr)',
                 }}
             >
-                <RHFTextField name="registration" label="Registration" />
+                <RHFTextField
+                    autoComplete="off"
+                    name="registration"
+                    label="Registration"
+                />
 
-                <RHFTextField name="model" label="Model" />
+                <RHFTextField autoComplete="off" name="model" label="Model" />
 
                 <RHFSelect native name="bodyId" label="Body type">
                     {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
@@ -88,6 +92,7 @@ function VehicleForm({
 
                 <RHFTextField
                     type="number"
+                    autoComplete="off"
                     name="points"
                     label="Reward points"
                     disabled={isEdit}

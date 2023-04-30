@@ -6,6 +6,9 @@ import {
     Button,
     Card,
     Container,
+    Dialog,
+    DialogContent,
+    DialogTitle,
     IconButton,
     List,
     ListItem,
@@ -42,6 +45,9 @@ import AttendantAutocomplete from '../../hooks/attendant/AttendantAutocomplete'
 import { useAuthContext } from '../../auth/useAuthContext'
 import { ADMIN_ROLE } from '../../utils/roles'
 import { taskStatus } from '../../auth/utils'
+import VehicleAutocomplete from '../system_data/_components/vehicle/VehicleAutocomplete'
+import VehicleForm from '../system_data/_components/vehicle/VehicleForm'
+import useBodyTypes from '../../hooks/body-types/useBodyTypes'
 
 const currentInvoice: any = {}
 
@@ -51,6 +57,7 @@ export default function NewTaskPage() {
     const { enqueueSnackbar } = useSnackbar()
     const { services } = useServiceList()
     const { prices } = usePrices()
+    const { bodyTypes } = useBodyTypes()
 
     // get user from context
     const { user }: any = useAuthContext()
@@ -62,6 +69,7 @@ export default function NewTaskPage() {
     const [attendants, setAttendants] = useState<any>([])
     // const [submitLoader, setSubmitLoader] = useState(false)
     const [vehicle, setVehicle] = useState<any>(null)
+    const [addVehicleModal, setAddVehicleModal] = useState(false)
 
     const [searchParams] = useSearchParams()
 
@@ -232,6 +240,28 @@ export default function NewTaskPage() {
         enqueueSnackbar('Attendant added', { variant: 'success' })
     }
 
+    const onSubmitVehicle = async (payload: any) => {
+        try {
+            // update record
+            const points = payload.points ? Number(payload.points) : 0
+            const payloadData = { ...payload, points }
+            const { data } = await axios.post('/vehicle', payloadData)
+            console.log(data)
+            if (data && data.vehicle) {
+                enqueueSnackbar('Vehicle added successfully', {
+                    variant: 'success',
+                })
+                setAddVehicleModal(false)
+                // setActiveVehilce(data.vehicle)
+            }
+        } catch (err: any) {
+            console.log(err)
+            enqueueSnackbar(err.message || 'Opearation failed', {
+                variant: 'error',
+            })
+        }
+    }
+
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
             <ErrorBoundary
@@ -272,7 +302,12 @@ export default function NewTaskPage() {
                                 sm: 'repeat(2, 1fr)',
                             }}
                         >
-                            <Autocomplete
+                            <VehicleAutocomplete
+                                activeVehicle={vehicle ?? null}
+                                setVehicle={setVehicle}
+                                setAddVehicleModal={setAddVehicleModal}
+                            />
+                            {/* <Autocomplete
                                 id="vehicle-autocomplete"
                                 open={open}
                                 onOpen={() => {
@@ -320,7 +355,7 @@ export default function NewTaskPage() {
                                         }}
                                     />
                                 )}
-                            />
+                            /> */}
                             <AttendantAutocomplete
                                 setAttendant={addAttendant}
                                 reset
@@ -427,6 +462,31 @@ export default function NewTaskPage() {
                             Create task
                         </LoadingButton>
                     </Stack> */}
+
+                    {/* add vehicle modal */}
+                    <Dialog
+                        fullWidth
+                        maxWidth="sm"
+                        open={addVehicleModal}
+                        onClose={() => setAddVehicleModal(false)}
+                    >
+                        <DialogTitle>Add vehicle</DialogTitle>
+                        <Suspense fallback={<p>Loading...</p>}>
+                            <DialogContent>
+                                {/* <DialogContentText /> */}
+
+                                <VehicleForm
+                                    onSubmit={onSubmitVehicle}
+                                    vehicle={null}
+                                    handleClose={() =>
+                                        setAddVehicleModal(false)
+                                    }
+                                    clients={[]}
+                                    bodyTypes={bodyTypes}
+                                />
+                            </DialogContent>
+                        </Suspense>
+                    </Dialog>
                 </Suspense>
             </ErrorBoundary>
         </Container>

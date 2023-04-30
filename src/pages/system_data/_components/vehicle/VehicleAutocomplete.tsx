@@ -6,7 +6,7 @@ import {
     CircularProgress,
     TextField,
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSnackbar } from '../../../../components/snackbar'
 import { apiUrl } from '../../../../config-global'
 import axios from '../../../../utils/axios'
@@ -29,6 +29,11 @@ export default function VehicleAutocomplete({
     const handleChange = (val: any) => {
         setVehicle(val)
     }
+
+    // useEffect(() => {
+    //     console.log('seting active vehicle', activeVehicle)
+    //     setItems([...(activeVehicle ? [activeVehicle] : [])])
+    // }, [])
 
     const fetchItems = async (e: any) => {
         try {
@@ -68,6 +73,7 @@ export default function VehicleAutocomplete({
             getOptionLabel={(option) => option.registration}
             options={items}
             loading={fetchLoader}
+            value={activeVehicle || null}
             onChange={(e, value) => {
                 handleChange(value)
                 // console.log(value, 'value')
@@ -89,6 +95,7 @@ export default function VehicleAutocomplete({
                     {...params}
                     label="Search vehicle"
                     onChange={fetchItems}
+                    value={activeVehicle?.registration ?? ''}
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (
