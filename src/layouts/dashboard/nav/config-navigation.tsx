@@ -75,6 +75,12 @@ const navConfig: INav[] = [
                 icon: ICONS.ecommerce,
                 role: [ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE],
             },
+            // {
+            //     title: 'Vehicles',
+            //     path: PATH_DASHBOARD.systemData.vehicles,
+            //     icon: ICONS.dashboard,
+            //     role: [CASHIER_ROLE],
+            // },
             {
                 title: 'Services',
                 path: PATH_DASHBOARD.services.root,
@@ -85,7 +91,7 @@ const navConfig: INav[] = [
                 title: 'Attendants',
                 path: PATH_DASHBOARD.attendants.root,
                 icon: ICONS.file,
-                role: [ADMIN_ROLE, MANAGER_ROLE],
+                role: [ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE],
             },
             {
                 title: 'payments',
@@ -122,7 +128,7 @@ const navConfig: INav[] = [
                 title: 'system data',
                 path: PATH_DASHBOARD.systemData.root,
                 icon: ICONS.dashboard,
-                role: [ADMIN_ROLE],
+                role: [ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE],
                 children: [
                     {
                         title: 'body types',

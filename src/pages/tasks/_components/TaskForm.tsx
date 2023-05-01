@@ -334,15 +334,15 @@ export default function TaskForm({
                                     <RHFTextField
                                         size="small"
                                         type="number"
-                                        name={`items[${index}].width`}
-                                        label="Width"
+                                        name={`items[${index}].height`}
+                                        label="Length"
                                         placeholder="0"
                                         onChange={
                                             (event: any) =>
-                                                //  handleChangeQuantity(event, index)
+                                                // handleChangeQuantity(event, index)
                                                 handleSizeChange(
                                                     event,
-                                                    'width',
+                                                    'height',
                                                     index
                                                 )
                                             // console.log(
@@ -356,15 +356,15 @@ export default function TaskForm({
                                     <RHFTextField
                                         size="small"
                                         type="number"
-                                        name={`items[${index}].height`}
-                                        label="Height"
+                                        name={`items[${index}].width`}
+                                        label="Width"
                                         placeholder="0"
                                         onChange={
                                             (event: any) =>
-                                                // handleChangeQuantity(event, index)
+                                                //  handleChangeQuantity(event, index)
                                                 handleSizeChange(
                                                     event,
-                                                    'height',
+                                                    'width',
                                                     index
                                                 )
                                             // console.log(

@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     Card,
     CardContent,
@@ -6,11 +7,19 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
+    FormControl,
     Grid,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    Stack,
+    TextField,
     Typography,
 } from '@mui/material'
 import { useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
+import { LoadingButton } from '@mui/lab'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import Iconify from '../../components/iconify'
 import { useSettingsContext } from '../../components/settings'
@@ -22,11 +31,19 @@ import axios from '../../utils/axios'
 import AttendantForm from './_components/AttendantForm'
 import AttendantsTable from './_components/AttendantsTable'
 import { fCurrency } from '../../utils/formatNumber'
+import useAccountList from '../../hooks/account/useAccountList'
 
 function AttendantsPage() {
     const { themeStretch } = useSettingsContext()
     const { attendants, mutate } = useAttendantList()
+    const { accounts } = useAccountList()
     const [open, setOpen] = useState(false)
+    const [payModal, setPayModal] = useState(false)
+    const [paymentLoader, setPaymentLoader] = useState(false)
+    const [account, setAccount] = useState<any>('')
+    const [reference, setReference] = useState<any>('')
+    const [hasReference, setHasReference] = useState(false)
+
     const [activeAttendant, setActiveAttendant] = useState<any>(null)
 
     const { enqueueSnackbar } = useSnackbar()
@@ -94,6 +111,40 @@ function AttendantsPage() {
         return acc + currTips
     }, 0)
 
+    const handleAccountChange = (e: SelectChangeEvent) => {
+        setAccount(e.target.value)
+        const ac = accounts.find((a: any) => a.id === e.target.value)
+        // console.log(ac, 'is the account')
+        const hr = ac?.name?.toLowerCase()?.includes('cash')
+        setHasReference(!!hr)
+    }
+
+    const handleBulkPayment = async () => {
+        try {
+            setPaymentLoader(true)
+            const response = await axios.post('/commission/pay-all', {
+                accountId: Number(account),
+                reference,
+            })
+
+            if (response.status !== 200) {
+                throw new Error(response.data.error || 'Opearation failed')
+            }
+            setPayModal(false)
+            mutate()
+            enqueueSnackbar('Payment successful', {
+                variant: 'success',
+            })
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Opearation failed'
+            enqueueSnackbar(msg || 'Opearation failed', {
+                variant: 'error',
+            })
+        } finally {
+            setPaymentLoader(false)
+        }
+    }
+
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
             <ErrorBoundary
@@ -111,13 +162,24 @@ function AttendantsPage() {
                         },
                     ]}
                     action={
-                        <Button
-                            onClick={() => setOpen(true)}
-                            variant="contained"
-                            startIcon={<Iconify icon="eva:plus-fill" />}
-                        >
-                            New attendant
-                        </Button>
+                        <Stack direction="row" gap={2}>
+                            <Button
+                                variant="outlined"
+                                startIcon={<Iconify icon="eva:npm-outline" />}
+                                onClick={() => setPayModal(true)}
+                                color="info"
+                                disabled={totalCommision === 0}
+                            >
+                                Pay all
+                            </Button>
+                            <Button
+                                onClick={() => setOpen(true)}
+                                variant="contained"
+                                startIcon={<Iconify icon="eva:plus-fill" />}
+                            >
+                                New attendant
+                            </Button>
+                        </Stack>
                     }
                 />
 
@@ -169,6 +231,90 @@ function AttendantsPage() {
                             attendant={activeAttendant}
                             handleClose={handleClose}
                         />
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog
+                    fullWidth
+                    maxWidth="sm"
+                    open={payModal}
+                    onClose={() => {
+                        setPayModal(false)
+                    }}
+                >
+                    <DialogTitle>Bulk payment</DialogTitle>
+                    <DialogContent>
+                        <Box sx={{ p: 2 }} gap={2} display="grid">
+                            <FormControl fullWidth>
+                                <InputLabel id="account-selection-label">
+                                    Account
+                                </InputLabel>
+                                <Select
+                                    labelId="account-selection-label"
+                                    id="account-selection"
+                                    value={account}
+                                    label="Account"
+                                    onChange={handleAccountChange}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {accounts?.map((ac: any) => {
+                                        return (
+                                            <MenuItem key={ac.id} value={ac.id}>
+                                                {ac.name}
+                                            </MenuItem>
+                                        )
+                                    })}
+                                </Select>
+                            </FormControl>
+
+                            {/* <TextField
+                                fullWidth
+                                id="amount-txt"
+                                label="Amount"
+                                type="number"
+                                variant="outlined"
+                                value={amount}
+                                onChange={handleAmountChange}
+                            /> */}
+                            <TextField
+                                fullWidth
+                                id="reference-txt"
+                                label="Payment reference"
+                                variant="outlined"
+                                value={reference}
+                                disabled={hasReference}
+                                onChange={(e) => {
+                                    setReference(e.target.value)
+                                }}
+                            />
+
+                            <Stack
+                                display="flex"
+                                alignItems="flex-end"
+                                gap={2}
+                                sx={{ my: 3 }}
+                            >
+                                <Box display="flex" gap={2}>
+                                    <Button
+                                        color="warning"
+                                        variant="contained"
+                                        onClick={() => setPayModal(false)}
+                                    >
+                                        Cancel
+                                    </Button>
+
+                                    <LoadingButton
+                                        loading={paymentLoader}
+                                        variant="contained"
+                                        onClick={handleBulkPayment}
+                                    >
+                                        Make bulk payment
+                                    </LoadingButton>
+                                </Box>
+                            </Stack>
+                        </Box>
                     </DialogContent>
                 </Dialog>
             </ErrorBoundary>

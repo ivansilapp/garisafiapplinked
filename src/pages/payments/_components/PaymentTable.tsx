@@ -293,7 +293,7 @@ function PaymentsTable({ data, accounts, handleUpdate, mutate }: any) {
                             <MenuItem value="">
                                 <em>None</em>
                             </MenuItem>
-                            {accounts.map((ac: any) => {
+                            {accounts?.map((ac: any) => {
                                 return (
                                     <MenuItem key={ac.id} value={ac.id}>
                                         {ac.name}

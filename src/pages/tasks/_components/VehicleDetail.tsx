@@ -1,7 +1,8 @@
-import { Box, Card, Typography } from '@mui/material'
+import { Box, Button, Card, Link, Typography } from '@mui/material'
 import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import useVehicle from '../../../hooks/vehicle/useVehicle'
+import { PATH_DASHBOARD } from '../../../routes/paths'
 
 function VehicleDetailCard({ id }: { id: string }) {
     const { vehicle } = useVehicle({ id })
@@ -33,7 +34,15 @@ function VehicleDetailCard({ id }: { id: string }) {
                         <Typography variant="h4">Vehicle Detail</Typography>
 
                         <Typography>
-                            <b>Registration: </b> {vehicle?.registration}
+                            <b>Registration: </b>{' '}
+                            <Button
+                                component={Link}
+                                href={PATH_DASHBOARD.systemData.vehilceDetails(
+                                    vehicle.id
+                                )}
+                            >
+                                {vehicle?.registration}
+                            </Button>
                         </Typography>
                         <Typography>
                             <b>Model: </b> {vehicle?.model}

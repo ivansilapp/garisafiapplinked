@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import RoleBasedGuard from '../../auth/RoleBasedGuard'
 import Loadable from '../../components/loaderble'
-import { ADMIN_ROLE, MANAGER_ROLE } from '../../utils/roles'
+import { ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE } from '../../utils/roles'
 
 export const SystemDataPage = Loadable(lazy(() => import('./SystemDataPage')))
 export const VehiclesPage = Loadable(
@@ -33,7 +33,10 @@ export const systemDataRoutes = [
     {
         path: 'system-data/vehicles',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
+            <RoleBasedGuard
+                roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                hasContent
+            >
                 <VehiclesPage />
             </RoleBasedGuard>
         ),
@@ -41,7 +44,10 @@ export const systemDataRoutes = [
     {
         path: 'system-data/vehicles/:id',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
+            <RoleBasedGuard
+                roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                hasContent
+            >
                 <VehicleDetail />
             </RoleBasedGuard>
         ),
@@ -49,7 +55,10 @@ export const systemDataRoutes = [
     {
         path: 'system-data/body-types',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
+            <RoleBasedGuard
+                roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                hasContent
+            >
                 <BodyTypesPage />
             </RoleBasedGuard>
         ),
@@ -57,7 +66,10 @@ export const systemDataRoutes = [
     {
         path: 'system-data/pricelist',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
+            <RoleBasedGuard
+                roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                hasContent
+            >
                 <PricelistPage />
             </RoleBasedGuard>
         ),
@@ -65,7 +77,10 @@ export const systemDataRoutes = [
     {
         path: 'system-data/clients',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
+            <RoleBasedGuard
+                roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                hasContent
+            >
                 <ClientsPage />
             </RoleBasedGuard>
         ),

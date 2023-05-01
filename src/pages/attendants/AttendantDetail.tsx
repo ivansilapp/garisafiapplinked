@@ -93,13 +93,6 @@ function AttendantDetail() {
 
     const handleDateFilter = async () => {
         try {
-            // if (!filterStartDate && !filterEndDate) {
-            //     return
-            // }
-            // if (filterStartDate) {
-
-            //     return
-            // }
             setLoading(true)
             const startDate = filterStartDate
                 ? format(filterStartDate, 'yyyy-MM-dd')

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import {
     Button,
@@ -7,11 +8,13 @@ import {
     Typography,
     Backdrop,
     CircularProgress,
+    TextField,
 } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 // import RevenueChart from './_components/RevenueChart'
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
+import { DatePicker } from '@mui/x-date-pickers'
 import { useSettingsContext } from '../../components/settings'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import { PATH_DASHBOARD } from '../../routes/paths'
@@ -19,23 +22,50 @@ import { useSnackbar } from '../../components/snackbar'
 import axios from '../../utils/axios'
 import { apiUrl } from '../../config-global'
 import GroupedTasksTable from '../tasks/_components/GroupedTasksTable'
+import useServiceReport from '../../hooks/service/useServicesReport'
+
+const INPUT_WIDTH = 160
 
 function ServicesReport() {
     const { themeStretch } = useSettingsContext()
+    const navigate = useNavigate()
 
-    const [services, setServices] = useState<any[]>([])
+    const [searchParams] = useSearchParams()
+    const initialStartDate = searchParams.get('startDate')
+    const initialEndDate = searchParams.get('endDate')
+
+    // get query params
+    let query = ''
+    if (initialStartDate) {
+        query = `${query}startDate=${initialStartDate}`
+    }
+    if (initialEndDate) {
+        query = `${query}&endDate=${initialEndDate}`
+    }
+    const { services } = useServiceReport({ query })
+
+    // console.log(services, 'is services')
+
+    //  const [services, setServices] = useState<any[]>([])
     const [loading, setLoading] = useState<boolean>(false)
 
     //  dates
-    const [filterStartDate, setFilterStartDate] = useState<Date | null>(null)
-    const [filterEndDate, setFilterEndDate] = useState<Date | null>(null)
+    const [filterStartDate, setFilterStartDate] = useState<Date | null>(
+        initialStartDate ? new Date(initialStartDate) : null
+    )
+    const [filterEndDate, setFilterEndDate] = useState<Date | null>(
+        initialEndDate ? new Date(initialEndDate) : null
+    )
 
     const { enqueueSnackbar } = useSnackbar()
 
-    useEffect(() => {
-        handleFetch()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filterStartDate, filterEndDate])
+    // useEffect(() => {
+    //     if (filterStartDate) {
+    //         handleDateFilter()
+    //     }
+    //     //  handleFetch()
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [filterStartDate, filterEndDate])
 
     const servicesTotal = services?.reduce((acc: number, curr: any) => {
         return acc + curr.cost
@@ -58,14 +88,14 @@ function ServicesReport() {
                 queryObj = { ...queryObj, endDate }
             }
             setLoading(true)
-            const query = new URLSearchParams(queryObj).toString()
-            const url = `${apiUrl}/report/date-grouped-tasks?${query}`
+            const q = new URLSearchParams(queryObj).toString()
+            const url = `${apiUrl}/report/date-grouped-tasks?${q}`
 
             const response = await axios.get(url)
 
             if (response.status === 200) {
                 const { data } = response
-                setServices(data.services ? data.services : [])
+                //  setServices(data.services ? data.services : [])
             }
         } catch (err: any) {
             const msg = err.error || err.message || 'error loading reports data'
@@ -74,6 +104,55 @@ function ServicesReport() {
             setLoading(false)
         }
     }
+
+    const onFilterStartDate = (newValue: any) => {
+        setFilterStartDate(newValue)
+        handleDateFilter({ s: newValue, e: filterEndDate })
+    }
+    const onFilterEndDate = (newValue: any) => {
+        setFilterEndDate(newValue)
+        handleDateFilter({ s: filterStartDate, e: newValue })
+    }
+
+    const handleDateFilter = async ({ s, e }: any) => {
+        try {
+            setLoading(true)
+            const startDate = s ? format(s, 'yyyy-MM-dd') : null
+            const endDate = e ? format(e, 'yyyy-MM-dd') : null
+
+            let queryObj = {}
+            if (startDate) {
+                queryObj = { ...queryObj, startDate }
+            }
+            if (endDate) {
+                queryObj = { ...queryObj, endDate }
+            }
+
+            const q = new URLSearchParams(queryObj).toString()
+            navigate(`${PATH_DASHBOARD.reports.services}?${q}`)
+
+            //   const url = `${apiUrl}/attendant/${id}`
+            // const url = `${apiUrl}/attendant/${id}?${query}`
+
+            // const response = await axios.get(url)
+
+            // if (response.status === 200) {
+            //     //   const { attendant, commissions, tasks } = response.data
+            //     const { data } = response
+            //     setAttendant(data.attendant)
+            //     setCommissions(data.commissions)
+            //     setTasks(data.tasks)
+            //     // mutate(response.data)
+            // }
+        } catch (err: any) {
+            const msg =
+                err?.error || err.message || 'Error loading attendant details'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
@@ -105,8 +184,38 @@ function ServicesReport() {
             )}
 
             <Grid container>
+                <Grid item xs={12} sx={{ mb: 3 }}>
+                    <Stack
+                        display="flex"
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
+                        <div />
+
+                        <Stack display="flex" direction="row" gap={2}>
+                            <DatePicker
+                                label="Start date"
+                                value={filterStartDate}
+                                onChange={onFilterStartDate}
+                                slotProps={{
+                                    textField: { variant: 'outlined' },
+                                }}
+                            />
+
+                            <DatePicker
+                                label="End date"
+                                value={filterEndDate}
+                                onChange={onFilterEndDate}
+                                slotProps={{
+                                    textField: { variant: 'outlined' },
+                                }}
+                            />
+                        </Stack>
+                    </Stack>
+                </Grid>
                 <Grid item xs={12}>
-                    <GroupedTasksTable data={services} />
+                    <GroupedTasksTable data={services ?? []} />
                 </Grid>
             </Grid>
         </Container>

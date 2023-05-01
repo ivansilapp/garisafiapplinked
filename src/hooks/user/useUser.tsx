@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { apiUrl } from '../../config-global'
 
-export default function useUser({ id }: { id: number }) {
+export default function useUser({ id }: { id: number | string }) {
     const url = `${apiUrl}/users/${id}`
 
     const { error, data, mutate } = useSWR(url)

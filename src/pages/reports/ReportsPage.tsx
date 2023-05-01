@@ -43,20 +43,22 @@ function ReportsPage() {
                         spacing={2}
                         mb={5}
                     >
+                        <Button component={Link} to="/reports/services">
+                            Services
+                        </Button>
+
                         <Button component={Link} to="/reports/sales">
                             Sales
                         </Button>
-                        <Button component={Link} to="/reports/services">
-                            Services
+
+                        <Button component={Link} to="/reports/revenue">
+                            Revenue
                         </Button>
 
                         <Button component={Link} to="/reports/vehicle-type">
                             Vehicle type
                         </Button>
 
-                        <Button component={Link} to="/reports/revenue">
-                            Revenue
-                        </Button>
                         <Button
                             component={Link}
                             to={PATH_DASHBOARD.reports.pigeonholes}

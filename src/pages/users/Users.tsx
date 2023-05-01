@@ -31,6 +31,8 @@ import {
 } from '../../components/table'
 import Scrollbar from '../../components/scrollbar'
 import Page500 from '../Page500'
+import { useSnackbar } from '../../components/snackbar'
+import axiosInstance from '../../utils/axios'
 
 const ROLE_OPTIONS = ['all', 'ADMIN', 'MANAGER', 'CASHIER']
 
@@ -45,8 +47,8 @@ const TABLE_HEAD = [
 
 function Users() {
     const { themeStretch } = useSettingsContext()
-    // const navigate = useNavigate()
-    const { users } = useUsers()
+    const navigate = useNavigate()
+    const { users, mutate } = useUsers()
 
     const {
         dense,
@@ -80,6 +82,8 @@ function Users() {
     const [filterRole, setFilterRole] = useState('all')
 
     const [filterStatus, setFilterStatus] = useState('all')
+
+    const { enqueueSnackbar } = useSnackbar()
 
     // useEffect(() => {
     //     console.log('setting users')
@@ -139,15 +143,29 @@ function Users() {
         setFilterStatus('all')
     }
 
-    const handleDeleteRow = (id: any) => {
-        const deleteRow = tableData.filter((row: any) => row.id !== id)
-        setSelected([])
-        setTableData(deleteRow)
-
-        if (page > 0) {
-            if (dataInPage.length < 2) {
-                setPage(page - 1)
+    const handleDeleteRow = async (id: any) => {
+        try {
+            const response = await axiosInstance.delete(`/users/${id}`)
+            if (response.status !== 200) {
+                throw new Error(
+                    response.data.error ||
+                        response.data.msg ||
+                        'Error deleting user'
+                )
             }
+            const deleteRow = tableData.filter((row: any) => row.id !== id)
+            setSelected([])
+            setTableData(deleteRow)
+
+            if (page > 0) {
+                if (dataInPage.length < 2) {
+                    setPage(page - 1)
+                }
+            }
+            mutate()
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error deleting user'
+            enqueueSnackbar(msg, { variant: 'error' })
         }
     }
 
@@ -255,7 +273,12 @@ function Users() {
                                                         handleDeleteRow(row.id)
                                                     }
                                                     onEditRow={
-                                                        () => () => {}
+                                                        () =>
+                                                            navigate(
+                                                                PATH_DASHBOARD.users.edit(
+                                                                    row.id
+                                                                )
+                                                            )
                                                         // handleEditRow(row.name)
                                                     }
                                                 />

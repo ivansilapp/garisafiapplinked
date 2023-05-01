@@ -7,6 +7,7 @@ import { ADMIN_ROLE } from '../../utils/roles'
 export const UsersPage = Loadable(lazy(() => import('./Users')))
 export const NewUser = Loadable(lazy(() => import('./_pages/NewUser')))
 export const UserDetail = Loadable(lazy(() => import('./_pages/UserDetail')))
+export const EditUser = Loadable(lazy(() => import('./_pages/EditUser')))
 
 export const userRoutes = [
     {
@@ -30,6 +31,14 @@ export const userRoutes = [
         element: (
             <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
                 <UserDetail />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'users/edit/:id',
+        element: (
+            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+                <EditUser />
             </RoleBasedGuard>
         ),
     },

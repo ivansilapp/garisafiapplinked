@@ -72,7 +72,7 @@ function GroupedTasksTable({ data }: any) {
     const isFiltered =
         filterName !== '' || filterRole !== 'all' || filterStatus !== 'all'
 
-    const dataInPage = dataFiltered.slice(
+    const dataInPage = dataFiltered?.slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
     )
@@ -80,9 +80,9 @@ function GroupedTasksTable({ data }: any) {
     const denseHeight = dense ? 52 : 72
 
     const isNotFound =
-        (!dataFiltered.length && !!filterName) ||
-        (!dataFiltered.length && !!filterRole) ||
-        (!dataFiltered.length && !!filterStatus)
+        (!dataFiltered?.length && !!filterName) ||
+        (!dataFiltered?.length && !!filterRole) ||
+        (!dataFiltered?.length && !!filterStatus)
 
     const handleFilterName = (event: any) => {
         setPage(0)
@@ -114,24 +114,24 @@ function GroupedTasksTable({ data }: any) {
                             order={order}
                             orderBy={orderBy}
                             headLabel={TABLE_HEAD}
-                            rowCount={tableData.length}
-                            numSelected={selected.length}
+                            rowCount={tableData?.length}
+                            numSelected={selected?.length}
                             onSort={onSort}
                             onSelectAllRows={(checked: any) =>
                                 onSelectAllRows(
                                     checked,
-                                    tableData.map((row: any) => row.id)
+                                    tableData?.map((row: any) => row.id)
                                 )
                             }
                         />
 
                         <TableBody>
                             {dataFiltered
-                                .slice(
+                                ?.slice(
                                     page * rowsPerPage,
                                     page * rowsPerPage + rowsPerPage
                                 )
-                                .map((row: any) => (
+                                ?.map((row: any) => (
                                     <GroupedTasksTableRow
                                         key={row.created_at}
                                         row={row}
@@ -148,7 +148,7 @@ function GroupedTasksTable({ data }: any) {
                                 emptyRows={emptyRows(
                                     page,
                                     rowsPerPage,
-                                    tableData.length
+                                    tableData?.length
                                 )}
                             />
 
@@ -159,7 +159,7 @@ function GroupedTasksTable({ data }: any) {
             </TableContainer>
 
             <TablePaginationCustom
-                count={dataFiltered.length}
+                count={dataFiltered?.length}
                 page={page}
                 rowsPerPage={rowsPerPage}
                 onPageChange={onChangePage}
@@ -179,18 +179,18 @@ function applyFilter({
     filterStatus,
     filterRole,
 }: any) {
-    const stabilizedThis = inputData.map((el: any, index: number) => [
+    const stabilizedThis = inputData?.map((el: any, index: number) => [
         el,
         index,
     ])
 
-    stabilizedThis.sort((a: any, b: any) => {
+    stabilizedThis?.sort((a: any, b: any) => {
         const order = comparator(a[0], b[0])
         if (order !== 0) return order
         return a[1] - b[1]
     })
 
-    inputData = stabilizedThis.map((el: any) => el[0])
+    inputData = stabilizedThis?.map((el: any) => el[0])
 
     if (filterName) {
         inputData = inputData.filter(

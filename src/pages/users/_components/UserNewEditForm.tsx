@@ -56,8 +56,10 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
             .email('Email must be a valid email address'),
         phone: Yup.string().required('Phone number is required'),
         role: Yup.string().required('Role is required'),
-        password: Yup.string().required('Password is required'),
-        avatarUrl: Yup.string().required('Avatar is required').nullable(),
+        password: isEdit
+            ? Yup.string()
+            : Yup.string().required('Password is required'),
+        // avatarUrl: Yup.string().required('Avatar is required').nullable(),
     })
 
     const defaultValues = useMemo(
@@ -68,7 +70,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
             avatarUrl: currentUser?.avatarUrl || null,
             isVerified: currentUser?.isVerified || false,
             role: currentUser?.role || '',
-            password: currentUser?.password || '',
+            password: '',
         }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [currentUser]
@@ -102,7 +104,13 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
 
     const onSubmit = async (data: any) => {
         try {
-            const response = await axios.post('/users/new', data)
+            let response = null
+
+            if (isEdit) {
+                response = await axios.put(`/users/${currentUser.id}`, data)
+            } else {
+                response = await axios.post('/users/new', data)
+            }
 
             if (response.status === 200) {
                 navigate(PATH_DASHBOARD.users.root)
@@ -132,9 +140,9 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
-                <Grid item xs={12} md={4}>
+                {/* <Grid item xs={12} md={4}>
                     <Card sx={{ pt: 10, pb: 5, px: 3 }}>
-                        {/* {isEdit && (
+                        {isEdit && (
                             <Label
                                 color={
                                     values.status === 'active'
@@ -150,7 +158,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
                             >
                                 {values.status}
                             </Label>
-                        )} */}
+                        )}
 
                         <Box sx={{ mb: 5 }}>
                             <RHFUploadAvatar
@@ -175,7 +183,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
                             />
                         </Box>
 
-                        {/* {isEdit && (
+                        {isEdit && (
                             <FormControlLabel
                                 labelPlacement="start"
                                 control={
@@ -222,7 +230,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
                                     justifyContent: 'space-between',
                                 }}
                             />
-                        )} */}
+                        )}
 
                         <RHFSwitch
                             name="isVerified"
@@ -251,9 +259,9 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
                             }}
                         />
                     </Card>
-                </Grid>
+                </Grid> */}
 
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={12}>
                     <Card sx={{ p: 3 }}>
                         <Box
                             rowGap={3}
@@ -296,7 +304,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
                                 name="role"
                                 label="User role"
                                 InputLabelProps={{ shrink: true }}
-                                sx={{ maxWidth: { md: 360 } }}
+                                sx={{ maxWidth: { md: 560 } }}
                             >
                                 <MenuItem
                                     value=""
@@ -325,33 +333,35 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
                                 )}
                             </RHFSelect>
 
-                            <RHFTextField
-                                name="password"
-                                label="Password"
-                                type={showPassword ? 'text' : 'password'}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                onClick={() =>
-                                                    setShowPassword(
-                                                        !showPassword
-                                                    )
-                                                }
-                                                edge="end"
-                                            >
-                                                <Iconify
-                                                    icon={
-                                                        showPassword
-                                                            ? 'eva:eye-fill'
-                                                            : 'eva:eye-off-fill'
+                            {isEdit ? null : (
+                                <RHFTextField
+                                    name="password"
+                                    label="Password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    onClick={() =>
+                                                        setShowPassword(
+                                                            !showPassword
+                                                        )
                                                     }
-                                                />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
+                                                    edge="end"
+                                                >
+                                                    <Iconify
+                                                        icon={
+                                                            showPassword
+                                                                ? 'eva:eye-fill'
+                                                                : 'eva:eye-off-fill'
+                                                        }
+                                                    />
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            )}
                         </Box>
 
                         <Stack alignItems="flex-end" sx={{ mt: 3 }}>
