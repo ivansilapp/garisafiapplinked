@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import RoleBasedGuard from '../../auth/RoleBasedGuard'
 import Loadable from '../../components/loaderble'
-import { ADMIN_ROLE } from '../../utils/roles'
+import { ADMIN_ROLE, CASHIER_ROLE } from '../../utils/roles'
 
 export const ReportsPage = Loadable(lazy(() => import('./ReportsPage')))
 const RevenueReport = Loadable(lazy(() => import('./RevenueReport')))
@@ -25,6 +25,8 @@ const VehicleTypeDurationTasksReport = Loadable(
 const PigeonholesReport = Loadable(lazy(() => import('./PigeonholesReport')))
 
 const PigeonholesHistory = Loadable(lazy(() => import('./PigeonholesHistory')))
+
+const RewardReport = Loadable(lazy(() => import('./RewardReport')))
 
 export const reportsRoutes = [
     {
@@ -102,7 +104,7 @@ export const reportsRoutes = [
     {
         path: 'reports/pigeonholes',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard roles={[ADMIN_ROLE, CASHIER_ROLE]} hasContent>
                 <PigeonholesReport />
             </RoleBasedGuard>
         ),
@@ -110,8 +112,16 @@ export const reportsRoutes = [
     {
         path: 'reports/pigeonholes/history',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard roles={[ADMIN_ROLE, CASHIER_ROLE]} hasContent>
                 <PigeonholesHistory />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'reports/rewards',
+        element: (
+            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+                <RewardReport />
             </RoleBasedGuard>
         ),
     },

@@ -17,7 +17,7 @@ function TaskByStatusPage() {
 
     const { status } = useParams()
 
-    const { tasks, mutate } = useTaskByStatus({ status: status || '' })
+    const { tasks, mutate } = useTaskByStatus({ query: status ?? 'all' })
 
     useEffect(() => {
         fetchTasks()

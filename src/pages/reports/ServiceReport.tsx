@@ -44,9 +44,6 @@ function ServicesReport() {
     }
     const { services } = useServiceReport({ query })
 
-    // console.log(services, 'is services')
-
-    //  const [services, setServices] = useState<any[]>([])
     const [loading, setLoading] = useState<boolean>(false)
 
     //  dates
@@ -58,14 +55,6 @@ function ServicesReport() {
     )
 
     const { enqueueSnackbar } = useSnackbar()
-
-    // useEffect(() => {
-    //     if (filterStartDate) {
-    //         handleDateFilter()
-    //     }
-    //     //  handleFetch()
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [filterStartDate, filterEndDate])
 
     const servicesTotal = services?.reduce((acc: number, curr: any) => {
         return acc + curr.cost
@@ -109,6 +98,7 @@ function ServicesReport() {
         setFilterStartDate(newValue)
         handleDateFilter({ s: newValue, e: filterEndDate })
     }
+
     const onFilterEndDate = (newValue: any) => {
         setFilterEndDate(newValue)
         handleDateFilter({ s: filterStartDate, e: newValue })
@@ -130,20 +120,6 @@ function ServicesReport() {
 
             const q = new URLSearchParams(queryObj).toString()
             navigate(`${PATH_DASHBOARD.reports.services}?${q}`)
-
-            //   const url = `${apiUrl}/attendant/${id}`
-            // const url = `${apiUrl}/attendant/${id}?${query}`
-
-            // const response = await axios.get(url)
-
-            // if (response.status === 200) {
-            //     //   const { attendant, commissions, tasks } = response.data
-            //     const { data } = response
-            //     setAttendant(data.attendant)
-            //     setCommissions(data.commissions)
-            //     setTasks(data.tasks)
-            //     // mutate(response.data)
-            // }
         } catch (err: any) {
             const msg =
                 err?.error || err.message || 'Error loading attendant details'

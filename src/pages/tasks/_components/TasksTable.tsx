@@ -76,7 +76,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
 
     const isFiltered = filterName !== '' || filterStatus !== 'all'
 
-    const dataInPage = dataFiltered.slice(
+    const dataInPage = dataFiltered?.slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
     )
@@ -84,8 +84,8 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
     const denseHeight = dense ? 52 : 72
 
     const isNotFound =
-        (!dataFiltered.length && !!filterName) ||
-        (!dataFiltered.length && !!filterStatus)
+        (!dataFiltered?.length && !!filterName) ||
+        (!dataFiltered?.length && !!filterStatus)
 
     const handleOpenConfirm = () => {
         setOpenConfirm(true)
@@ -157,12 +157,12 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                             orderBy={orderBy}
                             headLabel={TABLE_HEAD.filter((item) => {
                                 if (readOnly) {
-                                    return item.id !== 'cancel'
+                                    return item?.id !== 'cancel'
                                 }
                                 return item
                             })}
-                            rowCount={tableData.length}
-                            numSelected={selected.length}
+                            rowCount={tableData?.length}
+                            numSelected={selected?.length}
                             onSort={onSort}
                             onSelectAllRows={(checked: any) =>
                                 onSelectAllRows(
@@ -174,7 +174,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
 
                         <TableBody>
                             {dataFiltered
-                                .slice(
+                                ?.slice(
                                     page * rowsPerPage,
                                     page * rowsPerPage + rowsPerPage
                                 )
@@ -183,10 +183,10 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                                         key={row.id}
                                         row={row}
                                         readOnly={readOnly}
-                                        selected={selected.includes(row.id)}
-                                        onSelectRow={() => onSelectRow(row.id)}
+                                        selected={selected?.includes(row?.id)}
+                                        onSelectRow={() => onSelectRow(row?.id)}
                                         onDeleteRow={() =>
-                                            handleDeleteRow(row.id)
+                                            handleDeleteRow(row?.id)
                                         }
                                         deleteLoader={deleteLoader}
                                         onEditRow={() => handleUpdate(row)}
@@ -198,7 +198,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                                 emptyRows={emptyRows(
                                     page,
                                     rowsPerPage,
-                                    tableData.length
+                                    tableData?.length
                                 )}
                             />
 
@@ -209,7 +209,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
             </TableContainer>
 
             <TablePaginationCustom
-                count={dataFiltered.length}
+                count={dataFiltered?.length}
                 page={page}
                 rowsPerPage={rowsPerPage}
                 onPageChange={onChangePage}
@@ -223,22 +223,22 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
 }
 
 function applyFilter({ inputData, comparator, filterName, filterStatus }: any) {
-    const stabilizedThis = inputData.map((el: any, index: number) => [
+    const stabilizedThis = inputData?.map((el: any, index: number) => [
         el,
         index,
     ])
 
-    stabilizedThis.sort((a: any, b: any) => {
+    stabilizedThis?.sort((a: any, b: any) => {
         const order = comparator(a[0], b[0])
         if (order !== 0) return order
         return a[1] - b[1]
     })
 
-    inputData = stabilizedThis.map((el: any) => el[0])
+    inputData = stabilizedThis?.map((el: any) => el[0])
 
     const attendees =
         inputData
-            ?.map((t: any) => t.attendants)
+            ?.map((t: any) => t?.attendants)
             ?.map((a: any) => {
                 const names = a?.map((at: any) =>
                     at?.attendant?.name?.toLowerCase()
@@ -249,28 +249,28 @@ function applyFilter({ inputData, comparator, filterName, filterStatus }: any) {
 
     if (filterName) {
         // console.log(attendees, 'attendees')
-        inputData = inputData.filter((item: any) => {
+        inputData = inputData?.filter((item: any) => {
             const attendants = item?.attendants
                 ?.map((a: any) => {
                     return a?.attendant?.name?.toLowerCase()
                 })
                 .map(
                     (name: any) =>
-                        name?.indexOf(filterName.toLowerCase()) !== -1
+                        name?.indexOf(filterName?.toLowerCase()) !== -1
                 )
 
             return (
                 item?.vehicle?.registration
-                    .toLowerCase()
-                    .indexOf(filterName.toLowerCase()) !== -1 ||
-                attendants.includes(true)
+                    ?.toLowerCase()
+                    ?.indexOf(filterName?.toLowerCase()) !== -1 ||
+                attendants?.includes(true)
             )
         })
     }
 
     if (filterStatus !== 'all') {
-        inputData = inputData.filter(
-            (user: any) => user.status === filterStatus
+        inputData = inputData?.filter(
+            (user: any) => user?.status === filterStatus
         )
     }
 

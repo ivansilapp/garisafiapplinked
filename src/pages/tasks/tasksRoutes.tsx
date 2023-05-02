@@ -7,6 +7,7 @@ export const TasksPage = Loadable(lazy(() => import('./TasksPage')))
 export const CreateTasksPage = Loadable(lazy(() => import('./NewTaskPage')))
 export const TaskDetailPage = Loadable(lazy(() => import('./TaskDetail')))
 const TaskStatusPage = Loadable(lazy(() => import('./TaskStatusPage')))
+const TaskReportPage = Loadable(lazy(() => import('./TaskReports')))
 
 export const tasksRoutes = [
     {
@@ -50,6 +51,17 @@ export const tasksRoutes = [
                 hasContent
             >
                 <TaskStatusPage />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'tasks/report',
+        element: (
+            <RoleBasedGuard
+                roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                hasContent
+            >
+                <TaskReportPage />
             </RoleBasedGuard>
         ),
     },

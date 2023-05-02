@@ -70,17 +70,23 @@ const navConfig: INav[] = [
                 role: [ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE],
             },
             {
+                title: 'Report',
+                path: PATH_DASHBOARD.tasks.report,
+                icon: ICONS.analytics,
+                role: [CASHIER_ROLE],
+            },
+            {
                 title: 'Products',
                 path: PATH_DASHBOARD.products.root,
                 icon: ICONS.ecommerce,
                 role: [ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE],
             },
-            // {
-            //     title: 'Vehicles',
-            //     path: PATH_DASHBOARD.systemData.vehicles,
-            //     icon: ICONS.dashboard,
-            //     role: [CASHIER_ROLE],
-            // },
+            {
+                title: 'Key holes',
+                path: PATH_DASHBOARD.reports.pigeonholes,
+                icon: ICONS.dashboard,
+                role: [CASHIER_ROLE],
+            },
             {
                 title: 'Services',
                 path: PATH_DASHBOARD.services.root,

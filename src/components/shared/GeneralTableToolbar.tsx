@@ -25,6 +25,7 @@ export default function GeneralTableToolbar({
                 fullWidth
                 value={filterName}
                 onChange={onFilterName}
+                size="small"
                 placeholder="Search..."
                 InputProps={{
                     startAdornment: (

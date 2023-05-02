@@ -39,6 +39,7 @@ export const PATH_DASHBOARD = {
     tasks: {
         root: path(ROOTS_DASHBOARD, 'tasks'),
         new: path(ROOTS_DASHBOARD, 'tasks/new'),
+        report: path(ROOTS_DASHBOARD, 'tasks/report'),
         newWithId: (id: string | number) =>
             path(ROOTS_DASHBOARD, `tasks/new?vehicle_id=${id}`),
         details: (id: string | number) =>
@@ -83,6 +84,7 @@ export const PATH_DASHBOARD = {
             path(ROOTS_DASHBOARD, `reports/details/${id}`),
 
         sales: path(ROOTS_DASHBOARD, 'reports/sales'),
+        rewards: path(ROOTS_DASHBOARD, 'reports/rewards'),
         services: path(ROOTS_DASHBOARD, 'reports/services'),
         revenue: path(ROOTS_DASHBOARD, 'reports/revenue'),
         expenses: path(ROOTS_DASHBOARD, 'reports/expenses'),

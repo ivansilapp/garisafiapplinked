@@ -61,6 +61,13 @@ function ReportsPage() {
 
                         <Button
                             component={Link}
+                            to={PATH_DASHBOARD.reports.rewards}
+                        >
+                            Rewards
+                        </Button>
+
+                        <Button
+                            component={Link}
                             to={PATH_DASHBOARD.reports.pigeonholes}
                         >
                             Key holes
