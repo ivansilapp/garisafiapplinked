@@ -23,7 +23,7 @@ function RewardReport() {
 
     const { tasks, loading, mutate } = useRedeemedTasks()
 
-    console.log(tasks, 'tasks')
+    // console.log(tasks, 'tasks')
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
