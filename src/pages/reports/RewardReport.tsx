@@ -10,19 +10,10 @@ import {
     CircularProgress,
     TextField,
 } from '@mui/material'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-// import RevenueChart from './_components/RevenueChart'
-import { useEffect, useState } from 'react'
-import { format } from 'date-fns'
-import { DatePicker } from '@mui/x-date-pickers'
 import { useSettingsContext } from '../../components/settings'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import { PATH_DASHBOARD } from '../../routes/paths'
-import { useSnackbar } from '../../components/snackbar'
-import axios from '../../utils/axios'
-import { apiUrl } from '../../config-global'
-import GroupedTasksTable from '../tasks/_components/GroupedTasksTable'
-import useServiceReport from '../../hooks/service/useServicesReport'
+
 import useRedeemedTasks from '../../hooks/task/useRedeemedTasks'
 import TasksTable from '../tasks/_components/TasksTable'
 
