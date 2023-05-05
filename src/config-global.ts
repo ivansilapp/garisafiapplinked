@@ -7,6 +7,9 @@ import { PATH_DASHBOARD } from './routes/paths'
 export const HOST_API_KEY =
     import.meta.env.VITE_APP_HOST_API_KEY || 'https://garisafi.onrender.com' //  'http://localhost:9000'
 export const apiUrl = HOST_API_KEY
+const key = import.meta.env.VITE_APP_HOST_API_KEY
+
+// console.log(key, 'vite_app_host_api_key')
 
 // export const FIREBASE_API = {
 //     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,

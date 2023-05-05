@@ -12,7 +12,7 @@ import Iconify from '../../components/iconify'
 
 function OverduePayment() {
     const { themeStretch } = useSettingsContext()
-    const { payments } = usePaymentList()
+    const { payments } = usePaymentList({ query: 'status=all' })
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>

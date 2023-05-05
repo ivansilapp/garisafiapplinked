@@ -55,10 +55,7 @@ export const systemDataRoutes = [
     {
         path: 'system-data/body-types',
         element: (
-            <RoleBasedGuard
-                roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
-                hasContent
-            >
+            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
                 <BodyTypesPage />
             </RoleBasedGuard>
         ),
@@ -66,10 +63,7 @@ export const systemDataRoutes = [
     {
         path: 'system-data/pricelist',
         element: (
-            <RoleBasedGuard
-                roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
-                hasContent
-            >
+            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
                 <PricelistPage />
             </RoleBasedGuard>
         ),
