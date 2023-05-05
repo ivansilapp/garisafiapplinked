@@ -43,7 +43,7 @@ function VehicleForm({
             clientId: vehicle?.clientId || '',
             bodyId: vehicle?.bodyId || '',
             model: vehicle?.model || '',
-            points: 0,
+            points: vehicle?.points?.points || '',
         }),
         [vehicle]
     )
@@ -95,7 +95,6 @@ function VehicleForm({
                     autoComplete="off"
                     name="points"
                     label="Reward points"
-                    disabled={isEdit}
                 />
 
                 <RHFSelect native name="clientId" label="Client">

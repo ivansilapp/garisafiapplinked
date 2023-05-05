@@ -50,9 +50,19 @@ function VihiclesPage() {
 
     const onSubmit = async (payloadData: any) => {
         try {
+            if (Number(payloadData.points) > 9) {
+                enqueueSnackbar('Reward points should be less than 10', {
+                    variant: 'error',
+                })
+                return
+            }
+
             const payload = {
                 ...payloadData,
-                points: Number(payloadData.points),
+                points:
+                    activeVehilce && activeVehilce.id
+                        ? payloadData.points
+                        : Number(payloadData.points),
             }
             if (activeVehilce && activeVehilce.id) {
                 // update record
