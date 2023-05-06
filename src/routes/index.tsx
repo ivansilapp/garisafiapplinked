@@ -36,6 +36,7 @@ import { tasksRoutes } from '../pages/tasks/tasksRoutes'
 import { settingsRoutes } from '../pages/settings/settingsRoutes'
 import { systemDataRoutes } from '../pages/system_data/systemDataRoutes'
 import { paymentRoutes } from '../pages/payments/paymentRoutes'
+import { commissionsRoutes } from '../pages/commissions/commissionsRouter'
 
 // ----------------------------------------------------------------------
 
@@ -109,6 +110,7 @@ export default function Router() {
                 ...settingsRoutes,
                 ...systemDataRoutes,
                 ...paymentRoutes,
+                ...commissionsRoutes,
             ],
         },
         {

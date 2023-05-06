@@ -60,8 +60,25 @@ function AttendantDetail() {
     // })
     const { accounts } = useAccountList()
 
-    const [filterEndDate, setFilterEndDate] = useState<any>(null)
-    const [filterStartDate, setFilterStartDate] = useState<any>(null)
+    const [searchParams] = useSearchParams()
+    const initialStartDate = searchParams.get('startDate')
+    const initialEndDate = searchParams.get('endDate')
+
+    // get query params
+    let query = ''
+    if (initialStartDate) {
+        query = `${query}startDate=${initialStartDate}`
+    }
+    if (initialEndDate) {
+        query = `${query}&endDate=${initialEndDate}`
+    }
+
+    const [filterEndDate, setFilterEndDate] = useState<any>(
+        initialEndDate ? new Date(initialEndDate) : null
+    )
+    const [filterStartDate, setFilterStartDate] = useState<any>(
+        initialStartDate ? new Date(initialStartDate) : null
+    )
 
     const [loading, setLoading] = useState<boolean>(false)
 

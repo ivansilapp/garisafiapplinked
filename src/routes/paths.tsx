@@ -71,6 +71,12 @@ export const PATH_DASHBOARD = {
         details: (id: string | number) =>
             path(ROOTS_DASHBOARD, `payments/details/${id}`),
     },
+    commissions: {
+        root: path(ROOTS_DASHBOARD, 'commissions'),
+        report: path(ROOTS_DASHBOARD, 'commissions/report'),
+        details: (id: string | number) =>
+            path(ROOTS_DASHBOARD, `comissions/details/${id}`),
+    },
     attendants: {
         root: path(ROOTS_DASHBOARD, 'attendants'),
         new: path(ROOTS_DASHBOARD, 'attendants/new'),

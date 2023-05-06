@@ -106,6 +106,12 @@ const navConfig: INav[] = [
                 role: [ADMIN_ROLE],
             },
             {
+                title: 'commisions',
+                path: PATH_DASHBOARD.commissions.root,
+                icon: ICONS.invoice,
+                role: [ADMIN_ROLE],
+            },
+            {
                 title: 'reports',
                 path: PATH_DASHBOARD.reports.root,
                 icon: ICONS.analytics,
