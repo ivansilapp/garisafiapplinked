@@ -126,9 +126,9 @@ function AttendantDetail() {
                 queryObj = { ...queryObj, endDate }
             }
 
-            const query = new URLSearchParams(queryObj).toString()
+            const q = new URLSearchParams(queryObj).toString()
             //   const url = `${apiUrl}/attendant/${id}`
-            const url = `${apiUrl}/attendant/${id}?${query}`
+            const url = `${apiUrl}/attendant/${id}?${q}`
 
             const response = await axios.get(url)
 

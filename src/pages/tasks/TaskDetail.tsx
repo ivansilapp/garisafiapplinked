@@ -623,10 +623,6 @@ function TaskDetail() {
                                     variant="contained"
                                     color="warning"
                                     onClick={() => setCancelModal(true)}
-                                    disabled={
-                                        task.status === 'cancelled' ||
-                                        task.status === 'complete'
-                                    }
                                 >
                                     Cancel
                                 </Button>
@@ -842,9 +838,19 @@ function TaskDetail() {
                                     <Typography variant="h4">
                                         {task.vehicle.registration}
                                     </Typography> */}
-                                            <VehicleDetailCard
-                                                id={task.vehicle.id}
-                                            />
+                                            {task.vehicle ? (
+                                                <VehicleDetailCard
+                                                    id={task?.vehicle?.id}
+                                                />
+                                            ) : (
+                                                <Card>
+                                                    <CardContent>
+                                                        <Typography variant="h4">
+                                                            Vehicle not found{' '}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Card>
+                                            )}
                                         </Box>
                                     </CardContent>
                                 </Card>
@@ -1084,7 +1090,7 @@ function TaskDetail() {
                         loading={saleLoader}
                         handleSubmit={handleSale}
                         setProduct={setProduct}
-                        vehicleReg={task.vehicle.registration}
+                        vehicleReg={task?.vehicle?.registration}
                         quantity={quantity}
                         setQuantity={setQuantity}
                     />
