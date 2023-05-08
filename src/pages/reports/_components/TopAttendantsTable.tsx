@@ -19,8 +19,8 @@ import { useSnackbar } from '../../../components/snackbar'
 
 const TABLE_HEAD = [
     { id: 'name', label: 'Attendant name', align: 'left' },
-    { id: 'reveneu', label: 'Revenue', align: 'left' },
-    { id: 'total', label: 'Number of tasks', align: 'left' },
+    { id: 'revenue', label: 'Revenue', align: 'left' },
+    { id: 'tasks', label: 'Number of tasks', align: 'left' },
     { id: 'more', label: 'More', align: 'left' },
     { id: '' },
 ]
@@ -42,7 +42,7 @@ function TopAttendantsTable({ data }: any) {
         onChangeDense,
         onChangePage,
         onChangeRowsPerPage,
-    } = useTable({})
+    } = useTable({ orderBy: 'tasks', defaultOrderBy: 'tasks' })
 
     const { enqueueSnackbar } = useSnackbar()
     const [deleteLoader, setDeleteLoader] = useState(false)

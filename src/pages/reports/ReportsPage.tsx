@@ -81,7 +81,7 @@ function ReportsPage() {
                             <Typography variant="h4" gutterBottom>
                                 {fCurrency(
                                     (revenue?.sales_revenue ?? 0) +
-                                        (revenue?.tasks ?? 0)
+                                        (revenue?.task_revenue ?? 0)
                                 )}
                             </Typography>
                         </CardContent>
@@ -113,7 +113,10 @@ function ReportsPage() {
                 </Grid>
 
                 <Grid item xs={12}>
-                    <TopAttendantsTable data={attendants ?? []} />
+                    <Card>
+                        <CardHeader title="Top attendants" />
+                        <TopAttendantsTable data={attendants ?? []} />
+                    </Card>
                 </Grid>
             </Grid>
         </Container>

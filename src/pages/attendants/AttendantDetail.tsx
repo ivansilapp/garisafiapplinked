@@ -25,6 +25,7 @@ import { PATH_DASHBOARD } from '../../routes/paths'
 import {
     computeCommisionTotals,
     computeTaskTotals,
+    computeUnpaidCommisionTotals,
     computeUpaidTasks,
 } from '../../utils/common'
 import TasksTable from '../tasks/_components/TasksTable'
@@ -117,6 +118,9 @@ function AttendantDetail() {
             const endDate = filterEndDate
                 ? format(filterEndDate, 'yyyy-MM-dd')
                 : null
+            if (!startDate && endDate) {
+                return
+            }
 
             let queryObj = {}
             if (startDate) {
@@ -125,6 +129,8 @@ function AttendantDetail() {
             if (endDate) {
                 queryObj = { ...queryObj, endDate }
             }
+
+            // console.log('queryObj', queryObj)
 
             const q = new URLSearchParams(queryObj).toString()
             //   const url = `${apiUrl}/attendant/${id}`
@@ -139,6 +145,8 @@ function AttendantDetail() {
                 setCommissions(data.commissions)
                 setTasks(data.tasks)
                 // mutate(response.data)
+
+                // console.log('response.data', response.data)
             }
         } catch (err: any) {
             const msg =
@@ -202,38 +210,18 @@ function AttendantDetail() {
                                         label="Start date"
                                         value={filterStartDate}
                                         onChange={onFilterStartDate}
-                                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                        // @ts-expect-error
-                                        renderInput={(params: any) => (
-                                            <TextField
-                                                {...params}
-                                                fullWidth
-                                                sx={{
-                                                    maxWidth: {
-                                                        md: INPUT_WIDTH,
-                                                    },
-                                                }}
-                                            />
-                                        )}
+                                        slotProps={{
+                                            textField: { variant: 'outlined' },
+                                        }}
                                     />
 
                                     <DatePicker
                                         label="End date"
                                         value={filterEndDate}
                                         onChange={onFilterEndDate}
-                                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                        // @ts-expect-error
-                                        renderInput={(params: any) => (
-                                            <TextField
-                                                {...params}
-                                                fullWidth
-                                                sx={{
-                                                    maxWidth: {
-                                                        md: INPUT_WIDTH,
-                                                    },
-                                                }}
-                                            />
-                                        )}
+                                        slotProps={{
+                                            textField: { variant: 'outlined' },
+                                        }}
                                     />
                                 </Stack>
                             </Stack>
@@ -247,11 +235,11 @@ function AttendantDetail() {
                             <AttendantBalance
                                 accounts={accounts}
                                 title="Current Balance"
-                                currentBalance={computeCommisionTotals(
+                                currentBalance={computeUnpaidCommisionTotals(
                                     commissions
                                 )}
                                 tips={attendant?.tips ?? []}
-                                unpaidTasks={computeUpaidTasks(tasks)}
+                                unpaidTasks={computeUpaidTasks(tasks ?? [])}
                                 id={Number(id)}
                                 mutate={() => {}}
                             />

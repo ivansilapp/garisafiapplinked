@@ -8,7 +8,7 @@ export default function useTable(props: any) {
 
     const [orderBy, setOrderBy] = useState(props?.defaultOrderBy || 'name')
 
-    const [order, setOrder] = useState(props?.defaultOrder || 'asc')
+    const [order, setOrder] = useState(props?.defaultOrder || 'desc')
 
     const [page, setPage] = useState(props?.defaultCurrentPage || 0)
 

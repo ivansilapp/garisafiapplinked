@@ -5,6 +5,8 @@ export default function useExpense({ queryString }: { queryString: string }) {
     const url = `${apiUrl}/report/expenses-report?${queryString}`
     const { error, data, mutate } = useSWR(url, { suspense: true })
 
+    // console.log(data)
+
     return {
         loading: !error && !data,
         error,

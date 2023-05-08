@@ -21,6 +21,8 @@ import { PATH_DASHBOARD } from '../../routes/paths'
 import useRevenue from '../../hooks/task/useRevenue'
 import useExpense from '../../hooks/task/useExpense'
 import { fCurrency } from '../../utils/formatNumber'
+import TasksTable from '../tasks/_components/TasksTable'
+import CommissionTable from '../attendants/_components/CommissionTable'
 
 function RevenueReport() {
     const { themeStretch } = useSettingsContext()
@@ -52,7 +54,8 @@ function RevenueReport() {
     const { expenses } = useExpense({ queryString: query })
 
     // console.log(revenue, 'revenue')
-    // console.log(expenses, 'expenses')
+    const { commissions } = expenses
+    const { tasks } = revenue
 
     const onFilterStartDate = (newValue: any) => {
         setFilterStartDate(newValue)
@@ -192,6 +195,19 @@ function RevenueReport() {
                                 </Stack>
                             </CardContent>
                         </Card>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                            Tasks
+                        </Typography>
+                        <TasksTable data={tasks ?? []} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                            Commissions{' '}
+                        </Typography>
+                        <CommissionTable data={commissions ?? []} />
                     </Grid>
                 </Grid>
             </Suspense>

@@ -49,6 +49,9 @@ export default function AttendantBalance({
     const { enqueueSnackbar } = useSnackbar()
 
     const tipsTotal = tips.reduce((acc: any, cur: any) => {
+        if (cur.paid) {
+            return acc
+        }
         return acc + cur.amount
     }, 0)
 
