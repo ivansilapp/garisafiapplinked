@@ -121,13 +121,13 @@ function Dashboard() {
                                             percent: computePercent(
                                                 complete.length ?? 0
                                             ),
-                                            url: 'completed',
+                                            url: 'complete',
                                         },
                                         {
                                             label: 'Canceled tasks',
                                             percent: computePercent(canceled),
                                             total: canceled,
-                                            url: 'canceled',
+                                            url: 'cancelled',
                                         },
                                     ],
                                 }}

@@ -6,6 +6,7 @@ export default function useTaskByStatus({ query }: { query: string }) {
         throw new Error('Status is required')
     }
     const url = `${apiUrl}/task/filter?${query}`
+    // console.log(url, 'url')
     const { error, data, mutate } = useSWR(url, { suspense: true })
 
     return {

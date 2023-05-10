@@ -16,16 +16,18 @@ function TaskByStatusPage() {
     const { themeStretch } = useSettingsContext()
 
     const { status } = useParams()
-
-    const { tasks, mutate } = useTaskByStatus({ query: status ?? 'all' })
+    const q = status ?? 'all'
+    const { tasks, mutate } = useTaskByStatus({ query: `status=${q}` })
 
     useEffect(() => {
         fetchTasks()
     }, [status])
 
     const fetchTasks = async () => {
-        console.log('Fetching tasks')
+        //  console.log('Fetching tasks')
     }
+
+    // console.log(tasks, status, 'tasks')
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
