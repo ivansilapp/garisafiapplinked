@@ -77,7 +77,7 @@ export default function ProductSaleModal({
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
                     />
-                    {account && account.length > 0 ? (
+                    {accounts && accounts.length > 0 ? (
                         <>
                             <Select
                                 labelId="account-selection-label"
