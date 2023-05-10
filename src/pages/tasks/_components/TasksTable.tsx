@@ -32,7 +32,13 @@ const TABLE_HEAD = [
     { id: '' },
 ]
 
-function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
+function TasksTable({
+    data,
+    handleUpdate,
+    mutate,
+    readOnly,
+    splitRevenue,
+}: any) {
     const {
         dense,
         page,
@@ -65,6 +71,8 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
     useEffect(() => {
         setTableData(data)
     }, [data])
+
+    // console.log('split revenue', splitRevenue)
 
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const dataFiltered = applyFilter({
@@ -183,6 +191,7 @@ function TasksTable({ data, handleUpdate, mutate, readOnly }: any) {
                                         key={row.id}
                                         row={row}
                                         readOnly={readOnly}
+                                        splitRevenue={splitRevenue}
                                         selected={selected?.includes(row?.id)}
                                         onSelectRow={() => onSelectRow(row?.id)}
                                         onDeleteRow={() =>

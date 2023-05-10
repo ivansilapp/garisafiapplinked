@@ -408,7 +408,13 @@ function TaskDetail() {
     const closeTask = async () => {
         try {
             setClosingLoader(true)
-            const response = await axios.get(`${apiUrl}/task/close/${task.id}`)
+            const url =
+                task.status === taskStatus.ongoing
+                    ? `${apiUrl}/tasks/release-pigeonhole`
+                    : `${apiUrl}/task/close/${task.id}`
+            const response = await axios.put(url, {
+                id: `${task.id}`,
+            })
             if (response.status === 200) {
                 task.closed = true
                 mutate()
@@ -604,15 +610,14 @@ function TaskDetail() {
                     <Box rowGap={3} columnGap={2} display="grid">
                         <Stack alignItems="flex-end " sx={{ mt: 3 }}>
                             <Box display="flex" columnGap={2} rowGap={2}>
-                                {task.status === 'complete' ? (
+                                {task.status === 'complete' ||
+                                task.status === taskStatus.ongoing ? (
                                     <LoadingButton
                                         loading={closingLoader}
                                         onClick={closeTask}
                                         variant="contained"
                                         disabled={
-                                            task.closed ||
-                                            !task.fullyPaid ||
-                                            task.pigeonhole === 0
+                                            task.closed || task.pigeonhole === 0
                                         }
                                     >
                                         Issue key
@@ -877,8 +882,7 @@ function TaskDetail() {
                                                     disabled={
                                                         task.status ===
                                                             'cancelled' ||
-                                                        task.status ===
-                                                            'complete'
+                                                        task.fullyPaid
                                                     }
                                                 >
                                                     Add service
@@ -895,8 +899,7 @@ function TaskDetail() {
                                                                 disabled={
                                                                     task.status ===
                                                                         'cancelled' ||
-                                                                    task.status ===
-                                                                        'complete'
+                                                                    task.fullyPaid
                                                                 }
                                                                 color="warning"
                                                                 edge="end"
@@ -950,8 +953,7 @@ function TaskDetail() {
                                                     disabled={
                                                         task.status ===
                                                             'cancelled' ||
-                                                        task.status ===
-                                                            'complete'
+                                                        task.fullyPaid
                                                     }
                                                 >
                                                     Add attendant
@@ -971,8 +973,7 @@ function TaskDetail() {
                                                                     disabled={
                                                                         task.status ===
                                                                             'cancelled' ||
-                                                                        task.status ===
-                                                                            'complete'
+                                                                        task.fullyPaid
                                                                     }
                                                                     edge="end"
                                                                     color="warning"
@@ -1284,9 +1285,12 @@ function TaskDetail() {
                                         <Button
                                             color="warning"
                                             variant="contained"
-                                            onClick={() =>
+                                            onClick={() => {
+                                                setReference('')
+                                                setAmount('')
+                                                setAccount('')
                                                 setPaymentModal(false)
-                                            }
+                                            }}
                                         >
                                             Cancel
                                         </Button>

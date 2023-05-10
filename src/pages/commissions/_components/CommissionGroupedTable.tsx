@@ -22,7 +22,7 @@ const TABLE_HEAD = [
     { id: 'date', label: 'Date', align: 'left' },
     { id: 'total_amount', label: 'Total amount', align: 'left' },
     { id: 'amount_paid', label: 'Paid amount', align: 'left' },
-    { id: 'amount_not_paid', label: 'Not paid', align: 'left' },
+    { id: 'amount_not_paid', label: 'Balance', align: 'left' },
     { id: 'more', label: 'More', align: 'left' },
     // { id: '' },
 ]

@@ -17,11 +17,13 @@ import { PATH_DASHBOARD } from '../../routes/paths'
 import axios from '../../utils/axios'
 import ProductForm from './_components/ProductForm'
 import ProductsTable from './_components/ProductsTable'
+import useAccountList from '../../hooks/account/useAccountList'
 
 function ProductsPage() {
     const { themeStretch } = useSettingsContext()
 
     const { products, mutate } = useProductList()
+    const { accounts } = useAccountList()
 
     const [open, setOpen] = useState(false)
     const [activeProduct, setActiveProduct] = useState<any>(null)
@@ -109,6 +111,7 @@ function ProductsPage() {
                         data={products}
                         mutate={mutate}
                         handleUpdate={handleUpdate}
+                        accounts={accounts}
                     />
 
                     <Dialog

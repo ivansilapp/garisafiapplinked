@@ -11,6 +11,7 @@ import {
     TableCell,
     IconButton,
     Typography,
+    SelectChangeEvent,
 } from '@mui/material'
 // components
 import { Link, NavLink } from 'react-router-dom'
@@ -31,6 +32,7 @@ import axios from '../../../utils/axios'
 
 export default function ProductTableRow({
     row,
+    accounts,
     selected,
     onEditRow,
     onDeleteRow,
@@ -45,6 +47,16 @@ export default function ProductTableRow({
     const [vehicle, setVehicle] = useState<any>(null)
     const [quantity, setQuantity] = useState<any>('1')
     const [addVehicleModal, setAddVehicleModal] = useState(false)
+    const [account, setAccount] = useState<any>('')
+    const [reference, setReference] = useState<any>('')
+    const [hasReference, setHasReference] = useState(false)
+
+    const handleAccountChange = (e: SelectChangeEvent) => {
+        setAccount(e.target.value)
+        const ac = accounts.find((a: any) => a.id === e.target.value)
+        // console.log(ac, 'is the account')
+        setHasReference(ac?.name?.toLowerCase()?.includes('cash'))
+    }
 
     const { enqueueSnackbar } = useSnackbar()
 
@@ -58,11 +70,27 @@ export default function ProductTableRow({
             if (!quantity || Number(quantity) <= 0) {
                 throw new Error('Please enter a valid quantity')
             }
+
+            if (!account) {
+                throw new Error('Please select an account')
+            }
+            const ref = reference.trim()
+            if (!hasReference && !ref) {
+                throw new Error('Please enter payment reference')
+            }
             // create sale
             setSaleLoader(true)
+            // const b = 1
+
+            // if (b === 1) {
+            //     throw new Error('Test case: OK')
+            // }
             const url = `${apiUrl}/sales`
             const payload = {
                 vehicleId: vehicle.id,
+                accountId: account,
+                reference,
+                amount: price * Number(quantity) ?? 0,
                 saleProducts: [
                     {
                         productId: id,
@@ -166,7 +194,13 @@ export default function ProductTableRow({
             </TableRow>
             <ProductSaleModal
                 open={saleModal}
-                handleClose={() => setSaleModal(false)}
+                handleClose={() => {
+                    setSaleModal(false)
+                    setVehicle(null)
+                    setQuantity('1')
+                    setAccount('')
+                    setReference('')
+                }}
                 loading={saleLoader}
                 handleSubmit={handleSale}
                 setProduct={() => {}}
@@ -174,6 +208,13 @@ export default function ProductTableRow({
                 setVehicle={setVehicle}
                 setQuantity={setQuantity}
                 quantity={quantity}
+                accounts={accounts}
+                account={account}
+                reference={reference}
+                vehicle={vehicle}
+                setReference={setReference}
+                hasReference={hasReference}
+                handleAccountChange={handleAccountChange}
                 setAddVehicleModal={setAddVehicleModal}
             />
             <ConfirmDialog

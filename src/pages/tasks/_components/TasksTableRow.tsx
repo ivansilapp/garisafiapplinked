@@ -32,6 +32,7 @@ import { removeSpecialCharacters } from '../../../components/animate'
 export default function TaskTableRow({
     row,
     selected,
+    splitRevenue,
     onEditRow,
     readOnly,
     onDeleteRow,
@@ -84,6 +85,10 @@ export default function TaskTableRow({
     const attendees = attendants
         ? attendants?.map((a: any) => a?.attendant)
         : []
+
+    const revenue = splitRevenue ? Math.floor(cost / attendees.length) : cost
+
+    // console.log('revenue', revenue, splitRevenue)
 
     return (
         <>
@@ -156,7 +161,7 @@ export default function TaskTableRow({
                     </Label>
                 </TableCell>
 
-                <TableCell align="right">{fCurrency(cost)}</TableCell>
+                <TableCell align="right">{fCurrency(revenue)}</TableCell>
                 <TableCell align="right">
                     <Label
                         variant={isLight ? 'soft' : 'filled'}
@@ -165,34 +170,6 @@ export default function TaskTableRow({
                         {fullyPaid ? 'Paid' : 'Not paid'}
                     </Label>
                 </TableCell>
-
-                {/* <TableCell align="left">{fCurrency(paidAmount)}</TableCell> */}
-                {/* <TableCell align="left">
-                    {fullyPaid ? 'Fully paid' : 'Not fully paid'}
-                </TableCell> */}
-
-                {/* <TableCell align="center">
-                    <Button
-                        variant="outlined"
-                        startIcon={<Iconify icon="eva:edit-fill" />}
-                        onClick={onEditRow}
-                    >
-                        Edit
-                    </Button>
-                </TableCell> */}
-
-                {/* {!readOnly ? (
-                    <TableCell align="right">
-                        <Button
-                            variant="outlined"
-                            color="warning"
-                            startIcon={<Iconify icon="eva:close-outline" />}
-                            onClick={() => {}}
-                        >
-                            Cancel
-                        </Button>
-                    </TableCell>
-                ) : null} */}
             </TableRow>
             <ConfirmDialog
                 open={openConfirm}

@@ -27,7 +27,7 @@ const TABLE_HEAD = [
     { id: '' },
 ]
 
-function ProductsTable({ data, handleUpdate, mutate }: any) {
+function ProductsTable({ data, handleUpdate, mutate, accounts }: any) {
     const {
         dense,
         page,
@@ -184,6 +184,7 @@ function ProductsTable({ data, handleUpdate, mutate }: any) {
                                             handleDeleteRow(row.id)
                                         }
                                         deleteLoader={deleteLoader}
+                                        accounts={accounts}
                                         onEditRow={() => handleUpdate(row)}
                                     />
                                 ))}

@@ -44,8 +44,6 @@ import AppLoader from '../../components/loader/AppLoader'
 //     value: 40,
 // }))
 
-const INPUT_WIDTH = 160
-
 function AttendantDetail() {
     const { themeStretch } = useSettingsContext()
     const { enqueueSnackbar } = useSnackbar()
@@ -85,7 +83,7 @@ function AttendantDetail() {
 
     useEffect(() => {
         handleDateFilter()
-    }, [filterEndDate, filterStartDate])
+    }, [filterEndDate, filterStartDate, id])
 
     const attendantPerformance = [
         {
@@ -261,6 +259,7 @@ function AttendantDetail() {
                                     ...task,
                                     attendant,
                                 }))}
+                                splitRevenue
                                 handleUpdate={() => {}}
                                 mutate={() => {}}
                                 readOnly={1}

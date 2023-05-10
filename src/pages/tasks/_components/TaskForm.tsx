@@ -12,6 +12,7 @@ import {
     Typography,
     InputAdornment,
     MenuItem,
+    TextField,
 } from '@mui/material'
 // utils
 import { fCurrency } from '../../../utils/formatNumber'
@@ -312,25 +313,6 @@ export default function TaskForm({
 
                             {isCarpetcleaning(values.items[index]) ? (
                                 <>
-                                    {/* <RHFTextField
-                                        size="small"
-                                        type="number"
-                                        name={`items[${index}].price`}
-                                        label="Price"
-                                        placeholder="0"
-                                        onChange={(event: any) =>
-                                            //  handleChangePrice(event, index)
-                                            console.log(event.target.value, index)
-                                        }
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    Ksh
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                        sx={{ maxWidth: { md: 96 } }}
-                                    /> */}
                                     <RHFTextField
                                         size="small"
                                         type="number"
@@ -374,6 +356,17 @@ export default function TaskForm({
                                         }
                                         InputLabelProps={{ shrink: true }}
                                         sx={{ maxWidth: { md: 96 } }}
+                                    />
+                                    <TextField
+                                        sx={{ maxWidth: { md: 96 } }}
+                                        size="small"
+                                        disabled
+                                        label="Size"
+                                        type="number"
+                                        value={
+                                            Number(values.items[index].width) *
+                                            Number(values.items[index].height)
+                                        }
                                     />
                                 </>
                             ) : null}

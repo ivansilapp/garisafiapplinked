@@ -4,9 +4,12 @@ import { taskStatus } from '../auth/utils'
 export const computeTaskTotals = (tasks: any[]) => {
     if (!tasks) return 0
     const total = tasks?.reduce((acc: any, curr: any) => {
+        const attendants = curr?.attendants ?? []
         const isCancelled = curr.status === taskStatus.cancelled
         if (isCancelled) return acc
-        return curr.fullyPaid ? acc + curr.cost : acc
+        return curr.fullyPaid
+            ? acc + Math.floor(curr.cost / attendants.length)
+            : acc
     }, 0)
 
     return total
