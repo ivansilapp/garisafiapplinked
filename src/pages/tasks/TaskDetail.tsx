@@ -1041,8 +1041,7 @@ function TaskDetail() {
                                                                         disabled={
                                                                             task.status ===
                                                                                 'cancelled' ||
-                                                                            task.status ===
-                                                                                'complete'
+                                                                            task.fullyPaid
                                                                         }
                                                                         edge="end"
                                                                         color="warning"
