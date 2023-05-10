@@ -37,8 +37,6 @@ export default function ProductSaleModal({
     setReference,
     handleAccountChange,
 }: any) {
-   
-
     return (
         <Dialog
             fullWidth
@@ -79,37 +77,41 @@ export default function ProductSaleModal({
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
                     />
-
-                    <Select
-                        labelId="account-selection-label"
-                        id="account-selection"
-                        value={account}
-                        label="Account"
-                        name="account"
-                        onChange={handleAccountChange}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        {accounts.map((ac: any) => {
-                            return (
-                                <MenuItem key={ac.id} value={ac.id}>
-                                    {ac.name}
+                    {account && account.length > 0 ? (
+                        <>
+                            <Select
+                                labelId="account-selection-label"
+                                id="account-selection"
+                                value={account}
+                                label="Account"
+                                name="account"
+                                onChange={handleAccountChange}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
                                 </MenuItem>
-                            )
-                        })}
-                    </Select>
-                    <TextField
-                        fullWidth
-                        id="reference-txt"
-                        label="Payment reference"
-                        variant="outlined"
-                        value={reference}
-                        disabled={hasReference}
-                        onChange={(e) => {
-                            setReference(e.target.value)
-                        }}
-                    />
+                                {accounts?.map((ac: any) => {
+                                    return (
+                                        <MenuItem key={ac.id} value={ac.id}>
+                                            {ac.name}
+                                        </MenuItem>
+                                    )
+                                })}
+                            </Select>
+                            <TextField
+                                fullWidth
+                                id="reference-txt"
+                                label="Payment reference"
+                                variant="outlined"
+                                value={reference}
+                                disabled={hasReference}
+                                onChange={(e) => {
+                                    setReference(e.target.value)
+                                }}
+                            />
+                        </>
+                    ) : null}
+
                     <Stack alignItems="flex-end" sx={{ my: 3 }}>
                         <Box gap={2} display="flex">
                             <Button
