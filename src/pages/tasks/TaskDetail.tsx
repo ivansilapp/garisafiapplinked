@@ -323,6 +323,12 @@ function TaskDetail() {
     const handleAddService = async () => {
         try {
             setAddServiceLoader(true)
+            if (!activeSevice) {
+                enqueueSnackbar('Please select a service', {
+                    variant: 'error',
+                })
+                return
+            }
             const priceId = prices.find(
                 (p: any) =>
                     p.serviceId === activeSevice &&
@@ -331,6 +337,16 @@ function TaskDetail() {
             // console.log('price id', priceId)
             // const response = {}
             // // add service
+            if (!priceId) {
+                enqueueSnackbar(
+                    'Price not found. Confirm its correctly configured',
+                    {
+                        variant: 'error',
+                    }
+                )
+                return
+            }
+            // console.log({ activeSevice, id, priceId })
             const response = await axios.post(
                 `${apiUrl}/task/service-add/${activeSevice}/${id}/${priceId}`,
                 {}
