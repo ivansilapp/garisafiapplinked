@@ -74,7 +74,7 @@ function TaskPaymentCard({ payments, task }: any) {
                                     </Grid>
 
                                     <Grid item xs={12} sm={6}>
-                                        <Typography>
+                                    <Typography>
                                             <b>Recorded by: </b>{' '}
                                             {payment.user.name}
                                         </Typography>

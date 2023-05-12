@@ -85,7 +85,11 @@ function Tasks() {
     const onSubmitVehicle = async (payload: any) => {
         try {
             // update record
-            const { data } = await axios.post('/vehicle', payload)
+            const upLoadData = {
+                ...payload,
+                points: Number(payload.points) ?? 0,
+            }
+            const { data } = await axios.post('/vehicle', upLoadData)
             if (data && data.vehicle) {
                 mutate()
                 enqueueSnackbar('Vehicle added successfully', {
@@ -212,8 +216,8 @@ function Tasks() {
 
                             <VehicleForm
                                 onSubmit={onSubmitVehicle}
-                                vehicle={activeVehilce}
                                 handleClose={handleVehicleModalClose}
+                                vehicle={activeVehilce}
                                 clients={clients}
                                 bodyTypes={bodyTypes}
                             />

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 // @mui
 import {
     Stack,
@@ -12,6 +12,9 @@ import {
     IconButton,
     Typography,
     SelectChangeEvent,
+    Dialog,
+    DialogTitle,
+    DialogContent,
 } from '@mui/material'
 // components
 import { Link, NavLink } from 'react-router-dom'
@@ -26,6 +29,7 @@ import ProductSaleModal from '../../tasks/_components/ProductSaleModal'
 import { apiUrl } from '../../../config-global'
 import { useSnackbar } from '../../../components/snackbar'
 import axios from '../../../utils/axios'
+import VehicleForm from '../../system_data/_components/vehicle/VehicleForm'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
@@ -37,6 +41,7 @@ export default function ProductTableRow({
     onEditRow,
     onDeleteRow,
     deleteLoader,
+    bodyTypes,
 }: any) {
     const { id, name, price, inStock }: any = row
 
@@ -134,6 +139,41 @@ export default function ProductTableRow({
     //     textDecoration: 'none',
     // }
 
+    const initAddVehicle = () => {
+        // setActiveVehilce(null)
+        setAddVehicleModal(true)
+    }
+
+    const handleVehicleModalClose = () => {
+        setAddVehicleModal(false)
+    }
+
+    const onSubmitVehicle = async (payload: any) => {
+        // console.log(payload, 'is the payload')
+        try {
+            // update record
+            const upLoadData = {
+                ...payload,
+                points: Number(payload.points) ?? 0,
+            }
+            const { data } = await axios.post('/vehicle', upLoadData)
+            // console.log(data, 'is the data')
+            if (data && data.vehicle) {
+                // mutate()
+                enqueueSnackbar('Vehicle added successfully', {
+                    variant: 'success',
+                })
+                setAddVehicleModal(false)
+                // setActiveVehilce(data.vehicle)
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Something went wrong'
+            enqueueSnackbar(msg, {
+                variant: 'error',
+            })
+        }
+    }
+
     return (
         <>
             <TableRow hover selected={selected}>
@@ -215,7 +255,7 @@ export default function ProductTableRow({
                 setReference={setReference}
                 hasReference={hasReference}
                 handleAccountChange={handleAccountChange}
-                setAddVehicleModal={setAddVehicleModal}
+                setAddVehicleModal={initAddVehicle}
             />
             <ConfirmDialog
                 open={openConfirm}
@@ -233,6 +273,27 @@ export default function ProductTableRow({
                     </LoadingButton>
                 }
             />
+            <Dialog
+                fullWidth
+                maxWidth="sm"
+                open={addVehicleModal}
+                onClose={handleVehicleModalClose}
+            >
+                <DialogTitle>Add vehicle</DialogTitle>
+                <Suspense fallback={<p>Loading...</p>}>
+                    <DialogContent>
+                        {/* <DialogContentText /> */}
+
+                        <VehicleForm
+                            onSubmit={onSubmitVehicle}
+                            handleClose={handleVehicleModalClose}
+                            vehicle={null}
+                            clients={[]}
+                            bodyTypes={bodyTypes}
+                        />
+                    </DialogContent>
+                </Suspense>
+            </Dialog>
         </>
     )
 }

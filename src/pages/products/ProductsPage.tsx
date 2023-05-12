@@ -18,12 +18,14 @@ import axios from '../../utils/axios'
 import ProductForm from './_components/ProductForm'
 import ProductsTable from './_components/ProductsTable'
 import useAccountList from '../../hooks/account/useAccountList'
+import useBodyTypes from '../../hooks/body-types/useBodyTypes'
 
 function ProductsPage() {
     const { themeStretch } = useSettingsContext()
 
     const { products, mutate } = useProductList()
     const { accounts } = useAccountList()
+    const { bodyTypes } = useBodyTypes()
 
     const [open, setOpen] = useState(false)
     const [activeProduct, setActiveProduct] = useState<any>(null)
@@ -112,6 +114,7 @@ function ProductsPage() {
                         mutate={mutate}
                         handleUpdate={handleUpdate}
                         accounts={accounts}
+                        bodyTypes={bodyTypes ?? []}
                     />
 
                     <Dialog
