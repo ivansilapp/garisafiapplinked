@@ -28,7 +28,7 @@ import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
 
 // ----------------------------------------------------------------------
-
+const CARPET_PRICE = 30
 export default function TaskForm({
     services,
     vehicle,
@@ -144,7 +144,7 @@ export default function TaskForm({
             })
             // service.name.includes('Carpet cleaning')
             if (carpetCleaning) {
-                price = 20
+                price = CARPET_PRICE
                 setValue(`items[${index}].price`, price)
                 setValue(`items[${index}].serviceId`, service?.id)
                 setValue(`items[${index}].priceId`, 0)
@@ -221,7 +221,7 @@ export default function TaskForm({
             }
             const { width } = values.items[index]
             const { height } = values.items[index]
-            const price = 20 * Number(width) * Number(height)
+            const price = CARPET_PRICE * Number(width) * Number(height)
             setValue(`items[${index}].price`, price)
 
             setValue(
