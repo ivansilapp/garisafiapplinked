@@ -61,8 +61,8 @@ function VihiclesPage() {
                 ...payloadData,
                 points:
                     activeVehilce && activeVehilce.id
-                        ? payloadData.points
-                        : Number(payloadData.points),
+                        ? Number(payloadData.points)
+                        : Number(payloadData.points) ?? 0,
             }
             if (activeVehilce && activeVehilce.id) {
                 // update record
