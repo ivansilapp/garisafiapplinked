@@ -35,6 +35,7 @@ function VehicleForm({
         clientId: Yup.string(),
         bodyId: Yup.string().required('Body type required'),
         model: Yup.string(),
+        points: Yup.number().required('Reward points required'),
     })
 
     const defaultValues = useMemo(
@@ -43,7 +44,7 @@ function VehicleForm({
             clientId: vehicle?.clientId || '',
             bodyId: vehicle?.bodyId || '',
             model: vehicle?.model || '',
-            points: vehicle?.points?.points || '',
+            points: vehicle?.points?.points || 0,
         }),
         [vehicle]
     )

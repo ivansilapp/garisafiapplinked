@@ -50,8 +50,11 @@ function VihiclesPage() {
 
     const onSubmit = async (payloadData: any) => {
         try {
-            if (Number(payloadData.points) > 9) {
-                enqueueSnackbar('Reward points should be less than 10', {
+            if (
+                Number(payloadData.points) > 9 ||
+                Number(payloadData.points) < 0
+            ) {
+                enqueueSnackbar('Reward points should be between 0 and 10', {
                     variant: 'error',
                 })
                 return
@@ -64,6 +67,7 @@ function VihiclesPage() {
                         ? Number(payloadData.points)
                         : Number(payloadData.points) ?? 0,
             }
+            // console.log('payload', payload)
             if (activeVehilce && activeVehilce.id) {
                 // update record
                 const { data } = await axios.put(
