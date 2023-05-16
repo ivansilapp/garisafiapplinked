@@ -93,11 +93,12 @@ function Dashboard() {
     const accountsTotal =
         payments?.reduce((acc: any, account: any) => acc + account.amount, 0) ??
         1
-    const todayAccountsOverview = payments.map((account: any) => ({
-        status: account.account,
-        quantity: account.amount,
-        value: (account.amount / accountsTotal) * 100,
-    }))
+    const todayAccountsOverview =
+        payments?.map((account: any) => ({
+            status: account.account,
+            quantity: account.amount,
+            value: (account.amount / accountsTotal) * 100,
+        })) ?? []
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -221,7 +222,9 @@ function Dashboard() {
                                 title="Free washes"
                                 currency
                                 percent={2.6}
-                                total={computeFreewashTotals(freeWashes) ?? 0}
+                                total={
+                                    computeFreewashTotals(freeWashes ?? []) ?? 0
+                                }
                                 items={{
                                     title: 'Number of free washes',
                                     value: freeWashes?.length ?? 0,
