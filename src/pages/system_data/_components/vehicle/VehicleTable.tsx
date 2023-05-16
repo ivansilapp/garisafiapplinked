@@ -226,8 +226,14 @@ function applyFilter({
 
     if (filterName) {
         inputData = inputData.filter(
-            (user: any) =>
-                user?.registration
+            (vehicle: any) =>
+                vehicle?.registration
+                    ?.toLowerCase()
+                    .indexOf(filterName.toLowerCase()) !== -1 ||
+                vehicle?.model
+                    ?.toLowerCase()
+                    .indexOf(filterName.toLowerCase()) !== -1 ||
+                vehicle?.bodyType?.name
                     ?.toLowerCase()
                     .indexOf(filterName.toLowerCase()) !== -1
         )

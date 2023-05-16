@@ -13,6 +13,8 @@ import TaskCountCard from './_components/TaskCountCard'
 import ValueGraphWidget from './_components/ValueGraphWidget'
 import OccupiedCard from './_components/OccupiedCard'
 import { PATH_DASHBOARD } from '../../routes/paths'
+import AccountsOverview from './_components/AccountsOverview'
+import { computeFreewashTotals } from '../../utils/common'
 
 function Dashboard() {
     const theme = useTheme()
@@ -27,6 +29,8 @@ function Dashboard() {
         expenses,
         sales,
         pigeonholes,
+        freeWashes,
+        payments,
     } = useDailyAnalytics()
     const { bodyTypes } = useBodyTypes()
 
@@ -37,7 +41,8 @@ function Dashboard() {
             value: account?.balance ?? 0,
         })) ?? []
 
-    // console.log('sales ', sales)
+    // console.log('free washes ', freeWashes)
+    // console.log('payments ', payments)
 
     const carTypeTasks = complete?.reduce((acc: any, task: any) => {
         const { bodyId }: any = task.vehicle
@@ -85,6 +90,14 @@ function Dashboard() {
         )
     }
     const todaysTasks = tasks ? tasks.sort(dateSort)[tasks.length - 1] : null
+    const accountsTotal =
+        payments?.reduce((acc: any, account: any) => acc + account.amount, 0) ??
+        1
+    const todayAccountsOverview = payments.map((account: any) => ({
+        status: account.account,
+        quantity: account.amount,
+        value: (account.amount / accountsTotal) * 100,
+    }))
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -158,7 +171,7 @@ function Dashboard() {
                             </Grid>
                             <Grid xs={12} md={4} item>
                                 <ValueGraphWidget
-                                    title="Sales revenue"
+                                    title="Product sales"
                                     currency
                                     percent={2.6}
                                     total={sales?.cost ?? 0}
@@ -179,7 +192,7 @@ function Dashboard() {
                             </Grid>
                             <Grid xs={12} md={4} item>
                                 <ValueGraphWidget
-                                    title="Expenses"
+                                    title="Commissions payable"
                                     currency
                                     percent={2.6}
                                     total={expenses.expense_total ?? 0}
@@ -196,6 +209,30 @@ function Dashboard() {
                                 />
                             </Grid>
                         </Grid>
+
+                        <Grid item xs={12} sm={8}>
+                            <AccountsOverview
+                                title="Todays payments"
+                                data={todayAccountsOverview}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                            <ValueGraphWidget
+                                title="Free washes"
+                                currency
+                                percent={2.6}
+                                total={computeFreewashTotals(freeWashes) ?? 0}
+                                items={{
+                                    title: 'Number of free washes',
+                                    value: freeWashes?.length ?? 0,
+                                }}
+                                chart={{
+                                    colors: [theme.palette.info.main],
+                                    series: [],
+                                }}
+                            />
+                        </Grid>
+
                         <Grid item xs={12} md={4}>
                             <AccountBalances
                                 title="Account Balances"

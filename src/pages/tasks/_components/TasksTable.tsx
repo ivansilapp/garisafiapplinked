@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { Card, Paper, Table, TableBody, TableContainer } from '@mui/material'
 
+import { LoadingButton } from '@mui/lab'
 import {
     useTable,
     getComparator,
@@ -16,6 +17,7 @@ import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
 import TasksTableRow from './TasksTableRow'
 import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
+import ConfirmDialog from '../../../components/confirm-dialog'
 
 const TABLE_HEAD = [
     { id: 'CreatedAt', label: 'Created at', align: 'left' },
@@ -24,12 +26,9 @@ const TABLE_HEAD = [
     { id: 'services', label: 'Services', align: 'left' },
     { id: 'attendant', label: 'Attendant', align: 'left' },
     { id: 'status', label: 'Status', align: 'left' },
-    { id: 'cost', label: 'Cost', align: 'left' },
+    { id: 'cost', label: 'Cost / Sales', align: 'left' },
     { id: 'payment', label: 'Payment', align: 'left' },
-    // { id: 'fullyPaid', label: 'Fully paid', align: 'center' },
-    // { id: 'paidAmount', label: 'Paid amount', align: 'center' },
-    // { id: 'cancel', label: 'Cancel', align: 'right' },
-    { id: '' },
+    { id: 'complete_action', label: 'Mark complete', align: 'left' },
 ]
 
 function TasksTable({
@@ -65,6 +64,10 @@ function TasksTable({
     const [openConfirm, setOpenConfirm] = useState(false)
 
     const [filterName, setFilterName] = useState('')
+
+    const [completeModal, setCompleteModal] = useState(false)
+    const [activeItem, setActiveItem] = useState<any>(null)
+    const [completeLoader, setCompleteLoader] = useState(false)
 
     const [filterStatus, setFilterStatus] = useState('all')
 
@@ -145,6 +148,55 @@ function TasksTable({
         }
     }
 
+    const handleComplete = async () => {
+        try {
+            if (!activeItem) {
+                throw new Error('Invalid item selected')
+            }
+            const { id } = activeItem
+
+            if (!id) {
+                throw new Error('Invalid item selected')
+            }
+            setCompleteLoader(true)
+            const response = await axios.put(`/task/${id}`, {
+                status: 'complete',
+            })
+
+            if (response.status === 200) {
+                const index = tableData.findIndex((item: any) => item.id === id)
+                const updatedItem = {
+                    ...tableData[index],
+                    status: 'complete',
+                }
+                const updatedData = [
+                    ...tableData.slice(0, index),
+                    updatedItem,
+                    ...tableData.slice(index + 1),
+                ]
+                mutate(updatedData)
+                enqueueSnackbar('Marked as complete', {
+                    variant: 'success',
+                })
+                setCompleteModal(false)
+                setActiveItem(null)
+            } else {
+                const msg = response.data?.error || 'Error completing task'
+                throw new Error(msg)
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error completing task'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setCompleteLoader(false)
+        }
+    }
+
+    const handleInitComplete = (item: any) => {
+        setActiveItem(item)
+        setCompleteModal(true)
+    }
+
     return (
         <Paper>
             <GeneralTableToolbar
@@ -199,6 +251,7 @@ function TasksTable({
                                         }
                                         deleteLoader={deleteLoader}
                                         onEditRow={() => handleUpdate(row)}
+                                        handleInitComplete={handleInitComplete}
                                     />
                                 ))}
 
@@ -226,6 +279,25 @@ function TasksTable({
                 //
                 dense={dense}
                 onChangeDense={onChangeDense}
+            />
+            <ConfirmDialog
+                open={completeModal}
+                onClose={() => {
+                    setCompleteModal(false)
+                    setActiveItem(null)
+                }}
+                title="Complete task"
+                content={`Complete task for  ${activeItem?.vehicle?.registration} - ${activeItem?.vehicle?.model}`}
+                action={
+                    <LoadingButton
+                        variant="contained"
+                        color="info"
+                        onClick={handleComplete}
+                        loading={completeLoader}
+                    >
+                        Complete
+                    </LoadingButton>
+                }
             />
         </Paper>
     )
@@ -272,7 +344,10 @@ function applyFilter({ inputData, comparator, filterName, filterStatus }: any) {
                 item?.vehicle?.registration
                     ?.toLowerCase()
                     ?.indexOf(filterName?.toLowerCase()) !== -1 ||
-                attendants?.includes(true)
+                attendants?.includes(true) ||
+                item?.vehicle.model
+                    ?.toLowerCase()
+                    ?.indexOf(filterName?.toLowerCase()) !== -1
             )
         })
     }

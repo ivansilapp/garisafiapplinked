@@ -49,6 +49,23 @@ export const computeTaskTotalsByStatus = (tasks: any[], status: string) => {
     return total
 }
 
+export const computeFreewashTotals = (tasks: any[]) => {
+    if (!tasks) return 0
+
+    const total = tasks?.reduce((acc: any, curr: any) => {
+        const { payments } = curr
+        // find redeemed payment
+        // console.log('p', payments)
+
+        const redeemedPayment = payments?.find((p: any) => p?.isRedeem)
+        if (redeemedPayment) {
+            return acc + (redeemedPayment?.amount ?? 0)
+        }
+        return acc
+    }, 0)
+
+    return total
+}
 export const computeTotalTasks = (tasks: any[]) => {
     if (!tasks) return 0
 

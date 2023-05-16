@@ -13,9 +13,11 @@ export default function useDailyAnalytics() {
         canceled: data ? data.canceled : 0,
         waitlist: data ? data.waitlist : 0,
         tasks: data ? data.tasks : [],
+        freeWashes: data ? data.freeWashes : [],
         expenses: data ? data.expenses : [],
         sales: data ? data.sales : [],
         pigeonholes: data ? data.pigeonholes : [],
+        payments: data ? data.payments : [],
         mutate,
     }
 }

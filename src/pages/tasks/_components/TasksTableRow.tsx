@@ -37,6 +37,7 @@ export default function TaskTableRow({
     readOnly,
     onDeleteRow,
     deleteLoader,
+    handleInitComplete,
 }: any) {
     const {
         id,
@@ -49,6 +50,7 @@ export default function TaskTableRow({
         vehicle,
         attendants,
         jobs,
+        sales,
     }: any = row
 
     const serviceInitials =
@@ -88,7 +90,11 @@ export default function TaskTableRow({
 
     const revenue = splitRevenue ? Math.floor(cost / attendees.length) : cost
 
-    // console.log('revenue', revenue, splitRevenue)
+    // console.log('row', row)
+    const salesCost =
+        sales?.reduce((acc: any, sale: any) => {
+            return acc + sale.amount
+        }, 0) ?? 0
 
     return (
         <>
@@ -161,7 +167,9 @@ export default function TaskTableRow({
                     </Label>
                 </TableCell>
 
-                <TableCell align="right">{fCurrency(revenue)}</TableCell>
+                <TableCell align="right">
+                    {fCurrency(revenue + salesCost)}
+                </TableCell>
                 <TableCell align="right">
                     <Label
                         variant={isLight ? 'soft' : 'filled'}
@@ -169,6 +177,18 @@ export default function TaskTableRow({
                     >
                         {fullyPaid ? 'Paid' : 'Not paid'}
                     </Label>
+                </TableCell>
+
+                <TableCell align="right">
+                    <Button
+                        onClick={() => handleInitComplete(row)}
+                        variant="contained"
+                        color="info"
+                        size="small"
+                        disabled={status === 'complete'}
+                    >
+                        Complete
+                    </Button>
                 </TableCell>
             </TableRow>
             <ConfirmDialog
@@ -179,7 +199,7 @@ export default function TaskTableRow({
                 action={
                     <LoadingButton
                         variant="contained"
-                        color="error"
+                        color="info"
                         onClick={onDeleteRow}
                         loading={deleteLoader}
                     >

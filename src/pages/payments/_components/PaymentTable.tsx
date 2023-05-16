@@ -40,7 +40,7 @@ const TABLE_HEAD = [
     { id: 'reference', label: 'Reference', align: 'center' },
     // { id: 'type', label: 'Description', align: 'center' },
     { id: 'user', label: 'user', align: 'left' },
-    { id: 'preview', label: 'preview', align: 'left' },
+    { id: 'preview', label: 'Edit', align: 'left' },
     { id: '' },
 ]
 

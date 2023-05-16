@@ -25,12 +25,13 @@ import ConfirmDialog from '../../../components/confirm-dialog'
 import { PATH_DASHBOARD } from '../../../routes/paths'
 import { fDateTime } from '../../../utils/formatTime'
 import { fCurrency, fNumber } from '../../../utils/formatNumber'
+// import Label from '../../../components/label'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
 
 export default function SalesTableRow({ row }: any) {
-    const { amount, CreatedAt, vehicle, products }: any = row
+    const { amount, cancelled, CreatedAt, vehicle, products }: any = row
 
     // const theme = useTheme()
 
@@ -47,6 +48,10 @@ export default function SalesTableRow({ row }: any) {
             <TableCell>{fDateTime(CreatedAt, null)}</TableCell>
 
             <TableCell align="left">{vehicle?.registration}</TableCell>
+
+            <TableCell align="left">
+                {cancelled ? <Label color="error"> cancelled </Label> : null}
+            </TableCell>
 
             <TableCell align="left">{items}</TableCell>
 

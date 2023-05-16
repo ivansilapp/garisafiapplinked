@@ -75,7 +75,7 @@ function BodyTypesPage() {
                 }
             }
         } catch (error) {
-            enqueueSnackbar('Failed to create user record', {
+            enqueueSnackbar('Failed to create record', {
                 variant: 'error',
             })
         } finally {

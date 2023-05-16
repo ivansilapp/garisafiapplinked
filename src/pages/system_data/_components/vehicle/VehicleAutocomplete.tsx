@@ -44,6 +44,7 @@ export default function VehicleAutocomplete({
             const { data } = await axios.get(`${url}${value}`)
             // console.log(data)
             if (data.vehicles) {
+                // console.log('setting items', data.vehicles)
                 setItems(data.vehicles)
             } else {
                 setItems([])

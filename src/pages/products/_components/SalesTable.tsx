@@ -21,6 +21,7 @@ import { useSnackbar } from '../../../components/snackbar'
 const TABLE_HEAD = [
     { id: 'CreatedAt', label: 'Date sold', align: 'left' },
     { id: 'vehicle', label: 'Vehicle', align: 'left' },
+    { id: 'cancelled', label: 'Status', align: 'left' },
     { id: 'amount', label: 'Price', align: 'left' },
     { id: 'products', label: 'Products', align: 'left' },
     // { id: 'amountPaid', label: 'Amount paid', align: 'left' },

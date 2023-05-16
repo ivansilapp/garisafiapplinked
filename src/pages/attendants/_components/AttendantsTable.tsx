@@ -45,7 +45,7 @@ function AttendantsTable({ data, handleUpdate, mutate }: any) {
         onChangeDense,
         onChangePage,
         onChangeRowsPerPage,
-    } = useTable({})
+    } = useTable({ defaultOrderBy: 'name', defaultOrder: 'asc' })
 
     const { enqueueSnackbar } = useSnackbar()
     const [deleteLoader, setDeleteLoader] = useState(false)
@@ -240,8 +240,16 @@ function applyFilter({
 
     if (filterName) {
         inputData = inputData.filter(
-            (user: any) =>
-                user.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+            (attendant: any) =>
+                attendant?.name
+                    ?.toLowerCase()
+                    ?.indexOf(filterName.toLowerCase()) !== -1 ||
+                attendant?.phone
+                    ?.toLowerCase()
+                    ?.indexOf(filterName.toLowerCase()) !== -1 ||
+                attendant?.status
+                    ?.toLowerCase()
+                    ?.indexOf(filterName.toLowerCase()) !== -1
         )
     }
 
