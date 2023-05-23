@@ -137,7 +137,7 @@ export default function TaskTableRow({
 
                 <TableCell align="left">
                     <Stack display="flex" direction="row" spacing={1}>
-                        {attendees.map((a: any, i: number) => {
+                        {attendees?.map((a: any, i: number) => {
                             return (
                                 <Button
                                     color="info"

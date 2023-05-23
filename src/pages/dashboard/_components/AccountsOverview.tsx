@@ -11,7 +11,7 @@ import {
     Box,
 } from '@mui/material'
 // utils
-import { fShortenNumber } from '../../../utils/formatNumber'
+import { fCurrency, fShortenNumber } from '../../../utils/formatNumber'
 
 // ----------------------------------------------------------------------
 
@@ -32,8 +32,10 @@ export default function AccountsOverview({
                         key={progress.status}
                         value={progress.value}
                         color={
-                            (progress.status === 'Cash' && 'warning') ||
-                            (progress.status === 'Mpesa' && 'success') ||
+                            (progress.status?.toLowerCase() === 'cash' &&
+                                'warning') ||
+                            (progress.status?.toLowerCase() === 'mpesa' &&
+                                'success') ||
                             'info'
                         }
                         sx={{
@@ -82,7 +84,7 @@ export default function AccountsOverview({
                         </Stack>
 
                         <Typography variant="h6">
-                            {fShortenNumber(progress.quantity)}
+                            {fCurrency(progress.quantity)}
                         </Typography>
                     </Stack>
                 ))}

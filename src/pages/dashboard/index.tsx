@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Container, Grid } from '@mui/material'
+import { Container, Grid, Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
+import { DatePicker } from '@mui/x-date-pickers'
+import { format } from 'date-fns'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useSettingsContext } from '../../components/settings'
 import InternalError from '../../components/shared/500Error'
 import useBodyTypes from '../../hooks/body-types/useBodyTypes'
@@ -19,6 +22,25 @@ import { computeFreewashTotals } from '../../utils/common'
 function Dashboard() {
     const theme = useTheme()
 
+    const { bodyTypes } = useBodyTypes()
+
+    const { themeStretch } = useSettingsContext()
+
+    const navigate = useNavigate()
+    //  dates
+
+    const [searchParams] = useSearchParams()
+    const initialStartDate = searchParams.get('startDate')
+
+    const [filterStartDate, setFilterStartDate] = useState<Date | null>(
+        initialStartDate ? new Date(initialStartDate) : null
+    )
+    let query = ''
+
+    if (initialStartDate) {
+        query = `${query}startDate=${initialStartDate}`
+    }
+
     const {
         accounts,
         complete,
@@ -31,10 +53,13 @@ function Dashboard() {
         pigeonholes,
         freeWashes,
         payments,
-    } = useDailyAnalytics()
-    const { bodyTypes } = useBodyTypes()
+    } = useDailyAnalytics({ query })
 
-    const { themeStretch } = useSettingsContext()
+    // const onFilterStartDate = (newValue: any) => {
+    //     setFilterStartDate(newValue)
+    //     handleDateFilter({ s: newValue, e: filterEndDate })
+    // }
+
     const series =
         accounts?.map((account: any) => ({
             label: account?.name ?? '',
@@ -90,6 +115,7 @@ function Dashboard() {
         )
     }
     const todaysTasks = tasks ? tasks.sort(dateSort)[tasks.length - 1] : null
+    // console.log(todaysTasks, 'todaysTasks', tasks)
     const accountsTotal =
         payments?.reduce((acc: any, account: any) => acc + account.amount, 0) ??
         1
@@ -100,6 +126,30 @@ function Dashboard() {
             value: (account.amount / accountsTotal) * 100,
         })) ?? []
 
+    const onFilterStartDate = (newValue: any) => {
+        setFilterStartDate(newValue)
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        handleDateFilter({ s: newValue })
+    }
+
+    const handleDateFilter = async ({ s }: any) => {
+        try {
+            const startDate = s ? format(s, 'yyyy-MM-dd') : null
+
+            let queryObj = {}
+            if (startDate) {
+                queryObj = { ...queryObj, startDate }
+            }
+
+            const q = new URLSearchParams(queryObj).toString()
+            navigate(`${PATH_DASHBOARD.root}?${q}`)
+        } catch (err: any) {
+            const msg = err?.error || err.message || 'something went wrong'
+            // enqueueSnackbar(msg, { variant: 'error' })
+            console.log(msg)
+        }
+    }
+
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <ErrorBoundary
@@ -107,6 +157,36 @@ function Dashboard() {
             >
                 <Suspense fallback={<p>Loading...</p>}>
                     <Grid container spacing={4}>
+                        <Grid item xs={12}>
+                            <Stack
+                                display="flex"
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
+                                <div />
+
+                                <Stack display="flex" direction="row" gap={2}>
+                                    <DatePicker
+                                        label="Start date"
+                                        value={filterStartDate}
+                                        onChange={onFilterStartDate}
+                                        slotProps={{
+                                            textField: { variant: 'outlined' },
+                                        }}
+                                    />
+
+                                    {/* <DatePicker
+                                    label="End date"
+                                    value={filterEndDate}
+                                    onChange={onFilterEndDate}
+                                    slotProps={{
+                                        textField: { variant: 'outlined' },
+                                    }}
+                                /> */}
+                                </Stack>
+                            </Stack>
+                        </Grid>
                         <Grid item xs={12}>
                             <TaskCountCard
                                 chart={{

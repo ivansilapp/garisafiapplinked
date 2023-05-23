@@ -1,6 +1,17 @@
 import { taskStatus } from '../auth/utils'
 
 // eslint-disable-next-line import/prefer-default-export
+export const computeCumalativeTaskTotals = (tasks: any[]) => {
+    if (!tasks) return 0
+    const total = tasks?.reduce((acc: any, curr: any) => {
+        const attendants = curr?.attendants ?? []
+        const isCancelled = curr.status === taskStatus.cancelled
+        if (isCancelled) return acc
+        return curr.fullyPaid ? acc + curr.cost : acc
+    }, 0)
+
+    return total
+}
 export const computeTaskTotals = (tasks: any[]) => {
     if (!tasks) return 0
     const total = tasks?.reduce((acc: any, curr: any) => {

@@ -1,8 +1,12 @@
 import useSWR from 'swr'
 import { apiUrl } from '../../config-global'
 
-export default function useDailyAnalytics() {
-    const url = `${apiUrl}/reports/daily-analytics`
+interface IUseDailyAnalytics {
+    query: string
+}
+
+export default function useDailyAnalytics({ query }: IUseDailyAnalytics) {
+    const url = `${apiUrl}/reports/daily-analytics?${query}`
     const { error, data, mutate } = useSWR(url, { suspense: true })
     return {
         loading: !error && !data,

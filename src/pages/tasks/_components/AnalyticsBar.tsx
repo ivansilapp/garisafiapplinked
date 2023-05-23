@@ -2,7 +2,10 @@ import { Card, Divider, Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useEffect, useState } from 'react'
 import Scrollbar from '../../../components/scrollbar'
-import { computeTaskTotals } from '../../../utils/common'
+import {
+    computeCumalativeTaskTotals,
+    computeTaskTotals,
+} from '../../../utils/common'
 import TaskAnalyticsItem from './TaskAnalyticsItem'
 
 export default function AnalyticsBar({ info }: any) {
@@ -56,7 +59,7 @@ export default function AnalyticsBar({ info }: any) {
                             (info?.pending?.length ?? 0)
                         }
                         percent={100}
-                        price={computeTaskTotals([
+                        price={computeCumalativeTaskTotals([
                             ...(info?.ongoing ?? []),
                             ...(info?.pending ?? []),
                         ])}
@@ -68,7 +71,7 @@ export default function AnalyticsBar({ info }: any) {
                         title="Completed"
                         total={info?.complete?.length ?? 0}
                         percent={10}
-                        price={computeTaskTotals(info?.complete)}
+                        price={computeCumalativeTaskTotals(info?.complete)}
                         icon="eva:checkmark-circle-2-fill"
                         color={theme.palette.success.main}
                     />
