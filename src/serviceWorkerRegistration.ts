@@ -10,6 +10,7 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://cra.link/PWA
 
+/*
 const isLocalhost = Boolean(
     window.location.hostname === 'localhost' ||
         // [::1] is the IPv6 localhost address.
@@ -21,7 +22,6 @@ const isLocalhost = Boolean(
 )
 
 function checkValidServiceWorker(swUrl: any, config: any) {
-    // Check if the service worker can be found. If it can't reload the page.
     fetch(swUrl, {
         headers: { 'Service-Worker': 'script' },
     })
@@ -145,3 +145,5 @@ export function register(config: any) {
         })
     }
 }
+
+*/
