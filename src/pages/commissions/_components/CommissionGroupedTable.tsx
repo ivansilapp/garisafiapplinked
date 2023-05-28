@@ -14,7 +14,6 @@ import {
 import Scrollbar from '../../../components/scrollbar'
 import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
 import CommissionsGroupedTableRow from './CommissionsGroupedTableRow'
-import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
 
 const TABLE_HEAD = [
@@ -44,7 +43,7 @@ function GroupedCommissionTable({ data }: any) {
         onChangeDense,
         onChangePage,
         onChangeRowsPerPage,
-    } = useTable({})
+    } = useTable({ defaultOrderBy: 'attendantName', defaultOrder: 'asc' })
 
     const { enqueueSnackbar } = useSnackbar()
     const [deleteLoader, setDeleteLoader] = useState(false)

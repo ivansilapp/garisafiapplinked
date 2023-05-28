@@ -26,10 +26,12 @@ function UngroupedSales() {
     const { date } = useParams<{ date: string }>()
     const { sales } = useUngroupedSales({ date: date ?? '' })
 
-    const salesTotal = sales.reduce(
-        (acc: any, curr: any) => acc + curr.amount,
-        0
-    )
+    const salesTotal = sales.reduce((acc: any, curr: any) => {
+        if (curr.cancelled) {
+            return acc
+        }
+        return acc + curr.amount
+    }, 0)
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs

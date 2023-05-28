@@ -119,6 +119,23 @@ function SettingsPage() {
                         </CardContent>
                     </Card>
                 </Grid>
+
+                {/* <Grid item xs={12} sm={6}>
+                    <Card>
+                        <CardHeader title="Number of key holes" />
+                        <CardContent>
+                            <TextField
+                                label="Key holes"
+                                variant="outlined"
+                                type="number"
+                                autoComplete="off"
+                                value={keyHoles}
+                                onChange={handleKeyHolesChange}
+                                fullWidth
+                            />
+                        </CardContent>
+                    </Card>
+                </Grid> */}
             </Grid>
         </Container>
     )

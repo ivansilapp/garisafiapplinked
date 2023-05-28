@@ -65,7 +65,7 @@ export default function GroupedCommissionTableRow({ row }: any) {
     return (
         <TableRow hover>
             <TableCell>{attendantName}</TableCell>
-            <TableCell>{fDateTime(date, 'MM/dd/yyyy')}</TableCell>
+            <TableCell>{fDateTime(date, 'dd/MM/yyyy')}</TableCell>
 
             <TableCell align="left">{fCurrency(total_amount)}</TableCell>
 

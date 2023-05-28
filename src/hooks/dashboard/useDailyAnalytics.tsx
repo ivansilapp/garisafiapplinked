@@ -14,7 +14,7 @@ export default function useDailyAnalytics({ query }: IUseDailyAnalytics) {
         accounts: data ? data.accounts : [],
         complete: data ? data.complete : [],
         ongoing: data ? data.ongoing : 0,
-        canceled: data ? data.canceled : 0,
+        cancelled: data ? data.cancelled : 0,
         waitlist: data ? data.waitlist : 0,
         tasks: data ? data.tasks : [],
         freeWashes: data ? data.freeWashes : [],

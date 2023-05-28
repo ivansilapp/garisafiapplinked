@@ -33,6 +33,7 @@ function AccountForm({
         name: Yup.string().required('Account name required'),
         balance: Yup.number(),
         status: Yup.string().required('status required'),
+        credit: Yup.boolean().optional(),
     })
 
     const defaultValues = useMemo(
@@ -40,6 +41,7 @@ function AccountForm({
             name: account?.name || '',
             balance: account?.balance || 0,
             status: account?.status || '',
+            credit: account?.credit ?? false,
         }),
         [account]
     )
@@ -71,6 +73,8 @@ function AccountForm({
                 <RHFTextField name="name" label="Account name" />
 
                 <RHFTextField name="balance" label="Balance" />
+
+                <RHFSwitch name="credit" label="Credit account" />
 
                 <RHFSelect native name="status" label="Account status">
                     {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}

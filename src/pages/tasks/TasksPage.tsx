@@ -33,6 +33,8 @@ import VehicleForm from '../system_data/_components/vehicle/VehicleForm'
 import AnalyticsBar from './_components/AnalyticsBar'
 import InfoTable from './_components/InfoTable'
 import useUnpaidTasks from '../../hooks/task/useUnpaidTasks'
+import TaskPaymentModal from './_components/TaskPaymentModal'
+import useAccountList from '../../hooks/account/useAccountList'
 
 function Tasks() {
     const { themeStretch } = useSettingsContext()
@@ -41,11 +43,13 @@ function Tasks() {
     const { clients } = useClientList()
     const { bodyTypes } = useBodyTypes()
     const overdueData = useUnpaidTasks()
+    const { accounts } = useAccountList()
 
     const [open, setOpen] = useState(false)
     const [activeVehilce, setActiveVehilce] = useState<any>(null)
     const [addToQueueLoader, setAddToQueueLoader] = useState(false)
     const [addVehicleModal, setAddVehicleModal] = useState(false)
+
     // const [submitVehicleLoader, setSubmitVehicleLoader] = useState(false)
 
     const handleAddToQueue = async () => {
@@ -152,6 +156,7 @@ function Tasks() {
 
                 <Suspense fallback={<p>Loading...</p>}>
                     <InfoTable
+                        accounts={accounts ?? []}
                         mutate={mutate}
                         info={info}
                         overdue={overdueData?.tasks ?? []}

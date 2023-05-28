@@ -18,17 +18,19 @@ import TasksTableRow from './TasksTableRow'
 import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
 import ConfirmDialog from '../../../components/confirm-dialog'
+import TaskPaymentModal from './TaskPaymentModal'
+import { apiUrl } from '../../../config-global'
 
 const TABLE_HEAD = [
     { id: 'CreatedAt', label: 'Created at', align: 'left' },
     { id: 'vehicle', label: 'Vehicle', align: 'left' },
-    { id: 'pigeohole', label: 'Key number', align: 'left' },
+    { id: 'pigeohole', label: 'Key No.', align: 'left' },
     { id: 'services', label: 'Services', align: 'left' },
     { id: 'attendant', label: 'Attendant', align: 'left' },
     { id: 'status', label: 'Status', align: 'left' },
     { id: 'cost', label: 'Cost / Sales', align: 'left' },
     { id: 'payment', label: 'Payment', align: 'left' },
-    { id: 'complete_action', label: 'Mark complete', align: 'left' },
+    { id: 'complete_action', label: 'Quick action', align: 'left' },
 ]
 
 function TasksTable({
@@ -37,6 +39,7 @@ function TasksTable({
     mutate,
     readOnly,
     splitRevenue,
+    accounts,
 }: any) {
     const {
         dense,
@@ -70,6 +73,7 @@ function TasksTable({
     const [completeLoader, setCompleteLoader] = useState(false)
 
     const [filterStatus, setFilterStatus] = useState('all')
+    const [paymentModal, setPaymentModal] = useState(false)
 
     useEffect(() => {
         setTableData(data)
@@ -97,19 +101,6 @@ function TasksTable({
     const isNotFound =
         (!dataFiltered?.length && !!filterName) ||
         (!dataFiltered?.length && !!filterStatus)
-
-    const handleOpenConfirm = () => {
-        setOpenConfirm(true)
-    }
-
-    const handleCloseConfirm = () => {
-        setOpenConfirm(false)
-    }
-
-    const handleFilterStatus = (event: any, newValue: any) => {
-        setPage(0)
-        setFilterStatus(newValue)
-    }
 
     const handleFilterName = (event: any) => {
         setPage(0)
@@ -197,6 +188,35 @@ function TasksTable({
         setCompleteModal(true)
     }
 
+    const handleInitPayment = (item: any) => {
+        setActiveItem(item)
+        setPaymentModal(true)
+    }
+
+    const handleSubmitPayment = async (payload: any) => {
+        try {
+            // console.log(payload)
+            const response = await axios.post(`${apiUrl}/payment`, {
+                ...payload,
+                taskId: activeItem.id,
+            })
+
+            if (response.status === 200) {
+                mutate()
+                enqueueSnackbar('Payment added successfully', {
+                    variant: 'success',
+                })
+                setPaymentModal(false)
+            } else {
+                throw new Error(response.data.error)
+            }
+        } catch (err: any) {
+            console.log(err)
+            const msg = err.error || err.message || 'Failed to complete payment'
+            enqueueSnackbar(msg, { variant: 'error' })
+        }
+    }
+
     return (
         <Paper>
             <GeneralTableToolbar
@@ -252,6 +272,8 @@ function TasksTable({
                                         deleteLoader={deleteLoader}
                                         onEditRow={() => handleUpdate(row)}
                                         handleInitComplete={handleInitComplete}
+                                        handleInitPayment={handleInitPayment}
+                                        accounts={accounts}
                                     />
                                 ))}
 
@@ -269,6 +291,13 @@ function TasksTable({
                     </Table>
                 </Scrollbar>
             </TableContainer>
+
+            <TaskPaymentModal
+                paymentModal={paymentModal}
+                setPaymentModal={setPaymentModal}
+                handleAddPayment={handleSubmitPayment}
+                accounts={accounts ?? []}
+            />
 
             <TablePaginationCustom
                 count={dataFiltered?.length}

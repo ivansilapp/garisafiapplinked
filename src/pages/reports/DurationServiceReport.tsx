@@ -28,8 +28,16 @@ function DurationTasksReport() {
     // const { sales } = useDurationTasksReport({ date: date ?? '' })
     const { tasks } = useTaskDuration({ date: `startDate=${date}` ?? '' })
 
-    const tasksTotal =
-        tasks?.reduce((acc: any, curr: any) => acc + curr.cost, 0) ?? 0
+    const tasksTotal = tasks?.reduce(
+        (acc: any, curr: any) => {
+            if (curr.fullyPaid) {
+                return { ...acc, paid: curr.cost + acc.paid }
+            }
+            return { ...acc, notPaid: curr.cost + acc.notPaid }
+            // acc + curr.cost
+        },
+        { paid: 0, notPaid: 0 }
+    ) ?? { paid: 0, notPaid: 0 }
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -59,7 +67,17 @@ function DurationTasksReport() {
                     <Grid item xs={12} lg={4} xl={3}>
                         <Card>
                             <CardHeader title="Revenue" />
-                            <CardContent>{fCurrency(tasksTotal)}</CardContent>
+                            <CardContent>
+                                {fCurrency(tasksTotal.paid)}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} lg={4} xl={3}>
+                        <Card>
+                            <CardHeader title="Not paid" />
+                            <CardContent>
+                                {fCurrency(tasksTotal.notPaid)}
+                            </CardContent>
                         </Card>
                     </Grid>
                     <Grid item xs={12}>

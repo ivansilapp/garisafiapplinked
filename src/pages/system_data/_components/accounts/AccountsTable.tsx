@@ -19,8 +19,8 @@ import { useSnackbar } from '../../../../components/snackbar'
 
 const TABLE_HEAD = [
     { id: 'name', label: 'Account name', align: 'left' },
-    { id: 'status', label: 'Status', align: 'left' },
     { id: 'balance', label: 'Balance', align: 'left' },
+    { id: 'credit', label: 'Acount type', align: 'left' },
     { id: 'edit', label: 'Update', align: 'left' },
     { id: 'delete', label: 'delete', align: 'left' },
     { id: 'withdraw', label: 'Withdraw', align: 'left' },

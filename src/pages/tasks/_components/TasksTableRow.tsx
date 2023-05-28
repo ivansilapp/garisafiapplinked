@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 // @mui
@@ -38,12 +39,14 @@ export default function TaskTableRow({
     onDeleteRow,
     deleteLoader,
     handleInitComplete,
+    handleInitPayment,
 }: any) {
     const {
         id,
         cost,
         CreatedAt,
         attendant,
+        closed,
         fullyPaid,
         payments,
         status,
@@ -61,6 +64,8 @@ export default function TaskTableRow({
                 return removeSpecialCharacters(initials)
             })
             .join(', ') ?? ''
+
+    const taskStatus: string = status
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
@@ -96,6 +101,8 @@ export default function TaskTableRow({
             return acc + sale.amount
         }, 0) ?? 0
 
+    console.log({ status, fullyPaid })
+
     return (
         <>
             <TableRow hover selected={selected}>
@@ -104,33 +111,36 @@ export default function TaskTableRow({
                 </TableCell> */}
 
                 <TableCell>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                        <Typography variant="subtitle2" noWrap>
-                            <Button
-                                color="primary"
-                                component={Link}
-                                to={PATH_DASHBOARD.tasks.details(id)}
-                            >
-                                {fDateTime(CreatedAt, null)}
-                            </Button>
-                        </Typography>
-                    </Stack>
-                </TableCell>
-
-                <TableCell align="left">
-                    <Link
-                        style={styles}
-                        to={PATH_DASHBOARD.systemData.vehilceDetails(
-                            vehicle?.id
-                        )}
-                    >
-                        {vehicle?.registration} - {vehicle?.model}
-                    </Link>
+                    <Typography variant="subtitle2" noWrap>
+                        <Button
+                            sx={{ p: 0 }}
+                            color="primary"
+                            component={Link}
+                            to={PATH_DASHBOARD.tasks.details(id)}
+                        >
+                            {fDateTime(CreatedAt, null)}
+                        </Button>
+                    </Typography>
                 </TableCell>
 
                 <TableCell align="left">
                     <Typography variant="subtitle2" noWrap>
-                        <Label color="error"> {row?.pigeonhole} </Label>
+                        <Link
+                            style={styles}
+                            to={PATH_DASHBOARD.systemData.vehilceDetails(
+                                vehicle?.id
+                            )}
+                        >
+                            {vehicle?.registration} - {vehicle?.model}
+                        </Link>
+                    </Typography>
+                </TableCell>
+
+                <TableCell align="left">
+                    <Typography variant="subtitle2" noWrap>
+                        <Label sx={{ fontSize: '16px' }} color="error">
+                            {row?.pigeonhole}
+                        </Label>
                     </Typography>
                 </TableCell>
                 <TableCell align="left">{toUpper(serviceInitials)}</TableCell>
@@ -139,16 +149,15 @@ export default function TaskTableRow({
                     <Stack display="flex" direction="row" spacing={1}>
                         {attendees?.map((a: any, i: number) => {
                             return (
-                                <Button
+                                <Link
                                     color="info"
-                                    component={Link}
-                                    style={styles}
+                                    style={{ ...styles, pading: '3px' }}
                                     key={a.id}
                                     to={PATH_DASHBOARD.attendants.details(a.id)}
                                 >
                                     {a?.name}
                                     {i !== attendees.length - 1 && ','}
-                                </Button>
+                                </Link>
                             )
                         })}
                     </Stack>
@@ -180,15 +189,62 @@ export default function TaskTableRow({
                 </TableCell>
 
                 <TableCell align="right">
-                    <Button
-                        onClick={() => handleInitComplete(row)}
-                        variant="contained"
-                        color="info"
-                        size="small"
-                        disabled={status === 'complete'}
-                    >
-                        Complete
-                    </Button>
+                    {status === 'ongoing' ||
+                    (status === 'complete' && !fullyPaid) ? (
+                        taskStatus === 'ongoing' ? (
+                            <Button
+                                onClick={() => handleInitComplete(row)}
+                                variant="contained"
+                                color="info"
+                                size="small"
+                                disabled={status === 'complete'}
+                            >
+                                Complete
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={() => handleInitPayment(row)}
+                                variant="contained"
+                                color="info"
+                                size="small"
+                                disabled={fullyPaid}
+                            >
+                                Add payment
+                            </Button>
+                        )
+                    ) : (
+                        <Button
+                            variant="contained"
+                            color="info"
+                            size="small"
+                            disabled
+                        >
+                            Paid
+                        </Button>
+                        // <>
+                        //     {status !== 'cancelled' && !closed ? (
+                        //         <Button
+                        //             onClick={() => handleInitComplete(row)}
+                        //             variant="contained"
+                        //             color="info"
+                        //             size="small"
+                        //             disabled={fullyPaid}
+                        //         >
+                        //             Close Task
+                        //         </Button>
+                        //     ) : (
+                        //         <Button
+                        //             variant="contained"
+                        //             color="info"
+                        //             size="small"
+                        //             disabled={closed}
+                        //         >
+                        //             Closed
+                        //         </Button>
+                        //     )}
+                        //     <span />
+                        // </>
+                    )}
                 </TableCell>
             </TableRow>
             <ConfirmDialog

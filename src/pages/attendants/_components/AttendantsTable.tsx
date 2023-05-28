@@ -21,7 +21,7 @@ const TABLE_HEAD = [
     { id: 'name', label: 'Full name', align: 'left' },
     { id: 'phone', label: 'Phone', align: 'left' },
     // { id: 'commission', label: 'Commission', align: 'left' },
-    // { id: 'tips', label: 'Tips', align: 'left' },
+    { id: 'tips', label: 'Tips', align: 'left' },
     { id: 'status', label: 'Status', align: 'left' },
     { id: 'update', label: 'Update', align: 'center' },
     { id: 'delete', label: 'delete', align: 'right' },

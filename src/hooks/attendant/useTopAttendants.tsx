@@ -11,6 +11,7 @@ export default function useTopAttendants() {
         attendants: data ? data.attendants : [],
         revenue: data ? data.revenue : null,
         expenses: data ? data.expenses : null,
+        annualReport: data ? data.annualReport : null,
         mutate,
     }
 }

@@ -16,12 +16,14 @@ import { PATH_DASHBOARD } from '../../routes/paths'
 import useTopAttendants from '../../hooks/attendant/useTopAttendants'
 import TopAttendantsTable from './_components/TopAttendantsTable'
 import { fCurrency } from '../../utils/formatNumber'
+import AnnualChart from './_components/AnnualChart'
 
 function ReportsPage() {
     const { themeStretch } = useSettingsContext()
-    const { attendants, revenue, expenses } = useTopAttendants()
+    const { attendants, revenue, expenses, annualReport } = useTopAttendants()
 
     // console.log(attendants, revenue, expenses)
+    // console.log(annualReport, 'annual-Report')
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
@@ -35,7 +37,7 @@ function ReportsPage() {
                 ]}
             />
 
-            <Grid container spacing={2}>
+            <Grid container spacing={4}>
                 <Grid item xs={12}>
                     <Stack
                         justifyContent="flex-end"
@@ -44,7 +46,7 @@ function ReportsPage() {
                         mb={5}
                     >
                         <Button component={Link} to="/reports/services">
-                            Services
+                            Services / Tasks
                         </Button>
 
                         <Button component={Link} to="/reports/sales">
@@ -103,16 +105,50 @@ function ReportsPage() {
                             </Typography>
                         </CardContent>
                     </Card>
-                    {/* <RevenueChart
-                        total={18765}
-                        percent={2.6}
-                        chart={{
-                            series: [111, 136, 76, 108, 74, 54, 57, 84],
-                        }}
-                    /> */}
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} mt={4}>
+                    <AnnualChart
+                        title="Annual Chart"
+                        subheader="Tasks/sales revenue and expense"
+                        chart={{
+                            categories: [
+                                'Jan',
+                                'Feb',
+                                'Mar',
+                                'Apr',
+                                'May',
+                                'Jun',
+                                'Jul',
+                                'Aug',
+                                'Sep',
+                            ],
+                            series: [
+                                {
+                                    type: 'Year',
+                                    data: [
+                                        {
+                                            name: 'Revenue',
+                                            data:
+                                                annualReport?.revenue?.map(
+                                                    (r: any) => r.total
+                                                ) ?? [],
+                                        },
+                                        {
+                                            name: 'Expenses',
+                                            data:
+                                                annualReport?.expense?.map(
+                                                    (r: any) => r.total
+                                                ) ?? [],
+                                        },
+                                    ],
+                                },
+                            ],
+                        }}
+                    />
+                </Grid>
+
+                <Grid item xs={12} mt={4}>
                     <Card>
                         <CardHeader title="Top attendants" />
                         <TopAttendantsTable data={attendants ?? []} />

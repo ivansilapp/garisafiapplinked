@@ -11,6 +11,7 @@ import {
     TableCell,
     IconButton,
     Typography,
+    Switch,
 } from '@mui/material'
 // components
 import { Link } from 'react-router-dom'
@@ -25,6 +26,7 @@ import AccountChangeModal from './AccountChangeModal'
 import axios from '../../../../utils/axios'
 import { apiUrl } from '../../../../config-global'
 import { useSnackbar } from '../../../../components/snackbar'
+import { fCurrency } from '../../../../utils/formatNumber'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
@@ -38,7 +40,7 @@ export default function AccountTableRow({
     accounts,
     mutate,
 }: any) {
-    const { id, name, balance, status }: any = row
+    const { id, name, balance, status, credit }: any = row
 
     const [openConfirm, setOpenConfirm] = useState(false)
 
@@ -111,6 +113,10 @@ export default function AccountTableRow({
         textDecoration: 'none',
     }
 
+    // const handleTypeChange = async (e) => {
+    //     console.log(e.target.checked)
+    // }
+
     return (
         <>
             <TableRow hover selected={selected}>
@@ -127,11 +133,20 @@ export default function AccountTableRow({
                     </Stack>
                 </TableCell>
 
-                <TableCell align="left">{balance}</TableCell>
+                <TableCell align="left">
+                    {credit
+                        ? fCurrency((balance ?? 0) * -1)
+                        : fCurrency(balance ?? 0)}
+                </TableCell>
 
-                <TableCell align="left">{status ?? 'Inactive'}</TableCell>
+                <TableCell align="left">
+                    {/* {status ?? 'Inactive'} */}
+                    {credit ? (
+                        <Label variant="info"> Credit account</Label>
+                    ) : null}
+                </TableCell>
 
-                <TableCell align="center">
+                <TableCell align="left">
                     <Button
                         startIcon={<Iconify icon="eva:edit-fill" />}
                         onClick={onEditRow}
@@ -140,7 +155,7 @@ export default function AccountTableRow({
                     </Button>
                 </TableCell>
 
-                <TableCell align="right">
+                <TableCell align="left">
                     <LoadingButton
                         color="error"
                         startIcon={<Iconify icon="eva:trash-2-outline" />}

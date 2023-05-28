@@ -4,7 +4,13 @@ import Label from '../../../components/label'
 import TasksTable from './TasksTable'
 import WaitlistTable from './WaitlistTable'
 
-export default function InfoTable({ info, tableData, overdue, mutate }: any) {
+export default function InfoTable({
+    info,
+    tableData,
+    overdue,
+    mutate,
+    accounts,
+}: any) {
     // const [filterStatus, setFilterStatus] = useState('waitlist')
     const [currentTab, setCurrentTab] = useState('waitlist')
 
@@ -37,6 +43,7 @@ export default function InfoTable({ info, tableData, overdue, mutate }: any) {
             component: (
                 <Suspense fallback={<p>Loading...</p>}>
                     <TasksTable
+                        accounts={accounts}
                         onDeleteRow={() => {}}
                         mutate={mutate}
                         data={info.ongoing ?? []}
@@ -52,6 +59,7 @@ export default function InfoTable({ info, tableData, overdue, mutate }: any) {
             component: (
                 <Suspense fallback={<p>Loading...</p>}>
                     <TasksTable
+                        accounts={accounts}
                         onDeleteRow={() => {}}
                         mutate={mutate}
                         data={info.complete ?? []}
@@ -67,6 +75,7 @@ export default function InfoTable({ info, tableData, overdue, mutate }: any) {
             component: (
                 <Suspense fallback={<p>Loading...</p>}>
                     <TasksTable
+                        accounts={accounts}
                         onDeleteRow={() => {}}
                         mutate={mutate}
                         data={overdue ?? []}
@@ -82,6 +91,7 @@ export default function InfoTable({ info, tableData, overdue, mutate }: any) {
             component: (
                 <Suspense fallback={<p>Loading...</p>}>
                     <TasksTable
+                        accounts={accounts}
                         onDeleteRow={() => {}}
                         mutate={mutate}
                         data={info.cancelled ?? []}

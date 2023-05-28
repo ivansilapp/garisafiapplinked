@@ -59,7 +59,7 @@ export default function PaymentTableRow({ row, handlePaymentUpdate }: any) {
 
     return (
         <TableRow hover>
-            <TableCell>{fDateTime(CreatedAt, null)}</TableCell>
+            <TableCell>{fDateTime(CreatedAt, 'dd/mm/yyyy')}</TableCell>
 
             <TableCell align="left">{incoming ? 'Debit' : 'Credit'}</TableCell>
 

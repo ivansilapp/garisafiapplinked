@@ -437,6 +437,8 @@ function TaskDetail() {
                 enqueueSnackbar('Task closed successfully', {
                     variant: 'success',
                 })
+
+                navigate('/tasks')
             } else {
                 enqueueSnackbar('Error closing task', {
                     variant: 'error',
@@ -644,8 +646,11 @@ function TaskDetail() {
                                     variant="contained"
                                     color="warning"
                                     onClick={() => setCancelModal(true)}
+                                    disabled={task.status === 'cancelled'}
                                 >
-                                    Cancel
+                                    {task.status === 'cancelled'
+                                        ? 'Cancelled'
+                                        : 'Cancel'}
                                 </Button>
                                 <Button
                                     variant="contained"

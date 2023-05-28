@@ -44,7 +44,7 @@ function Dashboard() {
     const {
         accounts,
         complete,
-        canceled,
+        cancelled,
         waitlist,
         ongoing,
         tasks,
@@ -100,7 +100,7 @@ function Dashboard() {
         (waitlist ?? 0) +
         (ongoing ?? 0) +
         (complete?.length ?? 0) +
-        (canceled ?? 0)
+        (cancelled ?? 0)
 
     const computePercent = (value: number) => {
         if (!value || value === 0 || totalTasks === 0) return 0
@@ -109,9 +109,9 @@ function Dashboard() {
     const dateSort = (a: any, b: any) => {
         return (
             // @ts-expect-error
-            new Date(a.created_at) -
+            new Date(a?.created_at) -
             // @ts-expect-error
-            new Date(b.created_at)
+            new Date(b?.created_at)
         )
     }
     const todaysTasks = tasks ? tasks.sort(dateSort)[tasks.length - 1] : null
@@ -149,6 +149,8 @@ function Dashboard() {
             console.log(msg)
         }
     }
+
+    // console.log(tasks, 'tasks')
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -218,9 +220,9 @@ function Dashboard() {
                                             url: 'complete',
                                         },
                                         {
-                                            label: 'Canceled tasks',
-                                            percent: computePercent(canceled),
-                                            total: canceled,
+                                            label: 'Cancelled tasks',
+                                            percent: computePercent(cancelled),
+                                            total: cancelled,
                                             url: 'cancelled',
                                         },
                                     ],

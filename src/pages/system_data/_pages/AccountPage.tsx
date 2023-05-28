@@ -91,7 +91,7 @@ function AccountsPage() {
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
-                heading="Vehicles"
+                heading="Accounts"
                 links={[
                     { name: 'Dashboard', href: PATH_DASHBOARD.root },
                     {
