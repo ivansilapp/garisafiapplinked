@@ -122,6 +122,9 @@ function ReportsPage() {
                                 'Jul',
                                 'Aug',
                                 'Sep',
+                                'Oct',
+                                'Nov',
+                                'Dec',
                             ],
                             series: [
                                 {
