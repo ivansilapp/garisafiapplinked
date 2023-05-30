@@ -26,6 +26,7 @@ import {
 import { apiUrl } from '../../../config-global'
 import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
+import { useAuthContext } from '../../../auth/useAuthContext'
 
 // ----------------------------------------------------------------------
 const CARPET_PRICE = 30
@@ -39,6 +40,10 @@ export default function TaskForm({
     const { enqueueSnackbar } = useSnackbar()
     const [activeIds, setActiveIds] = useState<any>([])
     const [hasCarpetCleaning, setHasCarpetCleaning] = useState(false)
+
+    const { settings }: any = useAuthContext()
+
+    // console.log(settings, 'settings')
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -144,7 +149,7 @@ export default function TaskForm({
             })
             // service.name.includes('Carpet cleaning')
             if (carpetCleaning) {
-                price = CARPET_PRICE
+                price = settings?.carpet ?? CARPET_PRICE
                 setValue(`items[${index}].price`, price)
                 setValue(`items[${index}].serviceId`, service?.id)
                 setValue(`items[${index}].priceId`, 0)
@@ -221,7 +226,8 @@ export default function TaskForm({
             }
             const { width } = values.items[index]
             const { height } = values.items[index]
-            const price = CARPET_PRICE * Number(width) * Number(height)
+            const cp = settings?.carpet ?? CARPET_PRICE
+            const price = cp * Number(width) * Number(height)
             setValue(`items[${index}].price`, price)
 
             setValue(
@@ -235,7 +241,7 @@ export default function TaskForm({
             )
             // console.log(values.items, 'values.items')
         },
-        [setValue, values.items]
+        [setValue, values.items, settings]
     )
 
     return (

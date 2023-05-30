@@ -9,7 +9,8 @@ export default function useUser({ id }: { id: number | string }) {
     return {
         loading: !error && !data,
         error,
-        user: data ? data.user : null,
+        user: data ? data?.user : null,
+        rights: data ? data?.rights : [],
         mutate,
     }
 }

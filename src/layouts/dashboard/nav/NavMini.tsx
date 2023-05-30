@@ -1,6 +1,7 @@
 // @mui
 import { Stack, Box } from '@mui/material'
 // config
+import { useEffect, useState } from 'react'
 import { NAV } from '../../../config-global'
 // utils
 import { hideScrollbarX } from '../../../utils/cssStyles'
@@ -10,10 +11,40 @@ import { NavSectionMini } from '../../../components/nav-section'
 //
 import navConfig from './config-navigation'
 import NavToggleButton from './NavToggleButton'
+import { useAuthContext } from '../../../auth/useAuthContext'
 
 // ----------------------------------------------------------------------
 
 export default function NavMini() {
+    const { user, rights }: any = useAuthContext()
+    const [navData, setNavData] = useState<any>([])
+
+    useEffect(() => {
+        const modules =
+            rights?.map((right: any) => {
+                return `/${right.module.url}`
+            }) ?? []
+        // console.log(modules)
+        if (user) {
+            const data = navConfig
+                .map((item: any) => {
+                    const items = item?.items?.filter((navItem: any) => {
+                        //  return navItem?.role?.includes(role)
+                        return modules.includes(navItem?.path)
+                    })
+                    if (items.length > 0) {
+                        return {
+                            ...item,
+                            items,
+                        }
+                    }
+                    return null
+                })
+                .filter((item: any) => item)
+            setNavData(data)
+        }
+    }, [user, rights])
+
     return (
         <Box
             component="nav"
@@ -42,7 +73,7 @@ export default function NavMini() {
             >
                 <Logo sx={{ mx: 'auto', my: 2 }} />
 
-                <NavSectionMini data={navConfig} />
+                <NavSectionMini data={navData} />
             </Stack>
         </Box>
     )

@@ -6,6 +6,8 @@ import { PATH_AUTH } from '../routes/paths'
 // utils
 import axios from '../utils/axios'
 import localStorageAvailable from '../utils/localStorageAvailable'
+import InternalError from '../components/shared/500Error'
+import ForbiddenError from '../components/shared/Forbidden'
 
 // ----------------------------------------------------------------------
 
@@ -152,6 +154,8 @@ export const setSession = (accessToken: string | null) => {
         if (refreshToken && isValidToken(refreshToken)) {
             axios.post('/logout', { refreshToken })
             localStorage.removeItem('refreshToken')
+            localStorage.removeItem('rights')
+            localStorage.removeItem('modules')
         }
 
         localStorage.removeItem('accessToken')
@@ -165,4 +169,25 @@ export const taskStatus = {
     ongoing: 'ongoing',
     complete: 'complete',
     cancelled: 'cancelled',
+}
+
+export function fallbackRender({ error, resetErrorBoundary }: any) {
+    // Call resetErrorBoundary() to reset the error boundary and retry the render.
+
+    let errorMessage = error?.message ?? `Something went wrong`
+    if (error.message === 'Unothorized') {
+        errorMessage = `You do not have correct rights for "${error.method}" to the module ${error.module}`
+    }
+
+    return error.message === 'Unothorized' ? (
+        <ForbiddenError
+            error={errorMessage}
+            resetErrorBoundary={resetErrorBoundary}
+        />
+    ) : (
+        <InternalError
+            error={errorMessage}
+            resetErrorBoundary={resetErrorBoundary}
+        />
+    )
 }

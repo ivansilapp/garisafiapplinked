@@ -57,12 +57,13 @@ export default function PricelistTableRow({
                 <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Typography variant="subtitle2" noWrap>
-                            <Link
+                            {label}
+                            {/* <Link
                                 style={styles}
                                 to={PATH_DASHBOARD.users.details(id)}
                             >
                                 {label}
-                            </Link>
+                            </Link> */}
                         </Typography>
                     </Stack>
                 </TableCell>

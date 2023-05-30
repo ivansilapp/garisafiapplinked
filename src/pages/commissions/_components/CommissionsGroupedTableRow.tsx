@@ -64,7 +64,19 @@ export default function GroupedCommissionTableRow({ row }: any) {
 
     return (
         <TableRow hover>
-            <TableCell>{attendantName}</TableCell>
+            <TableCell>
+                <Typography>
+                    <Button
+                        component={Link}
+                        to={`${PATH_DASHBOARD.attendants.details(
+                            // format(new Date(created_at), 'yyyy-MM-dd')
+                            attendantId
+                        )}?${query}`}
+                    >
+                        {attendantName}
+                    </Button>
+                </Typography>
+            </TableCell>
             <TableCell>{fDateTime(date, 'dd/MM/yyyy')}</TableCell>
 
             <TableCell align="left">{fCurrency(total_amount)}</TableCell>

@@ -1,66 +1,66 @@
-/* eslint-disable react/require-default-props */
 import { m } from 'framer-motion'
 import { Helmet } from 'react-helmet-async'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom'
 // @mui
 import { Button, Typography } from '@mui/material'
 // components
 import { MotionContainer, varBounce } from '../animate'
 // assets
-import { SeverErrorIllustration } from '../../assets/illustrations'
+import { ForbiddenIllustration } from '../../assets/illustrations'
 
 // ----------------------------------------------------------------------
-interface ErrorProps {
-    error: string
-    resetErrorBoundary?: any
-}
 
-export default function InternalError({
+export default function ForbiddenError({
     error,
     resetErrorBoundary,
-}: ErrorProps) {
-    // console.log('actual error', error)
-    const navigate = useNavigate()
+}: {
+    error: string
+    resetErrorBoundary: any
+}) {
+    const getPath = () => {
+        const ref = document.referrer
+        const url = new URL(ref)
+        return url.pathname
+    }
     return (
         <MotionContainer
             style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                justify: 'center',
             }}
         >
             <m.div variants={varBounce({}).in}>
                 <Typography variant="h3" paragraph>
-                    500 Internal Server Error
+                    No permission
                 </Typography>
             </m.div>
 
-            <m.div variants={varBounce({}).in}>
+            <m.div variants={varBounce({}).in} style={{ textAlign: 'center' }}>
                 <Typography sx={{ color: 'text.secondary' }}>
-                    {error || 'There was an error, please try again later.'}
+                    The page you&apos;re trying access has restricted access.
+                    <br />
+                    <b> {error} </b>
                 </Typography>
             </m.div>
 
             <m.div variants={varBounce({}).in}>
-                <SeverErrorIllustration
+                <ForbiddenIllustration
                     sx={{ height: 260, my: { xs: 5, sm: 10 } }}
                 />
             </m.div>
 
             <Button
                 onClick={() => {
-                    // navigate(-1)
-                    // window.location.p
                     resetErrorBoundary()
-                    // window.history.back()
                 }}
                 size="large"
                 variant="contained"
             >
-                Go Back
+                Go to Back
             </Button>
+            {/* <a href={getPath()}>Go back</a> */}
         </MotionContainer>
     )
 }
-// component={RouterLink}
-// to="/"

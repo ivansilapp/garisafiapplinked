@@ -15,6 +15,7 @@ import NavVertical from './nav/NavVertical'
 import NavHorizontal from './nav/NavHorizontal'
 // import Page500 from '../../pages/Page500'
 import InternalError from '../../components/shared/500Error'
+import { fallbackRender } from '../../auth/utils'
 
 // ----------------------------------------------------------------------
 
@@ -89,7 +90,11 @@ export default function DashboardLayout() {
 
                 <Main>
                     <ErrorBoundary
-                        fallback={<InternalError error="Error loading page" />}
+                        // fallback={<InternalError error="Error loading page" />}
+                        fallbackRender={fallbackRender}
+                        onReset={(details) => {
+                            window.history.back()
+                        }}
                     >
                         <Outlet />
                     </ErrorBoundary>

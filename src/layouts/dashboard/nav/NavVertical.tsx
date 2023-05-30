@@ -28,8 +28,7 @@ import { useAuthContext } from '../../../auth/useAuthContext'
 
 export default function NavVertical({ openNav, onCloseNav }: any) {
     const { pathname } = useLocation()
-    const { user }: any = useAuthContext()
-
+    const { user, rights }: any = useAuthContext()
     const [navData, setNavData] = useState<any>([])
 
     const isDesktop = useResponsive('up', 'lg', '')
@@ -42,12 +41,17 @@ export default function NavVertical({ openNav, onCloseNav }: any) {
     }, [pathname])
 
     useEffect(() => {
+        const modules =
+            rights?.map((right: any) => {
+                return `/${right.module.url}`
+            }) ?? []
+        // console.log(modules)
         if (user) {
-            const { role } = user
             const data = navConfig
                 .map((item: any) => {
                     const items = item?.items?.filter((navItem: any) => {
-                        return navItem?.role?.includes(role)
+                        //  return navItem?.role?.includes(role)
+                        return modules.includes(navItem?.path)
                     })
                     if (items.length > 0) {
                         return {
@@ -61,7 +65,7 @@ export default function NavVertical({ openNav, onCloseNav }: any) {
             // console.log(data, 'data')
             setNavData(data)
         }
-    }, [user])
+    }, [user, rights])
 
     const renderContent = (
         // eslint-disable-next-line react/jsx-filename-extension

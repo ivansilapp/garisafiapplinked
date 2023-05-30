@@ -14,6 +14,7 @@ import useCommissionsQuery from '../../hooks/commission/useCommissionsQuery'
 import CommissionTable from '../attendants/_components/CommissionTable'
 import useGroupedCommissions from '../../hooks/commission/useGroupedCommisions'
 import GroupedCommissionTable from './_components/CommissionGroupedTable'
+import { fallbackRender } from '../../auth/utils'
 
 function Commissions() {
     const { themeStretch } = useSettingsContext()
@@ -79,7 +80,8 @@ function Commissions() {
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <ErrorBoundary
-                fallback={<InternalError error="Error loading payments data" />}
+                // fallback={<InternalError error="Error loading payments data" />}
+                fallbackRender={fallbackRender}
             >
                 <CustomBreadcrumbs
                     heading="Commissions"

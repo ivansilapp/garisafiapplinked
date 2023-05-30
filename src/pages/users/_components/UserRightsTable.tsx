@@ -9,47 +9,39 @@ import {
     TableNoData,
     TableEmptyRows,
     TableHeadCustom,
-    TablePaginationCustom,
 } from '../../../components/table'
 import Scrollbar from '../../../components/scrollbar'
-import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
-import GroupedSaleTableRow from './GroupedSaleTableRow'
-import axios from '../../../utils/axios'
+import UserRightsTableRow from './UserRightsTableRow'
+// import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
+import http from '../../../utils/axios'
+import { apiUrl } from '../../../config-global'
 
 const TABLE_HEAD = [
-    { id: 'CreatedAt', label: 'Sale date', align: 'left' },
-    { id: 'cost', label: 'Total sales', align: 'left' },
-    { id: 'total', label: 'Number of sales', align: 'left' },
-    { id: 'more', label: 'More', align: 'left' },
-    { id: '' },
+    { id: 'name', label: 'Module', align: 'left' },
+    { id: 'read', label: 'Read', align: 'left' },
+    { id: 'write', label: 'Write', align: 'left' },
+    { id: 'update', label: 'Update', align: 'left' },
+    { id: 'delete', label: 'Delete', align: 'left' },
 ]
 
-function GroupdSalesTable({ data }: any) {
+function UserRightsTable({ data, userId, rights, mutate }: any) {
     const {
         dense,
         page,
         order,
         orderBy,
         rowsPerPage,
-        setPage,
         //
         selected,
-        setSelected,
-        onSelectRow,
         onSelectAllRows,
         onSort,
-        onChangeDense,
-        onChangePage,
-        onChangeRowsPerPage,
     } = useTable({})
 
     const { enqueueSnackbar } = useSnackbar()
-    const [deleteLoader, setDeleteLoader] = useState(false)
+    const [loader, setLoader] = useState(false)
 
     const [tableData, setTableData] = useState(data ?? [])
-
-    const [openConfirm, setOpenConfirm] = useState(false)
 
     const [filterName, setFilterName] = useState('')
 
@@ -76,6 +68,43 @@ function GroupdSalesTable({ data }: any) {
         (!dataFiltered.length && !!filterName) ||
         (!dataFiltered.length && !!filterRole) ||
         (!dataFiltered.length && !!filterStatus)
+
+    const handleUpdate = async ({
+        id,
+        field,
+        value,
+    }: {
+        id: number
+        field: string
+        value: boolean
+    }) => {
+        try {
+            const payload = {
+                moduleId: id,
+                field,
+                value,
+                userId: Number(userId),
+            }
+            const response = await http.put(
+                `${apiUrl}/user-right-update`,
+                payload
+            )
+            if (response.status === 200) {
+                enqueueSnackbar('Updated', { variant: 'success' })
+                mutate()
+            } else {
+                throw new Error(
+                    response?.data?.error ?? 'failed to update right'
+                )
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error updating right'
+
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setLoader(false)
+        }
+    }
 
     return (
         <Card>
@@ -107,14 +136,12 @@ function GroupdSalesTable({ data }: any) {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row: any) => (
-                                    <GroupedSaleTableRow
-                                        key={row.created_at}
+                                    <UserRightsTableRow
+                                        key={row.name}
                                         row={row}
+                                        rights={rights}
                                         selected={selected.includes(row.id)}
-                                        onSelectRow={() => onSelectRow(row.id)}
-                                        onDeleteRow={() => {}}
-                                        deleteLoader={deleteLoader}
-                                        onEditRow={() => {}}
+                                        handleUpdate={handleUpdate}
                                     />
                                 ))}
 
@@ -132,17 +159,6 @@ function GroupdSalesTable({ data }: any) {
                     </Table>
                 </Scrollbar>
             </TableContainer>
-
-            <TablePaginationCustom
-                count={dataFiltered.length}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                onPageChange={onChangePage}
-                onRowsPerPageChange={onChangeRowsPerPage}
-                //
-                dense={dense}
-                onChangeDense={onChangeDense}
-            />
         </Card>
     )
 }
@@ -187,4 +203,4 @@ function applyFilter({
     return inputData
 }
 
-export default GroupdSalesTable
+export default UserRightsTable

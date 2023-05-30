@@ -11,6 +11,7 @@ import {
     Box,
 } from '@mui/material'
 // utils
+import { useNavigate } from 'react-router-dom'
 import { fCurrency, fShortenNumber } from '../../../utils/formatNumber'
 
 // ----------------------------------------------------------------------
@@ -19,11 +20,18 @@ export default function AccountsOverview({
     title,
     subheader,
     data,
+    date,
     ...other
 }: any) {
+    const navigate = useNavigate()
     return (
         <Card {...other}>
-            <CardHeader title={title} subheader={subheader} />
+            <CardHeader
+                onClick={() => navigate(`/payments?startDate=${date}`)}
+                title={title}
+                subheader={subheader}
+                style={{ cursor: 'pointer' }}
+            />
 
             <Stack spacing={3} sx={{ px: 3, my: 5 }}>
                 {data.map((progress: any) => (

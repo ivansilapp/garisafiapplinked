@@ -237,6 +237,10 @@ function Dashboard() {
                                     percent={2.6}
                                     currency
                                     total={todaysTasks?.cost ?? 0}
+                                    url={`/reports/services?startDate=${format(
+                                        filterStartDate ?? new Date(),
+                                        'yyyy-MM-dd'
+                                    )}`}
                                     items={{
                                         title: 'Number of tasks',
                                         value: todaysTasks?.total ?? 0,
@@ -255,6 +259,10 @@ function Dashboard() {
                             <Grid xs={12} md={4} item>
                                 <ValueGraphWidget
                                     title="Product sales"
+                                    url={`/reports/sales?startDate=${format(
+                                        filterStartDate ?? new Date(),
+                                        'yyyy-MM-dd'
+                                    )}`}
                                     currency
                                     percent={2.6}
                                     total={sales?.cost ?? 0}
@@ -276,6 +284,10 @@ function Dashboard() {
                             <Grid xs={12} md={4} item>
                                 <ValueGraphWidget
                                     title="Commissions payable"
+                                    url={`/commissions?startDate=${format(
+                                        filterStartDate ?? new Date(),
+                                        'yyyy-MM-dd'
+                                    )}`}
                                     currency
                                     percent={2.6}
                                     total={expenses.expense_total ?? 0}
@@ -296,12 +308,17 @@ function Dashboard() {
                         <Grid item xs={12} sm={8}>
                             <AccountsOverview
                                 title="Todays payments"
+                                date={format(
+                                    filterStartDate ?? new Date(),
+                                    'yyyy-MM-dd'
+                                )}
                                 data={todayAccountsOverview}
                             />
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <ValueGraphWidget
                                 title="Free washes"
+                                url="/reports/pigeonholes"
                                 currency
                                 percent={2.6}
                                 total={

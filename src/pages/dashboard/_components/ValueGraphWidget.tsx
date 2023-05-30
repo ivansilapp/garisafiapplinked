@@ -2,8 +2,9 @@
 import PropTypes from 'prop-types'
 // @mui
 import { alpha } from '@mui/material/styles'
-import { Box, Card, Typography, Stack } from '@mui/material'
+import { Box, Card, Typography, Stack, Button } from '@mui/material'
 // utils
+import { Link } from 'react-router-dom'
 import { fCurrency, fNumber, fPercent } from '../../../utils/formatNumber'
 // components
 import Iconify from '../../../components/iconify'
@@ -18,6 +19,7 @@ export default function ValueGraphWidget({
     chart,
     currency,
     items,
+    url,
     sx,
     ...other
 }: any) {
@@ -60,7 +62,9 @@ export default function ValueGraphWidget({
         >
             <Box sx={{ flexGrow: 1 }}>
                 <Typography variant="subtitle2" paragraph>
-                    {title}
+                    <Button component={Link} to={url}>
+                        {title}
+                    </Button>
                 </Typography>
 
                 <Typography variant="h4" gutterBottom>

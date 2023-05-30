@@ -18,6 +18,7 @@ import axios from '../../utils/axios'
 
 const defaultCommision = 20.0
 const defaultKeyHoles = 60
+const defaultCarpet = 30
 
 function SettingsPage() {
     const { themeStretch } = useSettingsContext()
@@ -29,6 +30,10 @@ function SettingsPage() {
         (settings ? settings.commission : 0) || defaultCommision
     )
 
+    const [carpet, setCarpet] = useState(
+        (settings ? settings.carpet : 0) || defaultCarpet
+    )
+
     const [keyHoles, setKeyHoles] = useState(
         (settings ? settings.pigeonholes : 0) || defaultKeyHoles
     )
@@ -38,7 +43,11 @@ function SettingsPage() {
 
         if (val > 0 && val <= 100) {
             setCommission(val)
-            handleSettingsChange({ pigeonholes: keyHoles, commission: val })
+            handleSettingsChange({
+                pigeonholes: keyHoles,
+                commission: val,
+                carpet: Number(carpet),
+            })
         } else {
             // throw an error
         }
@@ -50,8 +59,23 @@ function SettingsPage() {
 
         if (val > 0) {
             setKeyHoles(val)
-            handleSettingsChange({ pigeonholes: val, commission })
+            handleSettingsChange({
+                pigeonholes: val,
+                commission,
+                carpet: Number(carpet),
+            })
         }
+    }
+
+    const handleCarpetChange = (event: any) => {
+        const val = event?.target?.value ?? ''
+        const carpetVal = Number(val) ?? 1
+        handleSettingsChange({
+            pigeonholes: keyHoles,
+            commission,
+            carpet: carpetVal,
+        })
+        setCarpet(val)
     }
 
     const handleSettingsChange = async (payload: any) => {
@@ -120,22 +144,22 @@ function SettingsPage() {
                     </Card>
                 </Grid>
 
-                {/* <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                     <Card>
-                        <CardHeader title="Number of key holes" />
+                        <CardHeader title="Carpet cleaning rate" />
                         <CardContent>
                             <TextField
-                                label="Key holes"
+                                label="Carpet rate"
                                 variant="outlined"
                                 type="number"
                                 autoComplete="off"
-                                value={keyHoles}
-                                onChange={handleKeyHolesChange}
+                                value={carpet}
+                                onChange={handleCarpetChange}
                                 fullWidth
                             />
                         </CardContent>
                     </Card>
-                </Grid> */}
+                </Grid>
             </Grid>
         </Container>
     )

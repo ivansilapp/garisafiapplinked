@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import PropTypes from 'prop-types'
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 // @mui
 import { useTheme } from '@mui/material/styles'
 import { AppBar, Box, Toolbar } from '@mui/material'
@@ -12,11 +12,40 @@ import { bgBlur } from '../../../utils/cssStyles'
 import { NavSectionHorizontal } from '../../../components/nav-section'
 //
 import navConfig from './config-navigation'
+import { useAuthContext } from '../../../auth/useAuthContext'
 
 // ----------------------------------------------------------------------
 
 function NavHorizontal() {
     const theme = useTheme()
+    const { user, rights }: any = useAuthContext()
+    const [navData, setNavData] = useState<any>([])
+
+    useEffect(() => {
+        const modules =
+            rights?.map((right: any) => {
+                return `/${right.module.url}`
+            }) ?? []
+        // console.log(modules)
+        if (user) {
+            const data = navConfig
+                .map((item: any) => {
+                    const items = item?.items?.filter((navItem: any) => {
+                        //  return navItem?.role?.includes(role)
+                        return modules.includes(navItem?.path)
+                    })
+                    if (items.length > 0) {
+                        return {
+                            ...item,
+                            items,
+                        }
+                    }
+                    return null
+                })
+                .filter((item: any) => item)
+            setNavData(data)
+        }
+    }, [user, rights])
 
     const styles: any = {
         ...bgBlur({ color: theme.palette.background.default }),

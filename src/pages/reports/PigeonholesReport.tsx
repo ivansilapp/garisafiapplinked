@@ -13,24 +13,45 @@ import { Link } from 'react-router-dom'
 import { Suspense, useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { ErrorBoundary } from 'react-error-boundary'
+import { LoadingButton } from '@mui/lab'
 import { useSettingsContext } from '../../components/settings'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import { PATH_DASHBOARD } from '../../routes/paths'
 import { useSnackbar } from '../../components/snackbar'
-import axios from '../../utils/axios'
+// import axios from '../../utils/axios'
 import { apiUrl } from '../../config-global'
 import GroupedTasksTable from '../tasks/_components/GroupedTasksTable'
 import useOccupiedPigeoholes from '../../hooks/pigeoholes/useOccupiedPigeonholes'
 import InternalError from '../../components/shared/500Error'
 import PigeonholesTable from './_components/PigeonholesTable'
 import Iconify from '../../components/iconify'
+import http from '../../utils/axios'
 
 function PigeonholesReport() {
+    const [releaseLoader, setReleaseLoader] = useState(false)
     const { themeStretch } = useSettingsContext()
 
-    const { pigeonholes } = useOccupiedPigeoholes()
+    const { pigeonholes, mutate } = useOccupiedPigeoholes()
 
     const { enqueueSnackbar } = useSnackbar()
+
+    const releaseAll = async () => {
+        try {
+            setReleaseLoader(true)
+            const url = `${apiUrl}/task/release-all-keys`
+            const response = await http.put(url, {})
+            if (response.status === 200) {
+                enqueueSnackbar('Keys released', { variant: 'success' })
+                mutate()
+            }
+        } catch (err: any) {
+            const msg = err?.error || err?.message || 'Failed to release keys'
+
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setReleaseLoader(false)
+        }
+    }
 
     const loaderComponent = (
         <Backdrop
@@ -48,7 +69,7 @@ function PigeonholesReport() {
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
-                heading="Services report"
+                heading="Key holes report"
                 links={[
                     { name: 'Dashboard', href: PATH_DASHBOARD.root },
                     {
@@ -61,13 +82,25 @@ function PigeonholesReport() {
                     },
                 ]}
                 action={
-                    <Button
-                        component={Link}
-                        to={PATH_DASHBOARD.reports.pigeonholesHistory}
-                        endIcon={<Iconify icon="eva:arrow-forward-outline" />}
-                    >
-                        History
-                    </Button>
+                    <Stack gap={2} direction="row">
+                        <LoadingButton
+                            variant="outlined"
+                            loading={releaseLoader}
+                            onClick={releaseAll}
+                            color="info"
+                        >
+                            Release all
+                        </LoadingButton>
+                        <Button
+                            component={Link}
+                            to={PATH_DASHBOARD.reports.pigeonholesHistory}
+                            endIcon={
+                                <Iconify icon="eva:arrow-forward-outline" />
+                            }
+                        >
+                            History
+                        </Button>
+                    </Stack>
                 }
             />
 

@@ -20,7 +20,6 @@ export default function NavList({ data, depth, hasChild }: any) {
     const navRef = useRef(null)
 
     const { pathname } = useLocation()
-    console.log('NavList:: path', data?.path)
     const { active, isExternalLink } = useActiveLink(data.path)
 
     const [open, setOpen] = useState(false)

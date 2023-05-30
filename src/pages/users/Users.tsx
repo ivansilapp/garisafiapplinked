@@ -42,7 +42,7 @@ const TABLE_HEAD = [
     { id: 'role', label: 'Role', align: 'left' },
     { id: 'isVerified', label: 'Verified', align: 'center' },
     { id: 'status', label: 'Status', align: 'left' },
-    { id: '' },
+    { id: '', label: 'More' },
 ]
 
 function Users() {

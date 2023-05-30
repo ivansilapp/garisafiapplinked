@@ -23,6 +23,8 @@ const initialState = {
     isInitialized: false,
     isAuthenticated: false,
     user: null,
+    rights: [],
+    modules: [],
 }
 
 const reducer = (state: any, action: any) => {
@@ -31,6 +33,8 @@ const reducer = (state: any, action: any) => {
             isInitialized: true,
             isAuthenticated: action.payload.isAuthenticated,
             user: action.payload.user,
+            rights: action.payload?.rights,
+            modules: action.payload?.modules,
         }
     }
     if (action.type === 'LOGIN') {
@@ -38,6 +42,10 @@ const reducer = (state: any, action: any) => {
             ...state,
             isAuthenticated: true,
             user: action.payload.user,
+            rights: action.payload?.rights,
+            modules: action.payload?.modules,
+            settings: action.payload?.settings,
+            accounts: action.payload?.accounts,
         }
     }
     if (action.type === 'REGISTER') {
@@ -52,6 +60,8 @@ const reducer = (state: any, action: any) => {
             ...state,
             isAuthenticated: false,
             user: null,
+            modules: [],
+            rights: [],
         }
     }
 
@@ -80,15 +90,29 @@ export function AuthProvider({ children }: any) {
                 payload: {
                     isAuthenticated: false,
                     user: null,
+                    rights: [],
+                    modules: [],
+                    settings: null,
+                    accounts: [],
                 },
             })
 
-        const dispatchLogedIn = (user: any) =>
+        const dispatchLogedIn = (
+            user: any,
+            rights: any,
+            modules: any,
+            settings: any,
+            accounts: any
+        ) =>
             dispatch({
                 type: 'INITIAL',
                 payload: {
                     isAuthenticated: true,
                     user,
+                    rights,
+                    modules,
+                    settings,
+                    accounts,
                 },
             })
 
@@ -103,16 +127,35 @@ export function AuthProvider({ children }: any) {
             if (accessToken && isValidToken(accessToken)) {
                 setSession(accessToken)
 
+                const rights = localStorage.getItem('rights')
+                    ? JSON.parse(localStorage.getItem('rights') ?? '')
+                    : []
+                const modules = localStorage.getItem('modules')
+                    ? JSON.parse(localStorage.getItem('modules') ?? '')
+                    : []
+                const settings = localStorage.getItem('system_settings')
+                    ? JSON.parse(localStorage.getItem('system_settings') ?? '')
+                    : null
+                const accounts = localStorage.getItem('accounts')
+                    ? JSON.parse(localStorage.getItem('accounts') ?? '')
+                    : []
+
                 // const response = await axios.get('/api/account/my-account')
 
                 // const { user } = response.data
                 const user = jwtDecode(accessToken)
 
-                dispatchLogedIn({
-                    email: user.username,
-                    role: user.role,
-                    name: user.username,
-                })
+                dispatchLogedIn(
+                    {
+                        email: user.username,
+                        role: user.role,
+                        name: user.username,
+                    },
+                    rights,
+                    modules,
+                    settings,
+                    accounts
+                )
             } else {
                 //  attempt renewing token
                 // eslint-disable-next-line no-lonely-if
@@ -121,15 +164,22 @@ export function AuthProvider({ children }: any) {
                     const data = response ? response?.data : null
 
                     if (data && data?.accessToken) {
+                        const { rights, modules, settings, accounts } = data
                         //
                         localStorage.setItem('accessToken', data.accessToken)
                         const user = jwtDecode(data.accessToken)
 
-                        dispatchLogedIn({
-                            email: user.username,
-                            role: user.role,
-                            name: user.username,
-                        })
+                        dispatchLogedIn(
+                            {
+                                email: user.username,
+                                role: user.role,
+                                name: user.username,
+                            },
+                            rights,
+                            modules,
+                            settings,
+                            accounts
+                        )
                     }
                 } else {
                     dispatchNotLogedIn()
@@ -158,11 +208,26 @@ export function AuthProvider({ children }: any) {
             password,
         })
 
-        const { accessToken, refreshToken, user } = response.data
+        const {
+            accessToken,
+            refreshToken,
+            user,
+            rights,
+            modules,
+            settings,
+            accounts,
+        } = response.data
 
         //  console.log(accessToken, refreshToken, user, 'Response data')
-
+        if (localStorageAvailable()) {
+            localStorage.setItem('rights', JSON.stringify(rights))
+            localStorage.setItem('modules', JSON.stringify(modules))
+            localStorage.setItem('system_settings', JSON.stringify(settings))
+            localStorage.setItem('accounts', JSON.stringify(accounts))
+        }
         setSession(accessToken)
+
+        // console.log('returned modules  -->', modules)
 
         if (refreshToken && accessToken) {
             localStorage.setItem('refreshToken', refreshToken)
@@ -172,6 +237,10 @@ export function AuthProvider({ children }: any) {
             type: 'LOGIN',
             payload: {
                 user,
+                rights,
+                modules,
+                settings,
+                accounts,
             },
         })
     }, [])
@@ -230,6 +299,10 @@ export function AuthProvider({ children }: any) {
             isInitialized: state.isInitialized,
             isAuthenticated: state.isAuthenticated,
             user: state.user,
+            rights: state.rights,
+            modules: state.modules,
+            settings: state.settings,
+            accounts: state.accounts,
             method: 'jwt',
             login,
             register,
@@ -240,6 +313,10 @@ export function AuthProvider({ children }: any) {
             state.isAuthenticated,
             state.isInitialized,
             state.user,
+            state.rights,
+            state.modules,
+            state.settings,
+            state.accounts,
             login,
             logout,
             register,

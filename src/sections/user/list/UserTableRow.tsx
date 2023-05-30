@@ -71,13 +71,13 @@ export default function UserTableRow({
                         <Avatar alt={name} src={avatarUrl} />
 
                         <Typography variant="subtitle2" noWrap>
-                            {name}
-                            {/* <Link
+                            {/* {name} */}
+                            <Link
                                 style={styles}
                                 to={PATH_DASHBOARD.users.details(id)}
                             >
                                 {name}
-                            </Link> */}
+                            </Link>
                         </Typography>
                     </Stack>
                 </TableCell>

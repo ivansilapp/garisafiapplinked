@@ -101,7 +101,7 @@ export default function TaskTableRow({
             return acc + sale.amount
         }, 0) ?? 0
 
-    console.log({ status, fullyPaid })
+    // console.log({ status, fullyPaid })
 
     return (
         <>
@@ -202,15 +202,17 @@ export default function TaskTableRow({
                                 Complete
                             </Button>
                         ) : (
-                            <Button
-                                onClick={() => handleInitPayment(row)}
-                                variant="contained"
-                                color="info"
-                                size="small"
-                                disabled={fullyPaid}
-                            >
-                                Add payment
-                            </Button>
+                            <Typography variant="subtitle2" noWrap>
+                                <Button
+                                    onClick={() => handleInitPayment(row)}
+                                    variant="contained"
+                                    color="info"
+                                    size="small"
+                                    disabled={fullyPaid}
+                                >
+                                    Add payment
+                                </Button>
+                            </Typography>
                         )
                     ) : (
                         <Button
