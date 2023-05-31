@@ -61,7 +61,7 @@ function NavHorizontal() {
             }}
         >
             <Toolbar sx={styles}>
-                <NavSectionHorizontal data={navConfig} />
+                <NavSectionHorizontal data={navData} />
             </Toolbar>
 
             <Shadow />
