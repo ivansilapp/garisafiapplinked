@@ -30,12 +30,10 @@ export default function RoleBasedGuard({
     module: string
 }) {
     // Logic here to get current user role
-    const { user, rights, modules }: any = useAuthContext()
-    //  const userAccess: string[] = rights?.map((r: any) => r.module.name) ?? []
-    console.log(module, roles)
+    const { user, rights }: any = useAuthContext()
+    const userAccess: string[] = rights?.map((r: any) => r.module.name) ?? []
     // const currentRole = 'user';
-    const currentRole = user?.role // admin;
-    // console.log(user)
+    // const currentRole = user?.role // admin;
 
     // console.log(roles, currentRole)
     // Role base guard
@@ -62,31 +60,32 @@ export default function RoleBasedGuard({
     //         </Container>
     //     ) : null
     // }
-
+    // console.log(typeof module)
     // Rights base guard
-    // if (typeof module !== 'undefined' && !rights.includes(module)) {
-    //     return hasContent ? (
-    //         <Container component={MotionContainer} sx={{ textAlign: 'center' }}>
-    //             <m.div variants={varBounce({}).in}>
-    //                 <Typography variant="h3" paragraph>
-    //                     Permission Denied
-    //                 </Typography>
-    //             </m.div>
+    // const m = `${module}`
+    if (typeof module !== 'undefined' && !userAccess.includes(module)) {
+        return hasContent ? (
+            <Container component={MotionContainer} sx={{ textAlign: 'center' }}>
+                <m.div variants={varBounce({}).in}>
+                    <Typography variant="h3" paragraph>
+                        Permission Denied
+                    </Typography>
+                </m.div>
 
-    //             <m.div variants={varBounce({}).in}>
-    //                 <Typography sx={{ color: 'text.secondary' }}>
-    //                     You do not have permission to access this page
-    //                 </Typography>
-    //             </m.div>
+                <m.div variants={varBounce({}).in}>
+                    <Typography sx={{ color: 'text.secondary' }}>
+                        You do not have permission to access this page
+                    </Typography>
+                </m.div>
 
-    //             <m.div variants={varBounce({}).in}>
-    //                 <ForbiddenIllustration
-    //                     sx={{ height: 260, my: { xs: 5, sm: 10 } }}
-    //                 />
-    //             </m.div>
-    //         </Container>
-    //     ) : null
-    // }
+                <m.div variants={varBounce({}).in}>
+                    <ForbiddenIllustration
+                        sx={{ height: 260, my: { xs: 5, sm: 10 } }}
+                    />
+                </m.div>
+            </Container>
+        ) : null
+    }
 
     return <> {children} </>
 }
