@@ -173,13 +173,13 @@ export const taskStatus = {
 
 export function fallbackRender({ error, resetErrorBoundary }: any) {
     // Call resetErrorBoundary() to reset the error boundary and retry the render.
-
+    console.log(error, '<<<<<<<<<<<<<<<< error loading page')
     let errorMessage = error?.message ?? `Something went wrong`
     if (error.message === 'Unothorized') {
         errorMessage = `You do not have correct rights for "${error.method}" to the module ${error.module}`
     }
 
-    return error.message === 'Unothorized' ? (
+    return error.message === 'Unathorized' ? (
         <ForbiddenError
             error={errorMessage}
             resetErrorBoundary={resetErrorBoundary}

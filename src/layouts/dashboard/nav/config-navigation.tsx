@@ -45,6 +45,7 @@ interface NavItem {
     path: string
     icon: JSX.Element
     role?: string[]
+    module?: string
     children?: { title: string; path: string }[]
 }
 export interface INav {
@@ -61,7 +62,7 @@ const navConfig: INav[] = [
                 title: 'Dashboard',
                 path: PATH_DASHBOARD.root,
                 icon: ICONS.dashboard,
-                role: [ADMIN_ROLE],
+                role: ['DASHBOARD'],
             },
             {
                 title: 'Tasks',
@@ -91,7 +92,7 @@ const navConfig: INav[] = [
                 title: 'Services',
                 path: PATH_DASHBOARD.services.root,
                 icon: ICONS.folder,
-                role: [ADMIN_ROLE, MANAGER_ROLE],
+                role: [ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE],
             },
             {
                 title: 'Attendants',
@@ -103,7 +104,8 @@ const navConfig: INav[] = [
                 title: 'payments',
                 path: PATH_DASHBOARD.payments.root,
                 icon: ICONS.banking,
-                role: [ADMIN_ROLE],
+                module: 'Payments',
+                role: [ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE],
             },
             {
                 title: 'commisions',
@@ -115,7 +117,7 @@ const navConfig: INav[] = [
                 title: 'reports',
                 path: PATH_DASHBOARD.reports.root,
                 icon: ICONS.analytics,
-                role: [ADMIN_ROLE],
+                role: [ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE],
             },
         ],
     },

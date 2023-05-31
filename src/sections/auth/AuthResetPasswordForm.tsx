@@ -6,14 +6,18 @@ import { useForm } from 'react-hook-form'
 // @mui
 import { LoadingButton } from '@mui/lab'
 // routes
+import axios from 'axios'
 import { PATH_AUTH } from '../../routes/paths'
 // components
 import FormProvider, { RHFTextField } from '../../components/hook-form'
+import { apiUrl } from '../../config-global'
+import { useSnackbar } from '../../components/snackbar'
 
 // ----------------------------------------------------------------------
 
 export default function AuthResetPasswordForm() {
     const navigate = useNavigate()
+    const { enqueueSnackbar } = useSnackbar()
 
     const ResetPasswordSchema = Yup.object().shape({
         email: Yup.string()
@@ -23,7 +27,7 @@ export default function AuthResetPasswordForm() {
 
     const methods = useForm({
         resolver: yupResolver(ResetPasswordSchema),
-        defaultValues: { email: 'demo@garisafi.com' },
+        defaultValues: { email: '' },
     })
 
     const {
@@ -34,11 +38,25 @@ export default function AuthResetPasswordForm() {
     const onSubmit = async (data: any) => {
         try {
             // eslint-disable-next-line no-promise-executor-return, @typescript-eslint/no-implied-eval
-            await new Promise((resolve: any) => setTimeout(resolve, 500))
-            sessionStorage.setItem('email-recovery', data.email)
-            navigate(PATH_AUTH.newPassword)
-        } catch (error) {
-            console.error(error)
+            const response = await axios.get(
+                `${apiUrl}/password-reset-request/${data.email}`
+            )
+            if (response.status === 200) {
+                sessionStorage.setItem('email-recovery', data.email)
+                navigate(PATH_AUTH.newPassword)
+            } else {
+                enqueueSnackbar(
+                    response.data.error ?? 'Could not complete the request.',
+                    { variant: 'error' }
+                )
+            }
+        } catch (error: any) {
+            enqueueSnackbar(
+                error.message ||
+                    error.error ||
+                    'Could not complete the request.',
+                { variant: 'error' }
+            )
         }
     }
 

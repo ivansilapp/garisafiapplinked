@@ -37,6 +37,7 @@ import { settingsRoutes } from '../pages/settings/settingsRoutes'
 import { systemDataRoutes } from '../pages/system_data/systemDataRoutes'
 import { paymentRoutes } from '../pages/payments/paymentRoutes'
 import { commissionsRoutes } from '../pages/commissions/commissionsRouter'
+import { ADMIN_ROLE, ROLES } from '../utils/roles'
 
 // ----------------------------------------------------------------------
 
@@ -91,8 +92,30 @@ export default function Router() {
                     element: <Navigate to={PATH_AFTER_LOGIN} replace />,
                     index: true,
                 },
-                { path: '/', element: <Dashboard /> },
-                { path: 'dashboard', element: <Dashboard /> },
+                {
+                    path: '/',
+                    element: (
+                        <RoleBasedGuard
+                            module={ROLES.Dashboard}
+                            roles={[ADMIN_ROLE]}
+                            hasContent
+                        >
+                            <Dashboard />
+                        </RoleBasedGuard>
+                    ),
+                },
+                {
+                    path: 'dashboard',
+                    element: (
+                        <RoleBasedGuard
+                            module={ROLES.Dashboard}
+                            roles={[ADMIN_ROLE]}
+                            hasContent
+                        >
+                            <Dashboard />
+                        </RoleBasedGuard>
+                    ),
+                },
                 // {
                 //     path: 'tasks',
                 //     element: (

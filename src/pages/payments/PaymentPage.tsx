@@ -23,6 +23,8 @@ function PaymentPage() {
     const initialStartDate = searchParams.get('startDate')
     const initialEndDate = searchParams.get('endDate')
 
+    console.log('>>>>>>>>>>>>>> loading page >>>>>>>>>>>>>')
+
     // get query params
     let query = ''
     if (initialStartDate) {

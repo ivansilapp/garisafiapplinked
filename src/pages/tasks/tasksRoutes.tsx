@@ -1,7 +1,12 @@
 import { lazy } from 'react'
 import RoleBasedGuard from '../../auth/RoleBasedGuard'
 import Loadable from '../../components/loaderble'
-import { ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE } from '../../utils/roles'
+import {
+    ADMIN_ROLE,
+    CASHIER_ROLE,
+    MANAGER_ROLE,
+    ROLES,
+} from '../../utils/roles'
 
 export const TasksPage = Loadable(lazy(() => import('./TasksPage')))
 export const CreateTasksPage = Loadable(lazy(() => import('./NewTaskPage')))
@@ -16,6 +21,7 @@ export const tasksRoutes = [
             <RoleBasedGuard
                 roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
                 hasContent
+                module={ROLES.Tasks}
             >
                 <TasksPage />
             </RoleBasedGuard>
@@ -26,6 +32,7 @@ export const tasksRoutes = [
         element: (
             <RoleBasedGuard
                 roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                module={ROLES.Tasks}
                 hasContent
             >
                 <CreateTasksPage />
@@ -37,6 +44,7 @@ export const tasksRoutes = [
         element: (
             <RoleBasedGuard
                 roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                module={ROLES.Tasks}
                 hasContent
             >
                 <TaskDetailPage />
@@ -48,6 +56,7 @@ export const tasksRoutes = [
         element: (
             <RoleBasedGuard
                 roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                module={ROLES.Tasks}
                 hasContent
             >
                 <TaskStatusPage />
@@ -59,6 +68,7 @@ export const tasksRoutes = [
         element: (
             <RoleBasedGuard
                 roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                module={ROLES.Tasks}
                 hasContent
             >
                 <TaskReportPage />

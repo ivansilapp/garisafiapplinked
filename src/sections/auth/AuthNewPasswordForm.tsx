@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 // routes
+import axios from 'axios'
 import { PATH_DASHBOARD } from '../../routes/paths'
 // components
 import Iconify from '../../components/iconify'
@@ -21,6 +22,7 @@ import FormProvider, {
     RHFTextField,
     RHFCodes,
 } from '../../components/hook-form'
+import { apiUrl } from '../../config-global'
 
 // ----------------------------------------------------------------------
 
@@ -79,18 +81,31 @@ export default function AuthNewPasswordForm() {
 
     const onSubmit = async (data: any) => {
         try {
-            // eslint-disable-next-line no-promise-executor-return
-            await new Promise((resolve) => setTimeout(resolve, 500))
-            console.log('DATA:', {
+            const payload = {
                 email: data.email,
                 code: `${data.code1}${data.code2}${data.code3}${data.code4}${data.code5}${data.code6}`,
                 password: data.password,
-            })
-            sessionStorage.removeItem('email-recovery')
-            enqueueSnackbar('Change password success!')
-            navigate(PATH_DASHBOARD.root)
-        } catch (error) {
-            console.error(error)
+            }
+
+            const response = await axios.post(
+                `${apiUrl}/reset-password`,
+                payload
+            )
+
+            if (response.status === 200) {
+                sessionStorage.removeItem('email-recovery')
+                enqueueSnackbar('Change password success!')
+                navigate(PATH_DASHBOARD.root)
+            } else {
+                throw new Error(response.data.error ?? 'Password reset failed')
+            }
+        } catch (error: any) {
+            const msg =
+                error.error ||
+                error.message ||
+                error.msg ||
+                'Password reset failed'
+            enqueueSnackbar(msg, { variant: 'error' })
         }
     }
 

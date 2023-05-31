@@ -433,7 +433,6 @@ export default function TaskForm({
                         size="small"
                         label="Discount"
                         name="discount"
-                        disabled={!isAdmin}
                         onChange={(event: any) =>
                             setValue('discount', Number(event.target.value))
                         }

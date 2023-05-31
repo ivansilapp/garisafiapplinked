@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import RoleBasedGuard from '../../auth/RoleBasedGuard'
 import Loadable from '../../components/loaderble'
-import { ADMIN_ROLE, CASHIER_ROLE } from '../../utils/roles'
+import { ADMIN_ROLE, CASHIER_ROLE, ROLES } from '../../utils/roles'
 
 export const ReportsPage = Loadable(lazy(() => import('./ReportsPage')))
 const RevenueReport = Loadable(lazy(() => import('./RevenueReport')))
@@ -31,8 +31,13 @@ const RewardReport = Loadable(lazy(() => import('./RewardReport')))
 export const reportsRoutes = [
     {
         path: 'reports',
+
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                roles={[ADMIN_ROLE]}
+                module={ROLES.Reports}
+                hasContent
+            >
                 <ReportsPage />
             </RoleBasedGuard>
         ),
@@ -40,7 +45,11 @@ export const reportsRoutes = [
     {
         path: 'reports/revenue',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
                 <RevenueReport />
             </RoleBasedGuard>
         ),
@@ -48,7 +57,11 @@ export const reportsRoutes = [
     {
         path: 'reports/sales',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
                 <SalesReport />
             </RoleBasedGuard>
         ),
@@ -56,7 +69,11 @@ export const reportsRoutes = [
     {
         path: 'reports/services',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
                 <ServiceReport />
             </RoleBasedGuard>
         ),
@@ -64,7 +81,11 @@ export const reportsRoutes = [
     {
         path: 'reports/attendants',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
                 <AttendantsReport />
             </RoleBasedGuard>
         ),
@@ -72,7 +93,11 @@ export const reportsRoutes = [
     {
         path: 'reports/vehicle-type',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
                 <VehicleTypeReport />
             </RoleBasedGuard>
         ),
@@ -80,7 +105,11 @@ export const reportsRoutes = [
     {
         path: 'reports/sales/details/:date',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
                 <UngroupedSalesReport />
             </RoleBasedGuard>
         ),
@@ -88,7 +117,11 @@ export const reportsRoutes = [
     {
         path: 'reports/tasks/details/:date',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
                 <TaskDurationReport />
             </RoleBasedGuard>
         ),
@@ -96,7 +129,11 @@ export const reportsRoutes = [
     {
         path: 'reports/vehicle-type/details/:type',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
                 <VehicleTypeDurationTasksReport />
             </RoleBasedGuard>
         ),
@@ -104,7 +141,11 @@ export const reportsRoutes = [
     {
         path: 'reports/pigeonholes',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE, CASHIER_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE, CASHIER_ROLE]}
+                hasContent
+            >
                 <PigeonholesReport />
             </RoleBasedGuard>
         ),
@@ -112,7 +153,11 @@ export const reportsRoutes = [
     {
         path: 'reports/pigeonholes/history',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE, CASHIER_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE, CASHIER_ROLE]}
+                hasContent
+            >
                 <PigeonholesHistory />
             </RoleBasedGuard>
         ),
@@ -120,7 +165,11 @@ export const reportsRoutes = [
     {
         path: 'reports/rewards',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
                 <RewardReport />
             </RoleBasedGuard>
         ),

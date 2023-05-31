@@ -4,6 +4,9 @@ import { Link as RouterLink } from 'react-router-dom'
 // @mui
 import { Link, Typography } from '@mui/material'
 // routes
+import axios from 'axios'
+import { useState } from 'react'
+import { LoadingButton } from '@mui/lab'
 import { PATH_AUTH } from '../../routes/paths'
 // components
 import Iconify from '../../components/iconify'
@@ -11,10 +14,51 @@ import Iconify from '../../components/iconify'
 import AuthNewPasswordForm from '../../sections/auth/AuthNewPasswordForm'
 // assets
 import { SentIcon } from '../../assets/icons'
+import { apiUrl } from '../../config-global'
+import { useSnackbar } from '../../components/snackbar'
 
 // ----------------------------------------------------------------------
 
 export default function NewPasswordPage() {
+    const [loader, setLoader] = useState(false)
+    const { enqueueSnackbar } = useSnackbar()
+
+    const emailRecovery =
+        typeof window !== 'undefined'
+            ? sessionStorage.getItem('email-recovery')
+            : ''
+
+    const submit = async () => {
+        try {
+            setLoader(true)
+
+            if (!emailRecovery) {
+                enqueueSnackbar('invalid user email')
+                return
+            }
+            const response = await axios.get(
+                `${apiUrl}/password-reset-request/${emailRecovery}`
+            )
+            if (response.status === 200) {
+                enqueueSnackbar('Code sent to your email')
+            } else {
+                enqueueSnackbar(
+                    response.data.error ?? 'Could not complete the request.',
+                    { variant: 'error' }
+                )
+            }
+        } catch (error: any) {
+            enqueueSnackbar(
+                error.message ||
+                    error.error ||
+                    'Could not complete the request.',
+                { variant: 'error' }
+            )
+        } finally {
+            setLoader(false)
+        }
+    }
+
     return (
         <>
             <Helmet>
@@ -37,7 +81,9 @@ export default function NewPasswordPage() {
 
             <Typography variant="body2" sx={{ my: 3 }}>
                 Don’t have a code? &nbsp;
-                <Link variant="subtitle2">Resend code</Link>
+                <LoadingButton onClick={submit} loading={loader} color="info">
+                    Resend code
+                </LoadingButton>
             </Typography>
 
             <Link

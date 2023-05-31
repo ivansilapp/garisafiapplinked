@@ -1,7 +1,12 @@
 import { lazy } from 'react'
 import RoleBasedGuard from '../../auth/RoleBasedGuard'
 import Loadable from '../../components/loaderble'
-import { ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE } from '../../utils/roles'
+import {
+    ADMIN_ROLE,
+    CASHIER_ROLE,
+    MANAGER_ROLE,
+    ROLES,
+} from '../../utils/roles'
 
 export const AttendantsPage = Loadable(lazy(() => import('./AttendantsPage')))
 export const AttendantsDetail = Loadable(
@@ -14,6 +19,7 @@ export const attendantsRoutes = [
         element: (
             <RoleBasedGuard
                 roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                module={ROLES.Attendants}
                 hasContent
             >
                 <AttendantsPage />
@@ -26,6 +32,7 @@ export const attendantsRoutes = [
             <RoleBasedGuard
                 roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
                 hasContent
+                module={ROLES.Attendants}
             >
                 <AttendantsDetail />
             </RoleBasedGuard>
