@@ -33,7 +33,17 @@ export default function NavItem({
     // const { translate } = useLocales()
     const translate = (a: any) => a
 
-    const { title, path, icon, info, children, disabled, caption, roles } = item
+    const {
+        title,
+        path,
+        icon,
+        info,
+        children,
+        disabled,
+        caption,
+        roles,
+        module,
+    } = item
 
     const subItem: any = depth !== 1
 
@@ -124,7 +134,7 @@ export default function NavItem({
     }
 
     return (
-        <RoleBasedGuard roles={roles} hasContent={false}>
+        <RoleBasedGuard module={module} roles={roles} hasContent={false}>
             {renderItem()}
         </RoleBasedGuard>
     )

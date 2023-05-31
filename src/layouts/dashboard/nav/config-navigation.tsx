@@ -71,7 +71,7 @@ const navConfig: INav[] = [
                 role: [ADMIN_ROLE, CASHIER_ROLE, MANAGER_ROLE],
             },
             {
-                title: 'Report',
+                title: 'Pages',
                 path: PATH_DASHBOARD.tasks.report,
                 icon: ICONS.analytics,
                 role: [CASHIER_ROLE],

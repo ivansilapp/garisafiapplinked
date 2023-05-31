@@ -30,7 +30,11 @@ export const systemDataRoutes = [
     {
         path: 'system-data',
         element: (
-            <RoleBasedGuard roles={[ADMIN_ROLE, MANAGER_ROLE]} hasContent>
+            <RoleBasedGuard
+                module={ROLES.Data}
+                roles={[ADMIN_ROLE, MANAGER_ROLE]}
+                hasContent
+            >
                 <SystemDataPage />
             </RoleBasedGuard>
         ),

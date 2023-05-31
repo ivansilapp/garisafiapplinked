@@ -19,8 +19,17 @@ const NavItem = forwardRef(
     ({ item, depth, open, active, isExternalLink, ...other }: any, ref) => {
         // const { translate } = useLocales()
 
-        const { title, path, icon, info, children, disabled, caption, roles } =
-            item
+        const {
+            title,
+            path,
+            icon,
+            info,
+            children,
+            disabled,
+            caption,
+            roles,
+            module,
+        } = item
 
         const subItem = depth !== 1
 
@@ -97,7 +106,7 @@ const NavItem = forwardRef(
         }
 
         return (
-            <RoleBasedGuard roles={roles} hasContent={false}>
+            <RoleBasedGuard module={module} roles={roles} hasContent={false}>
                 {renderItem()}
             </RoleBasedGuard>
         )

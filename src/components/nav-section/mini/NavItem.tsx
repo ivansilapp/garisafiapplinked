@@ -20,7 +20,16 @@ const NavItem = forwardRef(
         // const { translate } = useLocales()
         const translate = (a: any) => a
 
-        const { title, path, icon, children, disabled, caption, roles } = item
+        const {
+            title,
+            path,
+            icon,
+            children,
+            disabled,
+            caption,
+            roles,
+            module,
+        } = item
 
         const subItem = depth !== 1
 
@@ -111,20 +120,12 @@ const NavItem = forwardRef(
         }
 
         return (
-            <RoleBasedGuard module="na" hasContent roles={roles}>
+            <RoleBasedGuard module={module} hasContent roles={roles}>
                 {' '}
                 {renderItem()}{' '}
             </RoleBasedGuard>
         )
     }
 )
-
-// NavItem.propTypes = {
-//     open: PropTypes.bool,
-//     active: PropTypes.bool,
-//     item: PropTypes.object,
-//     depth: PropTypes.number,
-//     isExternalLink: PropTypes.bool,
-// }
 
 export default NavItem
