@@ -115,8 +115,13 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: any) {
             if (response.status === 200) {
                 navigate(PATH_DASHBOARD.users.root)
             }
-        } catch (error) {
-            enqueueSnackbar('Failed to create user record', {
+        } catch (error: any) {
+            const msg =
+                error.error ||
+                error.message ||
+                error.msg ||
+                'Failed to create user record'
+            enqueueSnackbar(msg, {
                 variant: 'error',
             })
         }
