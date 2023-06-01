@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react'
 import { Card, Paper, Table, TableBody, TableContainer } from '@mui/material'
 
+import { mutate as doMutate } from 'swr'
+
 import { LoadingButton } from '@mui/lab'
 import {
     useTable,
@@ -166,6 +168,7 @@ function TasksTable({
                     ...tableData.slice(index + 1),
                 ]
                 mutate(updatedData)
+                doMutate(`${apiUrl}/task/unpaid-tasks`)
                 enqueueSnackbar('Marked as complete', {
                     variant: 'success',
                 })
@@ -203,6 +206,7 @@ function TasksTable({
 
             if (response.status === 200) {
                 mutate()
+                doMutate(`${apiUrl}/task/unpaid-tasks`)
                 enqueueSnackbar('Payment added successfully', {
                     variant: 'success',
                 })
