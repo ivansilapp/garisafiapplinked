@@ -53,6 +53,7 @@ function Dashboard() {
         pigeonholes,
         freeWashes,
         payments,
+        todayTasks,
     } = useDailyAnalytics({ query })
 
     // const onFilterStartDate = (newValue: any) => {
@@ -236,14 +237,14 @@ function Dashboard() {
                                     title="Service revenue"
                                     percent={2.6}
                                     currency
-                                    total={todaysTasks?.cost ?? 0}
+                                    total={todayTasks?.cost ?? 0}
                                     url={`/reports/services?startDate=${format(
                                         filterStartDate ?? new Date(),
                                         'yyyy-MM-dd'
                                     )}`}
                                     items={{
                                         title: 'Number of tasks',
-                                        value: todaysTasks?.total ?? 0,
+                                        value: todayTasks?.total ?? 0,
                                     }}
                                     chart={{
                                         colors: [theme.palette.primary.main],
