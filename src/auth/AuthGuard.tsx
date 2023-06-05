@@ -11,7 +11,7 @@ import { isValidToken } from './utils'
 
 // ----------------------------------------------------------------------
 
-export default function AuthGuard({ children }: any) {
+export default function AAuthGuard({ children }: any) {
     const { isAuthenticated, isInitialized }: any = useAuthContext()
 
     const { pathname }: any = useLocation()

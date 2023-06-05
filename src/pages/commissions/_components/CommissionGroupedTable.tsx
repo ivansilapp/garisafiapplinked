@@ -22,6 +22,7 @@ const TABLE_HEAD = [
     { id: 'total_amount', label: 'Total amount', align: 'left' },
     { id: 'amount_paid', label: 'Paid amount', align: 'left' },
     { id: 'amount_not_paid', label: 'Balance', align: 'left' },
+    { id: 'tips', label: 'Tips', align: 'left' },
     { id: 'more', label: 'More', align: 'left' },
     // { id: '' },
 ]

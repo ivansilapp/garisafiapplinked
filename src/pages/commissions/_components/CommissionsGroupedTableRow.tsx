@@ -39,6 +39,7 @@ export default function GroupedCommissionTableRow({ row }: any) {
         attendantName,
         attendantId,
         date,
+        tips,
     }: any = row
     const initialStartDate = searchParams.get('startDate')
     const initialEndDate = searchParams.get('endDate')
@@ -83,6 +84,7 @@ export default function GroupedCommissionTableRow({ row }: any) {
 
             <TableCell align="left">{fNumber(amount_paid)}</TableCell>
             <TableCell align="left">{fNumber(amount_not_paid)}</TableCell>
+            <TableCell align="left">{fNumber(tips)}</TableCell>
 
             <TableCell align="left">
                 <IconButton
