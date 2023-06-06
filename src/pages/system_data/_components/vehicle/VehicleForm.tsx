@@ -19,6 +19,8 @@ import FormProvider, {
     RHFUploadAvatar,
 } from '../../../../components/hook-form'
 import { useSnackbar } from '../../../../components/snackbar'
+import { useAuthContext } from '../../../../auth/useAuthContext'
+import { ADMIN_ROLE } from '../../../../utils/roles'
 
 function VehicleForm({
     vehicle,
@@ -29,6 +31,7 @@ function VehicleForm({
     bodyTypes,
 }: any) {
     const { enqueueSnackbar } = useSnackbar()
+    const { user }: any = useAuthContext()
 
     const NewVehicleSchema = Yup.object().shape({
         registration: Yup.string().required('Vehicle registration required'),
@@ -61,6 +64,8 @@ function VehicleForm({
         setValue,
         formState: { isSubmitting },
     } = methods
+
+    console.log(user)
 
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -95,6 +100,7 @@ function VehicleForm({
                     type="number"
                     autoComplete="off"
                     name="points"
+                    disabled={isEdit && user?.role !== ADMIN_ROLE}
                     label="Reward points"
                 />
 
