@@ -18,9 +18,12 @@ import OccupiedCard from './_components/OccupiedCard'
 import { PATH_DASHBOARD } from '../../routes/paths'
 import AccountsOverview from './_components/AccountsOverview'
 import { computeFreewashTotals } from '../../utils/common'
+import { useAuthContext } from '../../auth/useAuthContext'
+import { ADMIN_ROLE } from '../../utils/roles'
 
 function Dashboard() {
     const theme = useTheme()
+    const { user }: any = useAuthContext()
 
     const { bodyTypes } = useBodyTypes()
 
@@ -40,6 +43,8 @@ function Dashboard() {
     if (initialStartDate) {
         query = `${query}startDate=${initialStartDate}`
     }
+
+    const IS_ADMIN = user?.role === ADMIN_ROLE
 
     const {
         accounts,
@@ -336,52 +341,58 @@ function Dashboard() {
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={4}>
-                            <AccountBalances
-                                title="Account Balances"
-                                chart={{
-                                    colors: [
-                                        theme.palette.primary.main,
-                                        theme.palette.info.main,
-                                        theme.palette.error.main,
-                                        theme.palette.warning.main,
-                                    ],
-                                    series,
-                                }}
-                            />
-                        </Grid>
+                        {IS_ADMIN && (
+                            <Grid item xs={12} md={4}>
+                                <AccountBalances
+                                    title="Account Balances"
+                                    chart={{
+                                        colors: [
+                                            theme.palette.primary.main,
+                                            theme.palette.info.main,
+                                            theme.palette.error.main,
+                                            theme.palette.warning.main,
+                                        ],
+                                        series,
+                                    }}
+                                />
+                            </Grid>
+                        )}
 
-                        <Grid item xs={12} md={4}>
-                            <TaskByCarType
-                                title="Task By Car Type"
-                                chart={{
-                                    series: taskByCarType,
-                                    colors: [
-                                        theme.palette.primary.main,
-                                        theme.palette.info.main,
-                                        theme.palette.error.main,
-                                        theme.palette.warning.main,
-                                    ],
-                                }}
-                            />
-                        </Grid>
+                        {IS_ADMIN && (
+                            <Grid item xs={12} md={4}>
+                                <TaskByCarType
+                                    title="Task By Car Type"
+                                    chart={{
+                                        series: taskByCarType,
+                                        colors: [
+                                            theme.palette.primary.main,
+                                            theme.palette.info.main,
+                                            theme.palette.error.main,
+                                            theme.palette.warning.main,
+                                        ],
+                                    }}
+                                />
+                            </Grid>
+                        )}
 
-                        <Grid item xs={12} md={4}>
-                            <TaskByCarType
-                                title="Revenue By Car Type"
-                                type="donut"
-                                currency
-                                chart={{
-                                    series: revenueByCarType,
-                                    colors: [
-                                        theme.palette.info.main,
-                                        theme.palette.error.main,
-                                        theme.palette.warning.main,
-                                        theme.palette.primary.main,
-                                    ],
-                                }}
-                            />
-                        </Grid>
+                        {IS_ADMIN && (
+                            <Grid item xs={12} md={4}>
+                                <TaskByCarType
+                                    title="Revenue By Car Type"
+                                    type="donut"
+                                    currency
+                                    chart={{
+                                        series: revenueByCarType,
+                                        colors: [
+                                            theme.palette.info.main,
+                                            theme.palette.error.main,
+                                            theme.palette.warning.main,
+                                            theme.palette.primary.main,
+                                        ],
+                                    }}
+                                />
+                            </Grid>
+                        )}
 
                         <Grid container item xs={12}>
                             <Grid item xs={12} md={4}>
