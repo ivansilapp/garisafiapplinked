@@ -149,7 +149,7 @@ function TasksGeneralReport() {
                         <TasksTable
                             data={tasks}
                             mutate={mutate}
-                            handleUpdate={() => { }}
+                            handleUpdate={() => ''}
                         />
                     </Grid>
                 </Grid>

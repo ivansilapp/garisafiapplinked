@@ -28,9 +28,9 @@ import { ADMIN_ROLE } from '../../../utils/roles'
 function AccountsPage() {
     const { themeStretch } = useSettingsContext()
 
-    const { user } = useAuthContext()
+    const { user }: any = useAuthContext()
 
-    const isAdmin = user.role === ADMIN_ROLE
+    const isAdmin = user?.role === ADMIN_ROLE
 
     const { accounts, mutate } = useAccountList()
     const { bodyTypes } = useBodyTypes()
