@@ -78,6 +78,7 @@ function Dashboard() {
     const carTypeTasks = complete?.reduce((acc: any, task: any) => {
         const { bodyId }: any = task.vehicle
         const name = bodyTypes?.find((body: any) => body.id === bodyId)?.name
+        // console.log(task.jobs, 'jobs')
         if (acc[name]) {
             acc[name] = {
                 count: acc[name].count + 1,
@@ -91,6 +92,48 @@ function Dashboard() {
         }
         return acc
     }, {})
+    const serviceTypeTasks = complete?.reduce((acc: any, task: any) => {
+        const { bodyId }: any = task.vehicle
+        const name = bodyTypes?.find((body: any) => body.id === bodyId)?.name
+        const serviceTasks = task.jobs.reduce((iac: any, job: any) => {
+            if (iac[job.name]) {
+                // eslint-disable-next-line no-param-reassign
+                iac[job.name] = {
+                    count: iac[job.name].count + 1,
+                    cost: iac[job.name].cost + job.cost,
+                }
+            } else {
+                // eslint-disable-next-line no-param-reassign
+                iac[job.name] = {
+                    count: 1,
+                    cost: job.cost,
+                }
+            }
+            return iac
+        }, {})
+
+        Object.keys(serviceTasks).forEach((key) => {
+            if (acc[key]) {
+                acc[key] = {
+                    count: acc[key].count + 1,
+                    cost: acc[key].cost + serviceTasks[key].cost,
+                }
+            } else {
+                acc[key] = {
+                    count: 1,
+                    cost: serviceTasks[key].cost,
+                }
+            }
+        })
+        return acc
+    }, {})
+
+    const serviceReportData = Object.keys(serviceTypeTasks)?.map(
+        (key: any) => ({
+            label: key,
+            value: serviceTypeTasks[key].cost,
+        })
+    )
 
     const taskByCarType = Object.keys(carTypeTasks)?.map((key: any) => ({
         label: key,
@@ -342,24 +385,7 @@ function Dashboard() {
                         </Grid>
 
                         {IS_ADMIN && (
-                            <Grid item xs={12} md={4}>
-                                <AccountBalances
-                                    title="Account Balances"
-                                    chart={{
-                                        colors: [
-                                            theme.palette.primary.main,
-                                            theme.palette.info.main,
-                                            theme.palette.error.main,
-                                            theme.palette.warning.main,
-                                        ],
-                                        series,
-                                    }}
-                                />
-                            </Grid>
-                        )}
-
-                        {IS_ADMIN && (
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={6} xl={4}>
                                 <TaskByCarType
                                     title="Task By Car Type"
                                     chart={{
@@ -376,7 +402,7 @@ function Dashboard() {
                         )}
 
                         {IS_ADMIN && (
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={6} xl={4}>
                                 <TaskByCarType
                                     title="Revenue By Car Type"
                                     type="donut"
@@ -389,6 +415,41 @@ function Dashboard() {
                                             theme.palette.warning.main,
                                             theme.palette.primary.main,
                                         ],
+                                    }}
+                                />
+                            </Grid>
+                        )}
+
+                        {IS_ADMIN && (
+                            <Grid item xs={12} md={6} xl={4}>
+                                <TaskByCarType
+                                    title="Revenue By Service"
+                                    currency
+                                    chart={{
+                                        series: serviceReportData,
+                                        colors: [
+                                            theme.palette.primary.main,
+                                            theme.palette.info.main,
+                                            theme.palette.error.main,
+                                            theme.palette.warning.main,
+                                        ],
+                                    }}
+                                />
+                            </Grid>
+                        )}
+
+                        {IS_ADMIN && (
+                            <Grid item xs={12} md={6} xl={4}>
+                                <AccountBalances
+                                    title="Account Balances"
+                                    chart={{
+                                        colors: [
+                                            theme.palette.primary.main,
+                                            theme.palette.info.main,
+                                            theme.palette.error.main,
+                                            theme.palette.warning.main,
+                                        ],
+                                        series,
                                     }}
                                 />
                             </Grid>

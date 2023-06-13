@@ -1,10 +1,9 @@
 import useSWR from 'swr'
 import { apiUrl } from '../../config-global'
 
-export default function useRedeemedTasks({ query }: { query: string }) {
-    // console.log('query', query) { query }: { query?: string }
-    // console.log(query, 'query')
-    const url = `${apiUrl}/task/redeemed-report?${query}`
+export default function useOpenTasks() {
+    const url = `${apiUrl}/task/open`
+    // console.log(url, 'url')
     const { error, data, mutate } = useSWR(url, { suspense: true })
 
     return {

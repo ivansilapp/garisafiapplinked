@@ -10,23 +10,20 @@ import {
     CircularProgress,
     TextField,
 } from '@mui/material'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-// import RevenueChart from './_components/RevenueChart'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { format } from 'date-fns'
 import { DatePicker } from '@mui/x-date-pickers'
 import { useSettingsContext } from '../../components/settings'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import { PATH_DASHBOARD } from '../../routes/paths'
-import { useSnackbar } from '../../components/snackbar'
-import axios from '../../utils/axios'
-import { apiUrl } from '../../config-global'
-import GroupedTasksTable from '../tasks/_components/GroupedTasksTable'
-import useServiceReport from '../../hooks/service/useServicesReport'
 
-const INPUT_WIDTH = 160
+import useRedeemedTasks from '../../hooks/task/useRedeemedTasks'
+import TasksTable from '../tasks/_components/TasksTable'
+import useTipsReport from '../../hooks/tips/useTipsReport'
+import TipsTable from './_components/TipsTable'
 
-function ServicesReport() {
+function TipsReport() {
     const { themeStretch } = useSettingsContext()
     const navigate = useNavigate()
 
@@ -34,19 +31,6 @@ function ServicesReport() {
     const initialStartDate = searchParams.get('startDate')
     const initialEndDate = searchParams.get('endDate')
 
-    // get query params
-    let query = ''
-    if (initialStartDate) {
-        query = `${query}startDate=${initialStartDate}`
-    }
-    if (initialEndDate) {
-        query = `${query}&endDate=${initialEndDate}`
-    }
-    const { services } = useServiceReport({ query })
-
-    const [loading, setLoading] = useState<boolean>(false)
-
-    //  dates
     const [filterStartDate, setFilterStartDate] = useState<Date | null>(
         initialStartDate ? new Date(initialStartDate) : null
     )
@@ -54,45 +38,19 @@ function ServicesReport() {
         initialEndDate ? new Date(initialEndDate) : null
     )
 
-    const { enqueueSnackbar } = useSnackbar()
+    let query = ''
 
-    const servicesTotal = services?.reduce((acc: number, curr: any) => {
-        return acc + curr.cost
-    }, 0)
-
-    const handleFetch = async () => {
-        try {
-            const startDate = filterStartDate
-                ? format(filterStartDate, 'yyyy-MM-dd')
-                : null
-            const endDate = filterEndDate
-                ? format(filterEndDate, 'yyyy-MM-dd')
-                : null
-
-            let queryObj = {}
-            if (startDate) {
-                queryObj = { ...queryObj, startDate }
-            }
-            if (endDate) {
-                queryObj = { ...queryObj, endDate }
-            }
-            setLoading(true)
-            const q = new URLSearchParams(queryObj).toString()
-            const url = `${apiUrl}/report/date-grouped-tasks?${q}`
-
-            const response = await axios.get(url)
-
-            if (response.status === 200) {
-                const { data } = response
-                //  setServices(data.services ? data.services : [])
-            }
-        } catch (err: any) {
-            const msg = err.error || err.message || 'error loading reports data'
-            enqueueSnackbar(msg, { variant: 'error' })
-        } finally {
-            setLoading(false)
-        }
+    if (initialStartDate) {
+        query = `${query}startDate=${initialStartDate}`
     }
+
+    if (initialEndDate) {
+        query = `${query}&endDate=${initialEndDate}`
+    }
+
+    const { tips, loading, mutate } = useTipsReport({ query })
+
+    // console.log(tasks, 'tasks')
 
     const onFilterStartDate = (newValue: any) => {
         setFilterStartDate(newValue)
@@ -106,7 +64,6 @@ function ServicesReport() {
 
     const handleDateFilter = async ({ s, e }: any) => {
         try {
-            setLoading(true)
             const startDate = s ? format(s, 'yyyy-MM-dd') : null
             const endDate = e ? format(e, 'yyyy-MM-dd') : null
 
@@ -119,20 +76,18 @@ function ServicesReport() {
             }
 
             const q = new URLSearchParams(queryObj).toString()
-            navigate(`${PATH_DASHBOARD.reports.services}?${q}`)
+            navigate(`${PATH_DASHBOARD.reports.tips}?${q}`)
         } catch (err: any) {
-            const msg =
-                err?.error || err.message || 'Error loading attendant details'
-            enqueueSnackbar(msg, { variant: 'error' })
-        } finally {
-            setLoading(false)
+            const msg = err?.error || err.message || 'something went wrong'
+            // enqueueSnackbar(msg, { variant: 'error' })
+            console.log(msg)
         }
     }
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
-                heading="Services report"
+                heading="Tips report"
                 links={[
                     { name: 'Dashboard', href: PATH_DASHBOARD.root },
                     {
@@ -140,8 +95,8 @@ function ServicesReport() {
                         href: PATH_DASHBOARD.reports.root,
                     },
                     {
-                        name: 'service reports',
-                        href: PATH_DASHBOARD.reports.services,
+                        name: 'Tips reports',
+                        href: PATH_DASHBOARD.reports.tips,
                     },
                 ]}
             />
@@ -153,7 +108,6 @@ function ServicesReport() {
                         zIndex: (theme) => theme.zIndex.drawer + 1,
                     }}
                     open={loading}
-                    onClick={() => { }}
                 >
                     <CircularProgress color="inherit" />
                 </Backdrop>
@@ -191,11 +145,16 @@ function ServicesReport() {
                     </Stack>
                 </Grid>
                 <Grid item xs={12}>
-                    <GroupedTasksTable data={services ?? []} />
+                    <TipsTable
+                        data={tips ?? []}
+                        mutate={mutate}
+                        handleUpdate={() => ''}
+                        readOnly
+                    />
                 </Grid>
             </Grid>
         </Container>
     )
 }
 
-export default ServicesReport
+export default TipsReport

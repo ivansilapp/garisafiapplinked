@@ -13,6 +13,7 @@ export const CreateTasksPage = Loadable(lazy(() => import('./NewTaskPage')))
 export const TaskDetailPage = Loadable(lazy(() => import('./TaskDetail')))
 const TaskStatusPage = Loadable(lazy(() => import('./TaskStatusPage')))
 const TaskReportPage = Loadable(lazy(() => import('./TaskReports')))
+const OpenTasks = Loadable(lazy(() => import('./OpenTasks')))
 
 export const tasksRoutes = [
     {
@@ -24,6 +25,18 @@ export const tasksRoutes = [
                 module={ROLES.Tasks}
             >
                 <TasksPage />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'open',
+        element: (
+            <RoleBasedGuard
+                roles={[ADMIN_ROLE, MANAGER_ROLE, CASHIER_ROLE]}
+                hasContent
+                module={ROLES.Tasks}
+            >
+                <OpenTasks />
             </RoleBasedGuard>
         ),
     },

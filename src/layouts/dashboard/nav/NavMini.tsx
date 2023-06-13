@@ -33,9 +33,24 @@ export default function NavMini() {
                         return modules.includes(navItem?.path)
                     })
                     if (items.length > 0) {
+                        const iWChildren = items.map((iw: any) => {
+                            if (iw.children) {
+                                const children = iw.children
+                                    .filter((c: any) => {
+                                        return modules.includes(c?.path)
+                                    })
+                                    .filter((i: any) => i)
+                                return {
+                                    ...iw,
+                                    children,
+                                }
+                            }
+                            return iw
+                        })
+                        //  if (items)
                         return {
                             ...item,
-                            items,
+                            items: iWChildren,
                         }
                     }
                     return null

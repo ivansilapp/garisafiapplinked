@@ -63,6 +63,12 @@ function ReportsPage() {
 
                         <Button
                             component={Link}
+                            to={PATH_DASHBOARD.reports.tips}
+                        >
+                            Tips
+                        </Button>
+                        <Button
+                            component={Link}
                             to={PATH_DASHBOARD.reports.rewards}
                         >
                             Rewards
@@ -83,7 +89,7 @@ function ReportsPage() {
                             <Typography variant="h4" gutterBottom>
                                 {fCurrency(
                                     (revenue?.sales_revenue ?? 0) +
-                                        (revenue?.task_revenue ?? 0)
+                                    (revenue?.task_revenue ?? 0)
                                 )}
                             </Typography>
                         </CardContent>

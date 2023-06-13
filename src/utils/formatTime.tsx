@@ -9,7 +9,7 @@ export function fDate(date: any, newFormat: any) {
 }
 
 export function fDateTime(date: any, newFormat: any) {
-    const fm = newFormat || 'p - dd MMM'
+    const fm = newFormat ?? 'p - dd MMM'
 
     return date ? format(new Date(date), fm) : ''
 }
@@ -21,7 +21,7 @@ export function fTimestamp(date: any) {
 export function fToNow(date: any) {
     return date
         ? formatDistanceToNow(new Date(date), {
-              addSuffix: true,
-          })
+            addSuffix: true,
+        })
         : ''
 }

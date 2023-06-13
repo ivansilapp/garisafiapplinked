@@ -3,7 +3,7 @@ import { Box, Button, Container, Grid, Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useEffect, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { DatePicker } from '@mui/x-date-pickers'
 import { format } from 'date-fns'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
@@ -86,7 +86,7 @@ function TasksGeneralReport() {
                 fallback={<InternalError error="Error loading tasks" />}
             >
                 <CustomBreadcrumbs
-                    heading="Tasks"
+                    heading="Pages"
                     links={[
                         { name: 'Dashboard', href: PATH_DASHBOARD.root },
                         {
@@ -98,6 +98,19 @@ function TasksGeneralReport() {
                             href: PATH_DASHBOARD.tasks.root,
                         },
                     ]}
+                    action={
+                        <Box display="flex" gap={2}>
+                            <Button
+                                variant="outlined"
+                                color="info"
+                                component={Link}
+                                to={PATH_DASHBOARD.tasks.open}
+                                startIcon={<Iconify icon="eva:clock-outline" />}
+                            >
+                                Open tasks
+                            </Button>
+                        </Box>
+                    }
                 />
 
                 <Grid container>
@@ -136,7 +149,7 @@ function TasksGeneralReport() {
                         <TasksTable
                             data={tasks}
                             mutate={mutate}
-                            handleUpdate={() => {}}
+                            handleUpdate={() => { }}
                         />
                     </Grid>
                 </Grid>

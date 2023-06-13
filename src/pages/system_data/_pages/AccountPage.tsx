@@ -22,9 +22,15 @@ import AccountForm from '../_components/accounts/AccountForm'
 import AccountsTable from '../_components/accounts/AccountsTable'
 import VehicleForm from '../_components/vehicle/VehicleForm'
 import VehicleTable from '../_components/vehicle/VehicleTable'
+import { useAuthContext } from '../../../auth/useAuthContext'
+import { ADMIN_ROLE } from '../../../utils/roles'
 
 function AccountsPage() {
     const { themeStretch } = useSettingsContext()
+
+    const { user } = useAuthContext()
+
+    const isAdmin = user.role === ADMIN_ROLE
 
     const { accounts, mutate } = useAccountList()
     const { bodyTypes } = useBodyTypes()
@@ -116,11 +122,13 @@ function AccountsPage() {
                 }
             >
                 <Suspense fallback={<p> loading... </p>}>
-                    <AccountsTable
-                        mutate={mutate}
-                        handleUpdate={handleUpdate}
-                        data={accounts}
-                    />
+                    {isAdmin && (
+                        <AccountsTable
+                            mutate={mutate}
+                            handleUpdate={handleUpdate}
+                            data={accounts}
+                        />
+                    )}
 
                     <Dialog
                         fullWidth

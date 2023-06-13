@@ -35,15 +35,19 @@ import InfoTable from './_components/InfoTable'
 import useUnpaidTasks from '../../hooks/task/useUnpaidTasks'
 import TaskPaymentModal from './_components/TaskPaymentModal'
 import useAccountList from '../../hooks/account/useAccountList'
+import { useAuthContext } from '../../auth/useAuthContext'
 
 function Tasks() {
     const { themeStretch } = useSettingsContext()
     const { enqueueSnackbar } = useSnackbar()
+    const { accounts } = useAuthContext()
+    /* tasks data  */
     const { info, mutate } = useTaskAnalytics()
     const { clients } = useClientList()
     const { bodyTypes } = useBodyTypes()
-    const overdueData = useUnpaidTasks()
-    const { accounts } = useAccountList()
+    // const overdueData = useUnpaidTasks()
+    // const { accounts } = useAccountList()
+    /* end tasks data  */
 
     const [open, setOpen] = useState(false)
     const [activeVehilce, setActiveVehilce] = useState<any>(null)
@@ -159,7 +163,7 @@ function Tasks() {
                         accounts={accounts ?? []}
                         mutate={mutate}
                         info={info}
-                        overdue={overdueData?.tasks ?? []}
+                        overdue={info.overdue ?? []}
                     />
                 </Suspense>
 

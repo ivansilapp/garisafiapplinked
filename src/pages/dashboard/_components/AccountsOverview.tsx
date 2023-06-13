@@ -74,10 +74,12 @@ export default function AccountsOverview({
                                     height: 12,
                                     borderRadius: 0.5,
                                     bgcolor: 'info.main',
-                                    ...(progress.status === 'Cash' && {
+                                    ...(progress.status?.toLowerCase() ===
+                                        'cash' && {
                                         bgcolor: 'warning.main',
                                     }),
-                                    ...(progress.status === 'Mpesa' && {
+                                    ...(progress.status?.toLowerCase() ===
+                                        'mpesa' && {
                                         bgcolor: 'success.main',
                                     }),
                                 }}

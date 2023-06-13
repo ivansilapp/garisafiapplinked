@@ -13,22 +13,18 @@ import {
 } from '../../../components/table'
 import Scrollbar from '../../../components/scrollbar'
 import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
-import AttendantTableRow from './AttendantTableRow'
-import axios from '../../../utils/axios'
 import { useSnackbar } from '../../../components/snackbar'
+import OpenTasksTableRow from './OpenTasksTableRow'
 
 const TABLE_HEAD = [
-    { id: 'name', label: 'Full name', align: 'left' },
-    { id: 'phone', label: 'Phone', align: 'left' },
-    // { id: 'commission', label: 'Commission', align: 'left' },
-    // { id: 'tips', label: 'Tips', align: 'left' },
-    { id: 'status', label: 'Status', align: 'left' },
-    { id: 'update', label: 'Update', align: 'center' },
-    { id: 'delete', label: 'delete', align: 'right' },
-    { id: '' },
+    { id: 'created_at', label: 'Created at', align: 'left' },
+    { id: 'attendant', label: 'Attendant', align: 'left' },
+    { id: 'task', label: 'Tasks', align: 'left' },
+    { id: 'close', label: 'close', align: 'left' },
 ]
 
-function AttendantsTable({ data, handleUpdate, mutate }: any) {
+function OpenTasksTable({ data }: any) {
+    // console.log(data)
     const {
         dense,
         page,
@@ -38,21 +34,17 @@ function AttendantsTable({ data, handleUpdate, mutate }: any) {
         setPage,
         //
         selected,
-        setSelected,
-        onSelectRow,
         onSelectAllRows,
         onSort,
         onChangeDense,
         onChangePage,
         onChangeRowsPerPage,
-    } = useTable({ defaultOrderBy: 'name', defaultOrder: 'asc' })
+    } = useTable({})
 
     const { enqueueSnackbar } = useSnackbar()
     const [deleteLoader, setDeleteLoader] = useState(false)
 
     const [tableData, setTableData] = useState(data ?? [])
-
-    const [openConfirm, setOpenConfirm] = useState(false)
 
     const [filterName, setFilterName] = useState('')
 
@@ -88,19 +80,6 @@ function AttendantsTable({ data, handleUpdate, mutate }: any) {
         (!dataFiltered.length && !!filterRole) ||
         (!dataFiltered.length && !!filterStatus)
 
-    const handleOpenConfirm = () => {
-        setOpenConfirm(true)
-    }
-
-    const handleCloseConfirm = () => {
-        setOpenConfirm(false)
-    }
-
-    const handleFilterStatus = (event: any, newValue: any) => {
-        setPage(0)
-        setFilterStatus(newValue)
-    }
-
     const handleFilterName = (event: any) => {
         setPage(0)
         setFilterName(event.target.value)
@@ -112,41 +91,14 @@ function AttendantsTable({ data, handleUpdate, mutate }: any) {
         setFilterStatus('all')
     }
 
-    const handleDeleteRow = async (id: any) => {
-        try {
-            setDeleteLoader(true)
-            const url = `/attendant/${id}`
-            const response = await axios.delete(url)
-            if (!response.data) {
-                throw new Error('Error deleting attendant')
-            }
-            const deleteRow = tableData.filter((row: any) => row.id !== id)
-            mutate()
-            setSelected([])
-            setTableData(deleteRow)
-
-            if (page > 0) {
-                if (dataInPage.length < 2) {
-                    setPage(page - 1)
-                }
-            }
-            enqueueSnackbar('Attendant deleted', { variant: 'success' })
-        } catch (err: any) {
-            // console.log(err)
-            enqueueSnackbar(err.message, { variant: 'error' })
-        } finally {
-            setDeleteLoader(false)
-        }
-    }
-
     return (
         <Card>
-            <GeneralTableToolbar
+            {/* <GeneralTableToolbar
                 isFiltered={isFiltered}
                 filterName={filterName}
                 onFilterName={handleFilterName}
                 onResetFilter={handleResetFilter}
-            />
+            /> */}
 
             <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
                 <Scrollbar>
@@ -176,17 +128,7 @@ function AttendantsTable({ data, handleUpdate, mutate }: any) {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row: any) => (
-                                    <AttendantTableRow
-                                        key={row.id}
-                                        row={row}
-                                        selected={selected.includes(row.id)}
-                                        onSelectRow={() => onSelectRow(row.id)}
-                                        onDeleteRow={() =>
-                                            handleDeleteRow(row.id)
-                                        }
-                                        deleteLoader={deleteLoader}
-                                        onEditRow={() => handleUpdate(row)}
-                                    />
+                                    <OpenTasksTableRow key={row.id} row={row} />
                                 ))}
 
                             <TableEmptyRows
@@ -240,16 +182,10 @@ function applyFilter({
 
     if (filterName) {
         inputData = inputData.filter(
-            (attendant: any) =>
-                attendant?.name
-                    ?.toLowerCase()
-                    ?.indexOf(filterName.toLowerCase()) !== -1 ||
-                attendant?.phone
-                    ?.toLowerCase()
-                    ?.indexOf(filterName.toLowerCase()) !== -1 ||
-                attendant?.status
-                    ?.toLowerCase()
-                    ?.indexOf(filterName.toLowerCase()) !== -1
+            (user: any) =>
+                user.vehicleType
+                    .toLowerCase()
+                    .indexOf(filterName.toLowerCase()) !== -1
         )
     }
 
@@ -266,4 +202,4 @@ function applyFilter({
     return inputData
 }
 
-export default AttendantsTable
+export default OpenTasksTable

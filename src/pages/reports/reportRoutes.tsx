@@ -10,6 +10,8 @@ const ServiceReport = Loadable(lazy(() => import('./ServiceReport')))
 const AttendantsReport = Loadable(lazy(() => import('./AttendantsReport')))
 const VehicleTypeReport = Loadable(lazy(() => import('./VehicleTypeReport')))
 
+const TipsReportPage = Loadable(lazy(() => import('./TipsReport')))
+
 const UngroupedSalesReport = Loadable(lazy(() => import('./UngroupedSales')))
 
 // tasks
@@ -171,6 +173,18 @@ export const reportsRoutes = [
                 hasContent
             >
                 <RewardReport />
+            </RoleBasedGuard>
+        ),
+    },
+    {
+        path: 'reports/tips',
+        element: (
+            <RoleBasedGuard
+                module={ROLES.Reports}
+                roles={[ADMIN_ROLE]}
+                hasContent
+            >
+                <TipsReportPage />
             </RoleBasedGuard>
         ),
     },

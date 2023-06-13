@@ -48,7 +48,7 @@ export default function TaskByCarType({
 
     const chartSeries = series.map((i: any) => i.value)
 
-    const total = series.reduce((acc: any, i: any) => acc + i.value, 0)
+    const total = series.reduce((acc: number, i: any) => acc + i.value, 0)
 
     const chartOptions = useChart({
         chart: {

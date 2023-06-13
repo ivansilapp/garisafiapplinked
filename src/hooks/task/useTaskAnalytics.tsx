@@ -11,6 +11,7 @@ export default function useTaskAnalytics() {
         ongoing: [],
         cancelled: [],
         pending: [],
+        overdue: [],
     }
 
     if (data) {
@@ -19,6 +20,7 @@ export default function useTaskAnalytics() {
         info.ongoing = data.ongoing
         info.cancelled = data.cancelled
         info.pending = data.pending
+        info.overdue = data.overdue
     }
 
     return {
