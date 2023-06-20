@@ -26,6 +26,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths'
 import { fDateTime } from '../../../utils/formatTime'
 import { fCurrency } from '../../../utils/formatNumber'
 import { removeSpecialCharacters } from '../../../components/animate'
+import { apiUrl } from '../../../config-global'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
@@ -40,6 +41,8 @@ export default function TaskTableRow({
     deleteLoader,
     handleInitComplete,
     handleInitPayment,
+    handleRedeem,
+    redeemLoader,
 }: any) {
     const {
         id,
@@ -102,6 +105,8 @@ export default function TaskTableRow({
         }, 0) ?? 0
 
     // console.log({ status, fullyPaid })
+
+    // console.log(vehicle.points)
 
     return (
         <>
@@ -190,7 +195,7 @@ export default function TaskTableRow({
 
                 <TableCell align="right">
                     {status === 'ongoing' ||
-                    (status === 'complete' && !fullyPaid) ? (
+                        (status === 'complete' && !fullyPaid) ? (
                         taskStatus === 'ongoing' ? (
                             <Button
                                 onClick={() => handleInitComplete(row)}
@@ -202,17 +207,36 @@ export default function TaskTableRow({
                                 Complete
                             </Button>
                         ) : (
-                            <Typography variant="subtitle2" noWrap>
-                                <Button
-                                    onClick={() => handleInitPayment(row)}
-                                    variant="contained"
-                                    color="info"
-                                    size="small"
-                                    disabled={fullyPaid}
-                                >
-                                    Add payment
-                                </Button>
-                            </Typography>
+                            <span>
+                                {vehicle?.points?.points === 9 ? (
+                                    <Typography variant="subtitle2" noWrap>
+                                        <LoadingButton
+                                            onClick={() => handleRedeem(row)}
+                                            variant="contained"
+                                            color="success"
+                                            size="small"
+                                            loading={redeemLoader}
+                                            disabled={fullyPaid}
+                                        >
+                                            Redeem
+                                        </LoadingButton>
+                                    </Typography>
+                                ) : (
+                                    <Typography variant="subtitle2" noWrap>
+                                        <Button
+                                            onClick={() =>
+                                                handleInitPayment(row)
+                                            }
+                                            variant="contained"
+                                            color="info"
+                                            size="small"
+                                            disabled={fullyPaid}
+                                        >
+                                            Add payment
+                                        </Button>
+                                    </Typography>
+                                )}
+                            </span>
                         )
                     ) : (
                         <Button
@@ -265,6 +289,22 @@ export default function TaskTableRow({
                     </LoadingButton>
                 }
             />
+            {/* <ConfirmDialog
+                open={redeemConfirm}
+                onClose={setRedeemConfirm}
+                title="Redeem"
+                content="Are you sure want to delete?"
+                action={
+                    <LoadingButton
+                        variant="contained"
+                        color="info"
+                        onClick={onDeleteRow}
+                        loading={deleteLoader}
+                    >
+                        Delete
+                    </LoadingButton>
+                }
+            /> */}
         </>
     )
 }

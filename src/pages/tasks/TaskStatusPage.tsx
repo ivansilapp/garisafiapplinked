@@ -3,7 +3,8 @@ import { Box, Button, Container, Grid } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useEffect } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
+import { format } from 'date-fns'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
 import Iconify from '../../components/iconify'
 import { useSettingsContext } from '../../components/settings'
@@ -15,9 +16,19 @@ import TasksTable from './_components/TasksTable'
 function TaskByStatusPage() {
     const { themeStretch } = useSettingsContext()
 
+    const [searchParams] = useSearchParams()
+    const initialStartDate = searchParams.get('startDate')
+
+    const dateQueryStr = `${format(
+        initialStartDate ? new Date(initialStartDate) : new Date(),
+        'yyyy-MM-dd'
+    )}`
+
     const { status } = useParams()
     const q = status ?? 'all'
-    const { tasks, mutate } = useTaskByStatus({ query: `status=${q}` })
+    const { tasks, mutate } = useTaskByStatus({
+        query: `status=${q}&startDate=${dateQueryStr}`,
+    })
 
     useEffect(() => {
         fetchTasks()
@@ -28,6 +39,7 @@ function TaskByStatusPage() {
     }
 
     // console.log(tasks, status, 'tasks')
+    console.log('tasks status', dateQueryStr)
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -54,7 +66,7 @@ function TaskByStatusPage() {
                         <TasksTable
                             data={tasks}
                             mutate={mutate}
-                            handleUpdate={() => {}}
+                            handleUpdate={() => ''}
                         />
                     </Grid>
                 </Grid>

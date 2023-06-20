@@ -78,7 +78,7 @@ export default function GroupedCommissionTableRow({ row }: any) {
                     </Button>
                 </Typography>
             </TableCell>
-            <TableCell>{fDateTime(date, 'dd/MM/yyyy')}</TableCell>
+            {/* <TableCell>{fDateTime(date, 'dd/MM/yyyy')}</TableCell> */}
 
             <TableCell align="left">{fCurrency(total_amount)}</TableCell>
 

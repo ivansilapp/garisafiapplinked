@@ -46,7 +46,7 @@ function Tasks() {
     const { clients } = useClientList()
     const { bodyTypes } = useBodyTypes()
     // const overdueData = useUnpaidTasks()
-    // const { accounts } = useAccountList()
+    const accountsData = useAccountList()
     /* end tasks data  */
 
     const [open, setOpen] = useState(false)
@@ -160,7 +160,7 @@ function Tasks() {
 
                 <Suspense fallback={<p>Loading...</p>}>
                     <InfoTable
-                        accounts={accounts ?? []}
+                        accounts={accounts ?? accountsData.accounts}
                         mutate={mutate}
                         info={info}
                         overdue={info.overdue ?? []}

@@ -12,13 +12,13 @@ import {
     TablePaginationCustom,
 } from '../../../components/table'
 import Scrollbar from '../../../components/scrollbar'
-import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
+// import GeneralTableToolbar from '../../../components/shared/GeneralTableToolbar'
 import CommissionsGroupedTableRow from './CommissionsGroupedTableRow'
 import { useSnackbar } from '../../../components/snackbar'
 
 const TABLE_HEAD = [
     { id: 'attendantName', label: 'Attendant', align: 'left' },
-    { id: 'date', label: 'Date', align: 'left' },
+    // { id: 'date', label: 'Date', align: 'left' },
     { id: 'total_amount', label: 'Total amount', align: 'left' },
     { id: 'amount_paid', label: 'Paid amount', align: 'left' },
     { id: 'amount_not_paid', label: 'Balance', align: 'left' },
@@ -140,9 +140,9 @@ function GroupedCommissionTable({ data }: any) {
                                         row={row}
                                         selected={selected.includes(row.id)}
                                         onSelectRow={() => onSelectRow(row.id)}
-                                        onDeleteRow={() => {}}
+                                        onDeleteRow={() => null}
                                         deleteLoader={deleteLoader}
-                                        onEditRow={() => {}}
+                                        onEditRow={() => null}
                                     />
                                 ))}
 

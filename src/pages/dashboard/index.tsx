@@ -163,7 +163,7 @@ function Dashboard() {
             new Date(b?.created_at)
         )
     }
-    const todaysTasks = tasks ? tasks.sort(dateSort)[tasks.length - 1] : null
+    // const todaysTasks = tasks ? tasks.sort(dateSort)[tasks.length - 1] : null
     // console.log(todaysTasks, 'todaysTasks', tasks)
     const accountsTotal =
         payments?.reduce((acc: any, account: any) => acc + account.amount, 0) ??
@@ -200,6 +200,10 @@ function Dashboard() {
     }
 
     // console.log(tasks, 'tasks')
+    const dateQueryStr = `startDate=${format(
+        filterStartDate ?? new Date(),
+        'yyyy-MM-dd'
+    )}`
 
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
@@ -266,13 +270,13 @@ function Dashboard() {
                                             percent: computePercent(
                                                 complete.length ?? 0
                                             ),
-                                            url: 'complete',
+                                            url: `complete?${dateQueryStr}`,
                                         },
                                         {
                                             label: 'Cancelled tasks',
                                             percent: computePercent(cancelled),
                                             total: cancelled,
-                                            url: 'cancelled',
+                                            url: `cancelled?${dateQueryStr}`,
                                         },
                                     ],
                                 }}
@@ -286,10 +290,7 @@ function Dashboard() {
                                     percent={2.6}
                                     currency
                                     total={todayTasks?.cost ?? 0}
-                                    url={`/reports/services?startDate=${format(
-                                        filterStartDate ?? new Date(),
-                                        'yyyy-MM-dd'
-                                    )}`}
+                                    url={`${PATH_DASHBOARD.reports.services}?${dateQueryStr}`}
                                     items={{
                                         title: 'Number of tasks',
                                         value: todayTasks?.total ?? 0,
@@ -308,10 +309,7 @@ function Dashboard() {
                             <Grid xs={12} md={4} item>
                                 <ValueGraphWidget
                                     title="Product sales"
-                                    url={`/reports/sales?startDate=${format(
-                                        filterStartDate ?? new Date(),
-                                        'yyyy-MM-dd'
-                                    )}`}
+                                    url={`${PATH_DASHBOARD.reports.sales}?${dateQueryStr}`}
                                     currency
                                     percent={2.6}
                                     total={sales?.cost ?? 0}
@@ -333,10 +331,7 @@ function Dashboard() {
                             <Grid xs={12} md={4} item>
                                 <ValueGraphWidget
                                     title="Commissions payable"
-                                    url={`/commissions?startDate=${format(
-                                        filterStartDate ?? new Date(),
-                                        'yyyy-MM-dd'
-                                    )}`}
+                                    url={`${PATH_DASHBOARD.commissions.root}?${dateQueryStr}`}
                                     currency
                                     percent={2.6}
                                     total={expenses.expense_total ?? 0}
@@ -367,7 +362,7 @@ function Dashboard() {
                         <Grid item xs={12} md={4}>
                             <ValueGraphWidget
                                 title="Free washes"
-                                url="/reports/pigeonholes"
+                                url={`${PATH_DASHBOARD.reports.rewards}?${dateQueryStr}`}
                                 currency
                                 percent={2.6}
                                 total={

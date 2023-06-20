@@ -22,6 +22,8 @@ import { useSnackbar } from '../../../components/snackbar'
 import ConfirmDialog from '../../../components/confirm-dialog'
 import TaskPaymentModal from './TaskPaymentModal'
 import { apiUrl } from '../../../config-global'
+import { AuthContext } from '../../../auth/JwtContext'
+import { useAuthContext } from '../../../auth/useAuthContext'
 
 const TABLE_HEAD = [
     { id: 'CreatedAt', label: 'Created at', align: 'left' },
@@ -66,7 +68,13 @@ function TasksTable({
 
     const [tableData, setTableData] = useState(data ?? [])
 
-    const [openConfirm, setOpenConfirm] = useState(false)
+    const userCtx: any = useAuthContext()
+
+    const AC = accounts && accounts?.length ? accounts : userCtx?.accounts ?? []
+
+    // console.log(accounts, AC, 'task table')
+
+    // const [openConfirm, setOpenConfirm] = useState(false)
 
     const [filterName, setFilterName] = useState('')
 
@@ -76,6 +84,7 @@ function TasksTable({
 
     const [filterStatus, setFilterStatus] = useState('all')
     const [paymentModal, setPaymentModal] = useState(false)
+    const [redeemLoader, setRedeemLoader] = useState(false)
 
     useEffect(() => {
         setTableData(data)
@@ -186,6 +195,47 @@ function TasksTable({
         }
     }
 
+    const handleRedeem = async (item: any) => {
+        try {
+            if (!item) {
+                throw new Error('Invalid item selected')
+            }
+            const { id } = item
+
+            if (!id) {
+                throw new Error('Invalid item selected')
+            }
+            setCompleteLoader(true)
+            const response = await axios.put(`/task/${id}`, {
+                status: 'complete',
+            })
+
+            setRedeemLoader(true)
+            const url = `${apiUrl}/payment/redeem`
+
+            const payload = {
+                taskId: id,
+            }
+
+            const reponse = await axios.put(url, payload)
+
+            if (reponse.status === 200) {
+                mutate()
+                enqueueSnackbar('Task redeemed successfully', {
+                    variant: 'success',
+                })
+            } else {
+                // const { data } = reponse
+                throw new Error(response?.data.error ?? 'Error redeeming task')
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error redeeming task'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setRedeemLoader(false)
+        }
+    }
+
     const handleInitComplete = (item: any) => {
         setActiveItem(item)
         setCompleteModal(true)
@@ -277,7 +327,9 @@ function TasksTable({
                                         onEditRow={() => handleUpdate(row)}
                                         handleInitComplete={handleInitComplete}
                                         handleInitPayment={handleInitPayment}
-                                        accounts={accounts}
+                                        accounts={AC}
+                                        handleRedeem={handleRedeem}
+                                        redeemLoader={redeemLoader}
                                     />
                                 ))}
 
@@ -300,7 +352,7 @@ function TasksTable({
                 paymentModal={paymentModal}
                 setPaymentModal={setPaymentModal}
                 handleAddPayment={handleSubmitPayment}
-                accounts={accounts ?? []}
+                accounts={AC ?? []}
             />
 
             <TablePaginationCustom

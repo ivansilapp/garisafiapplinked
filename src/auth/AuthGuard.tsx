@@ -31,6 +31,7 @@ export default function AAuthGuard({ children }: any) {
     if (!isInitialized) {
         return <LoadingScreen />
     }
+
     const token = isLocalStorageAvailable
         ? localStorage.getItem('accessToken')
         : null
