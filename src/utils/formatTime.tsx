@@ -8,6 +8,12 @@ export function fDate(date: any, newFormat: any) {
     return date ? format(new Date(date), fm) : ''
 }
 
+export function fDateShort(date: any, newFormat: any) {
+    const fm = newFormat || 'dd MMM'
+
+    return date ? format(new Date(date), fm) : ''
+}
+
 export function fDateTime(date: any, newFormat: any) {
     const fm = newFormat ?? 'p - dd MMM'
 

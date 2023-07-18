@@ -60,7 +60,9 @@ export default function GroupedCommissionTableRow({ row }: any) {
     const theme = useTheme()
 
     if (query === '') {
-        query = `startDate=${format(new Date(date), 'yyyy-MM-dd')}`
+        const today = Date.now()
+        query = `startDate=${format(today, 'yyyy-MM-dd')}`
+        console.log('configuring query', today)
     }
 
     return (

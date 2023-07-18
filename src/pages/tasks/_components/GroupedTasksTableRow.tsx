@@ -23,7 +23,7 @@ import Iconify from '../../../components/iconify'
 import MenuPopover from '../../../components/menu-popover'
 import ConfirmDialog from '../../../components/confirm-dialog'
 import { PATH_DASHBOARD } from '../../../routes/paths'
-import { fDateTime } from '../../../utils/formatTime'
+import { fDate, fDateTime } from '../../../utils/formatTime'
 import { fCurrency, fNumber } from '../../../utils/formatNumber'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
@@ -43,7 +43,7 @@ export default function GroupedTaskTableRow({ row }: any) {
 
     return (
         <TableRow hover>
-            <TableCell>{fDateTime(created_at, null)}</TableCell>
+            <TableCell>{fDate(created_at, null)}</TableCell>
 
             <TableCell align="left">{fCurrency(cost)}</TableCell>
 

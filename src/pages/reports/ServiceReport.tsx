@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 // import RevenueChart from './_components/RevenueChart'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { DatePicker } from '@mui/x-date-pickers'
 import { useSettingsContext } from '../../components/settings'
@@ -23,6 +23,9 @@ import axios from '../../utils/axios'
 import { apiUrl } from '../../config-global'
 import GroupedTasksTable from '../tasks/_components/GroupedTasksTable'
 import useServiceReport from '../../hooks/service/useServicesReport'
+import AnnualChart from './_components/AnnualChart'
+import { fDateShort } from '../../utils/formatTime'
+import AnalyticsChart from './_components/AnalyticsChart'
 
 const INPUT_WIDTH = 160
 
@@ -55,44 +58,6 @@ function ServicesReport() {
     )
 
     const { enqueueSnackbar } = useSnackbar()
-
-    const servicesTotal = services?.reduce((acc: number, curr: any) => {
-        return acc + curr.cost
-    }, 0)
-
-    const handleFetch = async () => {
-        try {
-            const startDate = filterStartDate
-                ? format(filterStartDate, 'yyyy-MM-dd')
-                : null
-            const endDate = filterEndDate
-                ? format(filterEndDate, 'yyyy-MM-dd')
-                : null
-
-            let queryObj = {}
-            if (startDate) {
-                queryObj = { ...queryObj, startDate }
-            }
-            if (endDate) {
-                queryObj = { ...queryObj, endDate }
-            }
-            setLoading(true)
-            const q = new URLSearchParams(queryObj).toString()
-            const url = `${apiUrl}/report/date-grouped-tasks?${q}`
-
-            const response = await axios.get(url)
-
-            if (response.status === 200) {
-                const { data } = response
-                //  setServices(data.services ? data.services : [])
-            }
-        } catch (err: any) {
-            const msg = err.error || err.message || 'error loading reports data'
-            enqueueSnackbar(msg, { variant: 'error' })
-        } finally {
-            setLoading(false)
-        }
-    }
 
     const onFilterStartDate = (newValue: any) => {
         setFilterStartDate(newValue)
@@ -129,6 +94,20 @@ function ServicesReport() {
         }
     }
 
+    const chartData = useMemo(() => {
+        // console.log('services', services)
+        return services.reduce(
+            (acc: any, cur: any) => {
+                return {
+                    days: [...acc.days, fDateShort(cur?.created_at, null)],
+                    cars: [...acc.cars, cur.total],
+                    revenue: [...acc.revenue, cur.cost],
+                }
+            },
+            { days: [], cars: [], revenue: [] }
+        )
+    }, [services])
+
     return (
         <Container maxWidth={themeStretch ? false : 'xl'}>
             <CustomBreadcrumbs
@@ -153,7 +132,7 @@ function ServicesReport() {
                         zIndex: (theme) => theme.zIndex.drawer + 1,
                     }}
                     open={loading}
-                    onClick={() => { }}
+                    onClick={() => ''}
                 >
                     <CircularProgress color="inherit" />
                 </Backdrop>
@@ -193,6 +172,91 @@ function ServicesReport() {
                 <Grid item xs={12}>
                     <GroupedTasksTable data={services ?? []} />
                 </Grid>
+
+                <Grid item xs={12} mt={6}>
+                    <AnnualChart
+                        title="Revenue"
+                        subheader="Revenue per day"
+                        chart={{
+                            categories: chartData?.days?.reverse() ?? [],
+                            series: [
+                                {
+                                    type: 'Year',
+                                    data: [
+                                        // {
+                                        //     name: 'Revenue',
+                                        //     data: chartData?.revenue ?? [],
+                                        // },
+                                        {
+                                            name: 'Vehicles',
+                                            data: chartData?.revenue ?? [],
+                                        },
+                                    ],
+                                },
+                            ],
+                        }}
+                    />
+                </Grid>
+                <Grid item xs={12} mt={6}>
+                    <AnalyticsChart
+                        title="Vehicles washes"
+                        subheader="No. of cars washed per day"
+                        chart={{
+                            labels:
+                                [
+                                    ...(chartData?.days.reverse() ?? []),
+                                    fDateShort(new Date(), null),
+                                ] ?? [],
+                            series: [
+                                {
+                                    name: 'Vehicles',
+                                    type: 'area',
+                                    fill: 'gradient',
+                                    data: chartData.cars ?? [],
+                                },
+                            ],
+                        }}
+                    />
+                </Grid>
+                {/* <Grid item xs={12} mt={6}>
+                    <AnalyticsChart
+                        title="Revenue"
+                        subheader="Revenue per day"
+                        chart={{
+                            labels: chartData.days ?? [],
+                            series: [
+                                {
+                                    name: 'Revenue',
+                                    type: 'column',
+                                    fill: 'solid',
+                                    data: chartData.revenue ?? [],
+                                },
+                            ],
+                        }}
+                    />
+                </Grid>
+                <Grid item xs={12} mt={6}>
+                    <AnnualChart
+                        title="Revenue"
+                        subheader="Revenue per day"
+                        chart={{
+                            categories: chartData?.days ?? [],
+                            series: [
+                                {
+                                    type: 'Year',
+                                    data: [
+                                        {
+                                            name: 'Revenue',
+                                            data: chartData?.revenue ?? [],
+                                            type: 'line',
+                                            fill: 'solid',
+                                        },
+                                    ],
+                                },
+                            ],
+                        }}
+                    />
+                </Grid> */}
             </Grid>
         </Container>
     )

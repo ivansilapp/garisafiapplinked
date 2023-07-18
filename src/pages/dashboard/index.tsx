@@ -201,7 +201,7 @@ function Dashboard() {
 
     // console.log(tasks, 'tasks')
     const dateQueryStr = `startDate=${format(
-        filterStartDate ?? new Date(),
+        filterStartDate ?? Date.now(),
         'yyyy-MM-dd'
     )}`
 
