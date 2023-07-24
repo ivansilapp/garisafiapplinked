@@ -30,7 +30,7 @@ import {
 // import DeleteIcon from '@mui/icons-material/Delete'
 
 import { useTheme } from '@mui/material/styles'
-import { Fragment, Suspense, useEffect, useState } from 'react'
+import { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import ConfirmDialog from '../../components/confirm-dialog'
@@ -91,7 +91,7 @@ function TaskDetail() {
     const [product, setProduct] = useState<any>(null)
     const [quantity, setQuantity] = useState<any>(1)
     const [account, setAccount] = useState<any>('')
-    const [amount, setAmount] = useState<any>('')
+    // const [amount, setAmount] = useState<any>('')
     const [reference, setReference] = useState<any>('')
     const [activeIds, setActiveIds] = useState<any>([])
     const [activeSevice, setActiveService] = useState<any>('')
@@ -118,6 +118,22 @@ function TaskDetail() {
     const { accounts } = useAccountList()
     const { services } = useServiceList()
     const { prices } = usePrices()
+
+    const taskTotals: number = useMemo(() => {
+        if (!task) return 0
+        const totalPaid = task?.payments?.reduce(
+            (acc: any, payment: any) =>
+                payment?.type === 'task_cancellation'
+                    ? acc
+                    : acc + payment.amount,
+            0
+        )
+        const salesCost = task?.sales[0] ? task.sales[0].amount : 0
+        const due = salesCost + (task?.cost ?? 0) - totalPaid
+        return due
+    }, [task])
+
+    const [amount, setAmount] = useState<any>(taskTotals)
 
     const handleReassign = async () => {
         try {
@@ -629,7 +645,7 @@ function TaskDetail() {
                         <Stack alignItems="flex-end " sx={{ mt: 3 }}>
                             <Box display="flex" columnGap={2} rowGap={2}>
                                 {task.status === 'complete' ||
-                                task.status === taskStatus.ongoing ? (
+                                    task.status === taskStatus.ongoing ? (
                                     <LoadingButton
                                         loading={closingLoader}
                                         onClick={closeTask}
@@ -687,7 +703,7 @@ function TaskDetail() {
                                 </Button>
                                 {task.status === 'complete' ? (
                                     task?.vehicle?.points?.points === 9 &&
-                                    !task.isRedeemed ? (
+                                        !task.isRedeemed ? (
                                         <LoadingButton
                                             loading={redeemLoader}
                                             color="info"
@@ -806,7 +822,7 @@ function TaskDetail() {
                                                             <b> Total: </b>
                                                             {fCurrency(
                                                                 serviceCost +
-                                                                    salesCost
+                                                                salesCost
                                                             )}
                                                         </Typography>
                                                     </Box>
@@ -903,7 +919,7 @@ function TaskDetail() {
                                                     variant="outlined"
                                                     disabled={
                                                         task.status ===
-                                                            'cancelled' ||
+                                                        'cancelled' ||
                                                         task.fullyPaid
                                                     }
                                                 >
@@ -920,7 +936,7 @@ function TaskDetail() {
                                                             <IconButton
                                                                 disabled={
                                                                     task.status ===
-                                                                        'cancelled' ||
+                                                                    'cancelled' ||
                                                                     task.fullyPaid
                                                                 }
                                                                 color="warning"
@@ -974,7 +990,7 @@ function TaskDetail() {
                                                     variant="outlined"
                                                     disabled={
                                                         task.status ===
-                                                            'cancelled' ||
+                                                        'cancelled' ||
                                                         task.fullyPaid
                                                     }
                                                 >
@@ -994,7 +1010,7 @@ function TaskDetail() {
                                                                 <IconButton
                                                                     disabled={
                                                                         task.status ===
-                                                                            'cancelled' ||
+                                                                        'cancelled' ||
                                                                         task.fullyPaid
                                                                     }
                                                                     edge="end"
@@ -1062,7 +1078,7 @@ function TaskDetail() {
                                                                     <IconButton
                                                                         disabled={
                                                                             task.status ===
-                                                                                'cancelled' ||
+                                                                            'cancelled' ||
                                                                             task.fullyPaid
                                                                         }
                                                                         edge="end"
@@ -1089,11 +1105,10 @@ function TaskDetail() {
                                                                             ?.product
                                                                             ?.name
                                                                     }
-                                                                    secondary={`Quantity: ${
-                                                                        item.quantity
-                                                                    } @ ${fCurrency(
-                                                                        item.price
-                                                                    )}`}
+                                                                    secondary={`Quantity: ${item.quantity
+                                                                        } @ ${fCurrency(
+                                                                            item.price
+                                                                        )}`}
                                                                 />
                                                             </ListItem>
                                                         )
@@ -1242,7 +1257,7 @@ function TaskDetail() {
                         open={paymentModal}
                         onClose={() => {
                             setPaymentModal(false)
-                            setAmount('')
+                            setAmount(taskTotals ?? '')
                         }}
                     >
                         <DialogTitle>Add payment</DialogTitle>
@@ -1308,7 +1323,7 @@ function TaskDetail() {
                                             variant="contained"
                                             onClick={() => {
                                                 setReference('')
-                                                setAmount('')
+                                                setAmount(taskTotals ?? '')
                                                 setAccount('')
                                                 setPaymentModal(false)
                                             }}
