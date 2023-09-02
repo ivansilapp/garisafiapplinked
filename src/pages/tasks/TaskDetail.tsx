@@ -119,6 +119,12 @@ function TaskDetail() {
     const { services } = useServiceList()
     const { prices } = usePrices()
 
+    const activeClient = useMemo(() => {
+        const cl = clients.find((c: any) => c.id === task?.vehicle?.clientId)
+        // console.log(cl, 'is the client', clients.length)
+        return cl
+    }, [task, clients])
+
     const taskTotals: number = useMemo(() => {
         if (!task) return 0
         const totalPaid = task?.payments?.reduce(
@@ -603,6 +609,39 @@ function TaskDetail() {
         }
     }
 
+    // console.log('task', task)
+    const payViaMpesa = async () => {
+        try {
+            setRedeemLoader(true)
+            const url = `${apiUrl}/mpesa-pay`
+
+            const payload = {
+                taskId: task.id,
+                amount,
+                phone_number: activeClient?.phone,
+            }
+
+            console.log('payload', payload, activeClient)
+
+            const reponse = await axios.post(url, payload)
+
+            if (reponse.status === 200) {
+                mutate()
+                enqueueSnackbar('Task redeemed successfully', {
+                    variant: 'success',
+                })
+            } else {
+                const { data } = reponse
+                throw new Error(data.error ?? 'Error redeeming task')
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error redeeming task'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setRedeemLoader(false)
+        }
+    }
+
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
             <CustomBreadcrumbs
@@ -714,18 +753,23 @@ function TaskDetail() {
                                             Redeem points
                                         </LoadingButton>
                                     ) : (
-                                        <Button
-                                            color="info"
-                                            variant="contained"
-                                            disabled={task.fullyPaid}
-                                            onClick={() =>
-                                                setPaymentModal(true)
-                                            }
-                                        >
-                                            {task.fullyPaid
-                                                ? 'Fully Paid'
-                                                : 'Add Payment'}
-                                        </Button>
+                                        <>
+                                            <Button
+                                                color="info"
+                                                variant="contained"
+                                                disabled={task.fullyPaid}
+                                                onClick={() =>
+                                                    setPaymentModal(true)
+                                                }
+                                            >
+                                                {task.fullyPaid
+                                                    ? 'Fully Paid'
+                                                    : 'Add Payment '}
+                                            </Button>
+                                            <Button onClick={payViaMpesa}>
+                                                Pay via mpesa
+                                            </Button>
+                                        </>
                                     )
                                 ) : null}
                             </Box>
