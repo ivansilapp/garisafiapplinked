@@ -2,7 +2,7 @@
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
     Box,
     Button,
@@ -10,9 +10,12 @@ import {
     Autocomplete,
     Chip,
     TextField,
+    Checkbox,
+    FormControlLabel,
 } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
 import FormProvider, {
+    RHFCheckbox,
     RHFSelect,
     RHFSwitch,
     RHFTextField,
@@ -33,12 +36,16 @@ function VehicleForm({
     const { enqueueSnackbar } = useSnackbar()
     const { user }: any = useAuthContext()
 
+    const [newClient, setNewClient] = useState(false)
+
     const NewVehicleSchema = Yup.object().shape({
         registration: Yup.string().required('Vehicle registration required'),
         clientId: Yup.string(),
         bodyId: Yup.string().required('Body type required'),
         model: Yup.string(),
         points: Yup.number().required('Reward points required'),
+        clientName: Yup.string(),
+        clientPhone: Yup.string(),
     })
 
     const defaultValues = useMemo(
@@ -48,6 +55,8 @@ function VehicleForm({
             bodyId: vehicle?.bodyId || '',
             model: vehicle?.model || '',
             points: vehicle?.points?.points || 0,
+            clientName: vehicle?.clientName || '',
+            clientPhone: vehicle?.clientPhone || '',
         }),
         [vehicle]
     )
@@ -65,7 +74,7 @@ function VehicleForm({
         formState: { isSubmitting },
     } = methods
 
-    console.log(user)
+    // console.log(user)
 
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -104,15 +113,48 @@ function VehicleForm({
                     label="Reward points"
                 />
 
-                <RHFSelect native name="clientId" label="Client">
-                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                    <option value="" defaultValue="" />
-                    {clients.map((client: any) => (
-                        <option key={client.id} value={client.id}>
-                            {client.name}
-                        </option>
-                    ))}
-                </RHFSelect>
+                <div>
+                    <FormControlLabel
+                        label="New client"
+                        control={
+                            <Checkbox
+                                onChange={(e: any) => {
+                                    setNewClient(e.target.checked)
+                                    console.log(e.target.checked)
+                                }}
+                                name="isAvailable"
+                                value={newClient}
+                            />
+                        }
+                    />
+                </div>
+                {newClient ? (
+                    <>
+                        <RHFTextField
+                            type="text"
+                            autoComplete="off"
+                            name="clientName"
+                            label="Client name"
+                        />
+
+                        <RHFTextField
+                            type="text"
+                            autoComplete="off"
+                            name="clientPhone"
+                            label="Client phone"
+                        />
+                    </>
+                ) : (
+                    <RHFSelect native name="clientId" label="Select client">
+                        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                        <option value="" defaultValue="" />
+                        {clients.map((client: any) => (
+                            <option key={client.id} value={client.id}>
+                                {client.name}
+                            </option>
+                        ))}
+                    </RHFSelect>
+                )}
             </Box>
 
             <Stack alignItems="flex-end " sx={{ mt: 3 }}>

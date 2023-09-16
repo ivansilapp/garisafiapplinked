@@ -84,6 +84,7 @@ function VihiclesPage() {
                 }
             } else {
                 // update record
+                console.log('payload', payload)
                 const { data } = await axios.post('/vehicle', payload)
                 if (data) {
                     mutate()

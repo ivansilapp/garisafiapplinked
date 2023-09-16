@@ -130,7 +130,10 @@ function Dashboard() {
 
     const serviceReportData = Object.keys(serviceTypeTasks)?.map(
         (key: any) => ({
-            label: key,
+            label: key
+                .split(' ')
+                .map((word: string) => word[0])
+                .join(''),
             value: serviceTypeTasks[key].cost,
         })
     )
