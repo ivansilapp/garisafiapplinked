@@ -27,6 +27,8 @@ import { fDateTime } from '../../../utils/formatTime'
 import { fCurrency } from '../../../utils/formatNumber'
 import { removeSpecialCharacters } from '../../../components/animate'
 import { apiUrl } from '../../../config-global'
+import axiosInstance from '../../../utils/axios'
+import { useSnackbar } from '../../../components/snackbar'
 // import LoadingButton from '@mui/lab/LoadingButton'
 
 // ----------------------------------------------------------------------
@@ -43,13 +45,13 @@ export default function TaskTableRow({
     handleInitPayment,
     handleRedeem,
     redeemLoader,
+    mutate,
 }: any) {
     const {
         id,
         cost,
         CreatedAt,
         attendant,
-        closed,
         fullyPaid,
         payments,
         status,
@@ -57,7 +59,14 @@ export default function TaskTableRow({
         attendants,
         jobs,
         sales,
+        closed,
+        carKeys,
+        ongoing,
     }: any = row
+
+    // console.log(row)
+
+    const [closingLoader, setClosingLoader] = useState(false)
 
     const serviceInitials =
         jobs
@@ -104,9 +113,39 @@ export default function TaskTableRow({
             return acc + sale.amount
         }, 0) ?? 0
 
+    const { enqueueSnackbar } = useSnackbar()
+
     // console.log({ status, fullyPaid })
 
     // console.log(vehicle.points)
+
+    const closeTask = async () => {
+        try {
+            setClosingLoader(true)
+            const url =
+                status === ongoing
+                    ? `${apiUrl}/tasks/release-pigeonhole`
+                    : `${apiUrl}/task/close/${id}`
+            const response = await axiosInstance.put(url, {
+                id: `${id}`,
+            })
+            if (response.status === 200) {
+                mutate()
+                enqueueSnackbar('Task closed successfully', {
+                    variant: 'success',
+                })
+            } else {
+                enqueueSnackbar('Error closing task', {
+                    variant: 'error',
+                })
+            }
+        } catch (err: any) {
+            const msg = err.error || err.message || 'Error closing task'
+            enqueueSnackbar(msg, { variant: 'error' })
+        } finally {
+            setClosingLoader(false)
+        }
+    }
 
     return (
         <>
@@ -194,59 +233,74 @@ export default function TaskTableRow({
                 </TableCell>
 
                 <TableCell align="right">
-                    {status === 'ongoing' ||
-                        (status === 'complete' && !fullyPaid) ? (
-                        taskStatus === 'ongoing' ? (
-                            <Button
-                                onClick={() => handleInitComplete(row)}
+                    {
+                        status === 'ongoing' ||
+                            (status === 'complete' && !fullyPaid) ? (
+                            taskStatus === 'ongoing' ? (
+                                <Button
+                                    onClick={() => handleInitComplete(row)}
+                                    variant="contained"
+                                    color="info"
+                                    size="small"
+                                    disabled={status === 'complete'}
+                                >
+                                    Complete
+                                </Button>
+                            ) : (
+                                <span>
+                                    {vehicle?.points?.points === 9 ? (
+                                        <Typography variant="subtitle2" noWrap>
+                                            <LoadingButton
+                                                onClick={() =>
+                                                    handleRedeem(row)
+                                                }
+                                                variant="contained"
+                                                color="success"
+                                                size="small"
+                                                loading={redeemLoader}
+                                                disabled={fullyPaid}
+                                            >
+                                                Redeem
+                                            </LoadingButton>
+                                        </Typography>
+                                    ) : (
+                                        <Typography variant="subtitle2" noWrap>
+                                            <Button
+                                                onClick={() =>
+                                                    handleInitPayment(row)
+                                                }
+                                                variant="contained"
+                                                color="info"
+                                                size="small"
+                                                disabled={fullyPaid}
+                                            >
+                                                Add payment
+                                            </Button>
+                                        </Typography>
+                                    )}
+                                </span>
+                            )
+                        ) : carKeys && !closed ? (
+                            <LoadingButton
+                                loading={closingLoader}
+                                onClick={closeTask}
                                 variant="contained"
                                 color="info"
                                 size="small"
-                                disabled={status === 'complete'}
+                                disabled={closed}
                             >
-                                Complete
-                            </Button>
+                                close
+                            </LoadingButton>
                         ) : (
-                            <span>
-                                {vehicle?.points?.points === 9 ? (
-                                    <Typography variant="subtitle2" noWrap>
-                                        <LoadingButton
-                                            onClick={() => handleRedeem(row)}
-                                            variant="contained"
-                                            color="success"
-                                            size="small"
-                                            loading={redeemLoader}
-                                            disabled={fullyPaid}
-                                        >
-                                            Redeem
-                                        </LoadingButton>
-                                    </Typography>
-                                ) : (
-                                    <Typography variant="subtitle2" noWrap>
-                                        <Button
-                                            onClick={() =>
-                                                handleInitPayment(row)
-                                            }
-                                            variant="contained"
-                                            color="info"
-                                            size="small"
-                                            disabled={fullyPaid}
-                                        >
-                                            Add payment
-                                        </Button>
-                                    </Typography>
-                                )}
-                            </span>
+                            <Button
+                                variant="contained"
+                                color="info"
+                                size="small"
+                                disabled
+                            >
+                                Paid
+                            </Button>
                         )
-                    ) : (
-                        <Button
-                            variant="contained"
-                            color="info"
-                            size="small"
-                            disabled
-                        >
-                            Paid
-                        </Button>
                         // <>
                         //     {status !== 'cancelled' && !closed ? (
                         //         <Button
@@ -270,7 +324,7 @@ export default function TaskTableRow({
                         //     )}
                         //     <span />
                         // </>
-                    )}
+                    }
                 </TableCell>
             </TableRow>
             <ConfirmDialog

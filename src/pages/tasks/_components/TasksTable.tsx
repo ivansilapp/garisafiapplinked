@@ -131,7 +131,7 @@ function TasksTable({
             if (!response.data) {
                 throw new Error('Error deleting service')
             }
-            const deleteRow = tableData.filter((row: any) => row.id !== id)
+            const deleteRow = tableData.filter((row: any) => row?.id !== id)
             mutate()
             setSelected([])
             setTableData(deleteRow)
@@ -166,7 +166,9 @@ function TasksTable({
             })
 
             if (response.status === 200) {
-                const index = tableData.findIndex((item: any) => item.id === id)
+                const index = tableData.findIndex(
+                    (item: any) => item?.id === id
+                )
                 const updatedItem = {
                     ...tableData[index],
                     status: 'complete',
@@ -251,7 +253,7 @@ function TasksTable({
             // console.log(payload)
             const response = await axios.post(`${apiUrl}/payment`, {
                 ...payload,
-                taskId: activeItem.id,
+                taskId: activeItem?.id,
             })
 
             if (response.status === 200) {
@@ -301,7 +303,7 @@ function TasksTable({
                             onSelectAllRows={(checked: any) =>
                                 onSelectAllRows(
                                     checked,
-                                    tableData.map((row: any) => row.id)
+                                    tableData.map((row: any) => row?.id)
                                 )
                             }
                         />
@@ -314,7 +316,7 @@ function TasksTable({
                                 )
                                 .map((row: any) => (
                                     <TasksTableRow
-                                        key={row.id}
+                                        key={row?.id}
                                         row={row}
                                         readOnly={readOnly}
                                         splitRevenue={splitRevenue}
@@ -330,6 +332,7 @@ function TasksTable({
                                         accounts={AC}
                                         handleRedeem={handleRedeem}
                                         redeemLoader={redeemLoader}
+                                        mutate={mutate}
                                     />
                                 ))}
 

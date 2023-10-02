@@ -1,5 +1,14 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { Button, Container, Grid, Stack } from '@mui/material'
+import {
+    Button,
+    Container,
+    Grid,
+    Stack,
+    MenuItem,
+    Select,
+    InputLabel,
+    FormControl,
+} from '@mui/material'
 import { Suspense, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -22,6 +31,7 @@ function PaymentPage() {
     const [searchParams] = useSearchParams()
     const initialStartDate = searchParams.get('startDate')
     const initialEndDate = searchParams.get('endDate')
+    const initialAccount = searchParams.get('account')
 
     // console.log('>>>>>>>>>>>>>> loading page >>>>>>>>>>>>>')
 
@@ -34,6 +44,12 @@ function PaymentPage() {
         query = `${query}&endDate=${initialEndDate}`
     }
 
+    if (initialAccount) {
+        // console.log('initialAccount', initialAccount)
+        query = `${query}${query === '' ? '' : '&'}account=${initialAccount}`
+    }
+    // set initial account value
+    const [account, setAccount] = useState<any>(initialAccount || 0)
     //  dates
     const [filterStartDate, setFilterStartDate] = useState<Date | null>(
         initialStartDate ? new Date(initialStartDate) : null
@@ -49,14 +65,14 @@ function PaymentPage() {
 
     const onFilterStartDate = (newValue: any) => {
         setFilterStartDate(newValue)
-        handleDateFilter({ s: newValue, e: filterEndDate })
+        handleDateFilter({ s: newValue, e: filterEndDate, a: account })
     }
     const onFilterEndDate = (newValue: any) => {
         setFilterEndDate(newValue)
-        handleDateFilter({ s: filterStartDate, e: newValue })
+        handleDateFilter({ s: filterStartDate, e: newValue, a: account })
     }
 
-    const handleDateFilter = async ({ s, e }: any) => {
+    const handleDateFilter = async ({ s, e, a }: any) => {
         try {
             const startDate = s ? format(s, 'yyyy-MM-dd') : null
             const endDate = e ? format(e, 'yyyy-MM-dd') : null
@@ -69,13 +85,32 @@ function PaymentPage() {
                 queryObj = { ...queryObj, endDate }
             }
 
+            // check initial account value
+            // const accountVal = Number(a) || 0
+
+            queryObj = { ...queryObj, account: a }
+
+            console.log(queryObj, 'queryObj')
+
             const q = new URLSearchParams(queryObj).toString()
+            console.log(q)
             navigate(`${PATH_DASHBOARD.payments.root}?${q}`)
         } catch (err: any) {
             const msg =
                 err?.error || err.message || 'Error loading attendant details'
             enqueueSnackbar(msg, { variant: 'error' })
         }
+    }
+
+    const handleAccountChange = (e: any) => {
+        const value = e?.target?.value
+        setAccount(value)
+        console.log(value, 'value')
+
+        handleDateFilter({ s: filterStartDate, e: filterEndDate, a: value })
+        // const ac = accounts.find((a: any) => a.id === e.target.value)
+        // console.log(ac, 'is the account')
+        // setHasReference(ac?.name?.toLowerCase()?.includes('cash'))
     }
 
     return (
@@ -92,17 +127,6 @@ function PaymentPage() {
                             href: PATH_DASHBOARD.payments.root,
                         },
                     ]}
-                    // action={
-                    //     <Button
-                    //         component={Link}
-                    //         to="/payments/overdue"
-                    //         endIcon={
-                    //             <Iconify icon="eva:arrow-ios-forward-outline" />
-                    //         }
-                    //     >
-                    //         Overdue payments
-                    //     </Button>
-                    // }
                 />
 
                 <Suspense fallback={<p>Loading...</p>}>
@@ -117,6 +141,31 @@ function PaymentPage() {
                                 <div />
 
                                 <Stack display="flex" direction="row" gap={2}>
+                                    <FormControl fullWidth>
+                                        <InputLabel> Select Account</InputLabel>
+                                        <Select
+                                            labelId="account-selection-label"
+                                            id="account-selection"
+                                            value={account}
+                                            label="Select Account"
+                                            onChange={handleAccountChange}
+                                        >
+                                            <MenuItem value={0}>
+                                                <em>All</em>
+                                            </MenuItem>
+                                            {accounts.map((ac: any) => {
+                                                return (
+                                                    <MenuItem
+                                                        key={ac.id}
+                                                        value={ac.id}
+                                                    >
+                                                        {ac.name}
+                                                    </MenuItem>
+                                                )
+                                            })}
+                                        </Select>
+                                    </FormControl>
+
                                     <DatePicker
                                         label="Start date"
                                         value={filterStartDate}

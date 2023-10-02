@@ -5,7 +5,7 @@ import {
     DialogContent,
     DialogTitle,
 } from '@mui/material'
-import { Suspense, useState } from 'react'
+import { Suspense, useCallback, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import CustomBreadcrumbs from '../../../components/custom-breadcrumbs'
 import Iconify from '../../../components/iconify'

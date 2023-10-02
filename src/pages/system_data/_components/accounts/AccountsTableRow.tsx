@@ -123,13 +123,13 @@ export default function AccountTableRow({
                 <TableCell>
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Typography variant="subtitle2" noWrap>
-                            {name}
-                            {/* <Link
+                            {/* {name} */}
+                            <Link
                                 style={styles}
-                                to={PATH_DASHBOARD.users.details(id)}
+                                to={`${PATH_DASHBOARD.payments.root}?account=${id}`}
                             >
                                 {name}
-                            </Link> */}
+                            </Link>
                         </Typography>
                     </Stack>
                 </TableCell>

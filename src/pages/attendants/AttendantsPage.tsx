@@ -97,54 +97,6 @@ function AttendantsPage() {
         }
     }
 
-    const totalCommision = attendants.reduce((acc: any, curr: any) => {
-        const currCommission = curr.commissions.reduce((a: any, c: any) => {
-            return a + c.amount
-        }, 0)
-        return acc + currCommission
-    }, 0)
-    const totalTips = attendants.reduce((acc: any, curr: any) => {
-        const currTips =
-            curr?.tips.reduce((a: any, c: any) => {
-                return a + c.amount
-            }, 0) ?? 0
-        return acc + currTips
-    }, 0)
-
-    const handleAccountChange = (e: SelectChangeEvent) => {
-        setAccount(e.target.value)
-        const ac = accounts.find((a: any) => a.id === e.target.value)
-        // console.log(ac, 'is the account')
-        const hr = ac?.name?.toLowerCase()?.includes('cash')
-        setHasReference(!!hr)
-    }
-
-    const handleBulkPayment = async () => {
-        try {
-            setPaymentLoader(true)
-            const response = await axios.post('/commission/pay-all', {
-                accountId: Number(account),
-                reference,
-            })
-
-            if (response.status !== 200) {
-                throw new Error(response.data.error || 'Opearation failed')
-            }
-            setPayModal(false)
-            mutate()
-            enqueueSnackbar('Payment successful', {
-                variant: 'success',
-            })
-        } catch (err: any) {
-            const msg = err.error || err.message || 'Opearation failed'
-            enqueueSnackbar(msg || 'Opearation failed', {
-                variant: 'error',
-            })
-        } finally {
-            setPaymentLoader(false)
-        }
-    }
-
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
             <ErrorBoundary
@@ -163,7 +115,7 @@ function AttendantsPage() {
                     ]}
                     action={
                         <Stack direction="row" gap={2}>
-                            <Button
+                            {/* <Button
                                 variant="outlined"
                                 startIcon={<Iconify icon="eva:npm-outline" />}
                                 onClick={() => setPayModal(true)}
@@ -171,7 +123,7 @@ function AttendantsPage() {
                                 disabled={totalCommision === 0}
                             >
                                 Pay all
-                            </Button>
+                            </Button> */}
                             <Button
                                 onClick={() => setOpen(true)}
                                 variant="contained"
@@ -182,33 +134,6 @@ function AttendantsPage() {
                         </Stack>
                     }
                 />
-
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm={4} xl={3}>
-                        <Card sx={{ my: 4 }}>
-                            <CardContent>
-                                <Typography variant="h6" color="info">
-                                    Commission not paid
-                                </Typography>
-                                <Typography variant="h4" color="info">
-                                    {fCurrency(totalCommision)}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                    <Grid item xs={12} sm={4} xl={3}>
-                        <Card sx={{ my: 4 }}>
-                            <CardContent>
-                                <Typography variant="h6" color="info">
-                                    Tips not submitted
-                                </Typography>
-                                <Typography variant="h4" color="info">
-                                    {fCurrency(totalTips)}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                </Grid>
 
                 <AttendantsTable
                     data={attendants}
@@ -231,90 +156,6 @@ function AttendantsPage() {
                             attendant={activeAttendant}
                             handleClose={handleClose}
                         />
-                    </DialogContent>
-                </Dialog>
-
-                <Dialog
-                    fullWidth
-                    maxWidth="sm"
-                    open={payModal}
-                    onClose={() => {
-                        setPayModal(false)
-                    }}
-                >
-                    <DialogTitle>Bulk payment</DialogTitle>
-                    <DialogContent>
-                        <Box sx={{ p: 2 }} gap={2} display="grid">
-                            <FormControl fullWidth>
-                                <InputLabel id="account-selection-label">
-                                    Account
-                                </InputLabel>
-                                <Select
-                                    labelId="account-selection-label"
-                                    id="account-selection"
-                                    value={account}
-                                    label="Account"
-                                    onChange={handleAccountChange}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {accounts?.map((ac: any) => {
-                                        return (
-                                            <MenuItem key={ac.id} value={ac.id}>
-                                                {ac.name}
-                                            </MenuItem>
-                                        )
-                                    })}
-                                </Select>
-                            </FormControl>
-
-                            {/* <TextField
-                                fullWidth
-                                id="amount-txt"
-                                label="Amount"
-                                type="number"
-                                variant="outlined"
-                                value={amount}
-                                onChange={handleAmountChange}
-                            /> */}
-                            <TextField
-                                fullWidth
-                                id="reference-txt"
-                                label="Payment reference"
-                                variant="outlined"
-                                value={reference}
-                                disabled={hasReference}
-                                onChange={(e) => {
-                                    setReference(e.target.value)
-                                }}
-                            />
-
-                            <Stack
-                                display="flex"
-                                alignItems="flex-end"
-                                gap={2}
-                                sx={{ my: 3 }}
-                            >
-                                <Box display="flex" gap={2}>
-                                    <Button
-                                        color="warning"
-                                        variant="contained"
-                                        onClick={() => setPayModal(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-
-                                    <LoadingButton
-                                        loading={paymentLoader}
-                                        variant="contained"
-                                        onClick={handleBulkPayment}
-                                    >
-                                        Make bulk payment
-                                    </LoadingButton>
-                                </Box>
-                            </Stack>
-                        </Box>
                     </DialogContent>
                 </Dialog>
             </ErrorBoundary>

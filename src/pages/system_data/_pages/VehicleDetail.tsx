@@ -1,5 +1,5 @@
 import { Container, Grid, Typography } from '@mui/material'
-import { Suspense } from 'react'
+import { Suspense, useCallback } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useParams } from 'react-router-dom'
 import CustomBreadcrumbs from '../../../components/custom-breadcrumbs'
@@ -73,8 +73,8 @@ export default function VehicleDetailPage() {
                             </Typography>
                             <TasksTable
                                 data={vehicle?.tasks}
-                                mutate={() => {}}
-                                handleUpdate={() => {}}
+                                mutate={() => { }}
+                                handleUpdate={() => { }}
                                 readOnly
                             />
                         </Grid>
@@ -86,8 +86,8 @@ export default function VehicleDetailPage() {
 
                             <SalesTable
                                 data={vehicle.sales ?? []}
-                                mutate={() => {}}
-                                handleUpdate={() => {}}
+                                mutate={() => { }}
+                                handleUpdate={() => { }}
                             />
                         </Grid>
                     </Grid>

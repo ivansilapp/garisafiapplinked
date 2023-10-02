@@ -71,7 +71,7 @@ function ReportsPage() {
                             component={Link}
                             to={PATH_DASHBOARD.reports.rewards}
                         >
-                            Rewards
+                            Free wash
                         </Button>
 
                         <Button
