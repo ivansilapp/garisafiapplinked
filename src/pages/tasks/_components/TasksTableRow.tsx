@@ -172,7 +172,7 @@ export default function TaskTableRow({
                         <Link
                             style={styles}
                             to={PATH_DASHBOARD.systemData.vehilceDetails(
-                                vehicle?.id
+                                vehicle?.id ?? 0
                             )}
                         >
                             {vehicle?.registration} - {vehicle?.model}
@@ -196,8 +196,10 @@ export default function TaskTableRow({
                                 <Link
                                     color="info"
                                     style={{ ...styles, pading: '3px' }}
-                                    key={a.id}
-                                    to={PATH_DASHBOARD.attendants.details(a.id)}
+                                    key={a?.id ?? 0}
+                                    to={PATH_DASHBOARD.attendants.details(
+                                        a?.id ?? 0
+                                    )}
                                 >
                                     {a?.name}
                                     {i !== attendees.length - 1 && ','}
