@@ -153,6 +153,7 @@ export default function TaskForm({
                 setValue(`items[${index}].price`, price)
                 setValue(`items[${index}].serviceId`, service?.id)
                 setValue(`items[${index}].priceId`, 0)
+                setValue(`items[${index}].description`, '')
                 setValue(
                     `items[${index}].total`,
                     values.items.map(
@@ -207,7 +208,7 @@ export default function TaskForm({
             setValue(
                 `items[${index}].total`,
                 values.items.map((item: any) => item.quantity * item.price)[
-                    index
+                index
                 ]
             )
         },

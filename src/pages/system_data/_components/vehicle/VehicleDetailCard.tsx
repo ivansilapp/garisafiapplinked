@@ -52,7 +52,7 @@ export default function VehicleDetailCard({ vehicle, sx, ...other }: any) {
                         variant="body2"
                         sx={{ color: 'text.secondary' }}
                     >
-                        Number of washes
+                        Number of visits
                     </Typography>
                     <Typography variant="body2">
                         {vehicle?.tasks?.length}

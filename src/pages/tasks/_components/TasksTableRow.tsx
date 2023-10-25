@@ -195,7 +195,7 @@ export default function TaskTableRow({
                             return (
                                 <Link
                                     color="info"
-                                    style={{ ...styles, pading: '3px' }}
+                                    style={{ ...styles, padding: '3px' }}
                                     key={a?.id ?? 0}
                                     to={PATH_DASHBOARD.attendants.details(
                                         a?.id ?? 0

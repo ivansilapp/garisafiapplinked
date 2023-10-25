@@ -35,7 +35,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import ConfirmDialog from '../../components/confirm-dialog'
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs'
-import { RHFSelect } from '../../components/hook-form'
+import { RHFSelect, RHFTextField } from '../../components/hook-form'
 import Iconify from '../../components/iconify'
 import { useSettingsContext } from '../../components/settings'
 import InternalError from '../../components/shared/500Error'
@@ -59,9 +59,12 @@ import AddToQueueModal from './_components/AddToQueueModal'
 import useBodyTypes from '../../hooks/body-types/useBodyTypes'
 import useClientList from '../../hooks/client/useClientList'
 import { taskStatus } from '../../auth/utils'
+import { useAuthContext } from '../../auth/useAuthContext'
 
 function TaskDetail() {
     const { themeStretch } = useSettingsContext()
+    const { settings }: any = useAuthContext()
+
     const { clients } = useClientList()
     const { bodyTypes } = useBodyTypes()
 
@@ -97,6 +100,8 @@ function TaskDetail() {
     const [activeSevice, setActiveService] = useState<any>('')
     const [serviceDeleteLoader, setServiceDeleteLoader] = useState(false)
     const [productDeleteLoader, setProductDeleteLoader] = useState(false)
+    const [carpetLength, setCarpetLength] = useState('')
+    const [carpetWidth, setCarpetWidth] = useState('')
 
     const [confirmRemoveServiceModal, setConfirmRemoveServiceModal] =
         useState(false)
@@ -110,6 +115,8 @@ function TaskDetail() {
         useState(false)
 
     const [removeAttendantId, setRemoveAttendantId] = useState<any>(null)
+
+    const [isCarpetCleaning, setIsCarpetCleaning] = useState(false)
 
     const { enqueueSnackbar } = useSnackbar()
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -351,27 +358,45 @@ function TaskDetail() {
                 })
                 return
             }
-            const priceId = prices.find(
-                (p: any) =>
-                    p.serviceId === activeSevice &&
-                    p.bodyId === task?.vehicle?.bodyId
-            )?.id
-            // console.log('price id', priceId)
-            // const response = {}
-            // // add service
-            if (!priceId) {
-                enqueueSnackbar(
-                    'Price not found. Confirm its correctly configured',
-                    {
+            let priceId = 0
+            const servicePayload: any = {}
+            if (!isCarpetCleaning) {
+                priceId = prices.find(
+                    (p: any) =>
+                        p.serviceId === activeSevice &&
+                        p.bodyId === task?.vehicle?.bodyId
+                )?.id
+                // console.log('price id', priceId)
+                // const response = {}
+                // // add service
+                if (!priceId) {
+                    enqueueSnackbar(
+                        'Price not found. Confirm its correctly configured',
+                        {
+                            variant: 'error',
+                        }
+                    )
+                    return
+                }
+            } else {
+                // check carpetLength & carpetWidth
+                const length = Number(carpetLength) || 0
+                const width = Number(carpetWidth) || 0
+
+                if (!length || !width) {
+                    enqueueSnackbar('Carpet length and width required', {
                         variant: 'error',
-                    }
-                )
-                return
+                    })
+                    return
+                }
+
+                servicePayload.length = length
+                servicePayload.width = width
             }
-            // console.log({ activeSevice, id, priceId })
+            // console.log({ activeService, id, priceId })
             const response = await axios.post(
                 `${apiUrl}/task/service-add/${activeSevice}/${id}/${priceId}`,
-                {}
+                { ...servicePayload }
             )
 
             if (response.status === 200) {
@@ -380,6 +405,8 @@ function TaskDetail() {
                     variant: 'success',
                 })
                 setAddServiceModal(false)
+                setCarpetLength('')
+                setCarpetWidth('')
             }
         } catch (err: any) {
             const msg = err.error || err.message || 'Error adding service'
@@ -621,11 +648,11 @@ function TaskDetail() {
                 phone_number: activeClient?.phone,
             }
 
-            console.log('payload', payload, activeClient)
+            // console.log('payload', payload, activeClient)
 
-            const reponse = await axios.post(url, payload)
+            const response = await axios.post(url, payload)
 
-            if (reponse.status === 200) {
+            if (response.status === 200) {
                 mutate()
                 enqueueSnackbar('Task redeemed successfully', {
                     variant: 'success',
@@ -641,6 +668,10 @@ function TaskDetail() {
             setRedeemLoader(false)
         }
     }
+
+    // const handleSizeChange = () => {
+    //     console.log('not implemented')
+    // }
 
     return (
         <Container maxWidth={themeStretch ? false : 'lg'}>
@@ -1001,9 +1032,11 @@ function TaskDetail() {
                                                     >
                                                         <ListItemText
                                                             primary={job.name}
-                                                            secondary={fCurrency(
-                                                                job.cost
-                                                            )}
+                                                            secondary={` ${job?.description ??
+                                                                ''
+                                                                }  ${fCurrency(
+                                                                    job.cost
+                                                                )}`}
                                                         />
                                                     </ListItem>
                                                 )
@@ -1012,6 +1045,7 @@ function TaskDetail() {
                                     </CardContent>
                                 </Card>
                             </Grid>
+
                             <Grid item xs={12} sm={6}>
                                 <Card>
                                     <CardContent>
@@ -1409,9 +1443,25 @@ function TaskDetail() {
                                         id="services-selection"
                                         value={activeSevice}
                                         label="Service"
-                                        onChange={(e) =>
-                                            setActiveService(e.target.value)
-                                        }
+                                        onChange={(e) => {
+                                            const { value } = e.target
+                                            setActiveService(value)
+                                            const service: any = services.find(
+                                                (s: any) =>
+                                                    s.id === Number(value) || 0
+                                            )
+                                            // console.log(service, 'service')
+                                            if (
+                                                service &&
+                                                service.name
+                                                    ?.toLowerCase()
+                                                    .includes('carpet')
+                                            ) {
+                                                setIsCarpetCleaning(true)
+                                            } else {
+                                                setIsCarpetCleaning(false)
+                                            }
+                                        }}
                                     >
                                         <MenuItem value="">
                                             <em>None</em>
@@ -1434,6 +1484,70 @@ function TaskDetail() {
                                         Choose the account client is paying with
                                     </FormHelperText> */}
                                 </FormControl>
+
+                                {isCarpetCleaning ? (
+                                    <Stack
+                                        display="flex"
+                                        flexDirection="row"
+                                        alignItems="center"
+                                        gap={2}
+                                        sx={{ my: 3 }}
+                                    >
+                                        <TextField
+                                            size="small"
+                                            type="number"
+                                            name="height"
+                                            label="Length"
+                                            placeholder="0"
+                                            value={carpetLength}
+                                            onChange={(event: any) =>
+                                                setCarpetLength(
+                                                    Number(
+                                                        event.target.value
+                                                    ) || 0
+                                                )
+                                            }
+                                            InputLabelProps={{ shrink: true }}
+                                            sx={{ maxWidth: { md: 96 } }}
+                                        />
+                                        <TextField
+                                            size="small"
+                                            type="number"
+                                            name="width"
+                                            label="Width"
+                                            value={carpetWidth}
+                                            placeholder="0"
+                                            onChange={(event: any) =>
+                                                setCarpetWidth(
+                                                    Number(
+                                                        event.target.value
+                                                    ) || 0
+                                                )
+                                            }
+                                            InputLabelProps={{ shrink: true }}
+                                            sx={{ maxWidth: { md: 96 } }}
+                                        />
+                                        <TextField
+                                            sx={{ maxWidth: { md: 96 } }}
+                                            size="small"
+                                            disabled
+                                            label="Size"
+                                            type="number"
+                                            value={
+                                                Number(carpetWidth) *
+                                                Number(carpetLength)
+                                            }
+                                        />
+
+                                        <div>
+                                            {fCurrency(
+                                                Number(carpetWidth) *
+                                                Number(carpetLength) *
+                                                (settings?.carpet ?? 30)
+                                            )}
+                                        </div>
+                                    </Stack>
+                                ) : null}
 
                                 <Stack
                                     display="flex"
