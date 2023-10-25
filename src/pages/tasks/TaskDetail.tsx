@@ -658,7 +658,7 @@ function TaskDetail() {
                     variant: 'success',
                 })
             } else {
-                const { data } = reponse
+                const { data } = response
                 throw new Error(data.error ?? 'Error redeeming task')
             }
         } catch (err: any) {
@@ -1502,9 +1502,7 @@ function TaskDetail() {
                                             value={carpetLength}
                                             onChange={(event: any) =>
                                                 setCarpetLength(
-                                                    Number(
-                                                        event.target.value
-                                                    ) || 0
+                                                    event.target.value
                                                 )
                                             }
                                             InputLabelProps={{ shrink: true }}
@@ -1519,9 +1517,7 @@ function TaskDetail() {
                                             placeholder="0"
                                             onChange={(event: any) =>
                                                 setCarpetWidth(
-                                                    Number(
-                                                        event.target.value
-                                                    ) || 0
+                                                    event.target.value
                                                 )
                                             }
                                             InputLabelProps={{ shrink: true }}
